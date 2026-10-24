@@ -249,7 +249,11 @@ async function main() {
   for (const p of ['stand', 'read', 'carry', 'wave', 'sleep']) for (const t of ['day', 'night']) duck[`${p}_${t}`] = `assets/duck/${p}_${t}.png`;
   const imageUrls = Object.fromEntries(Object.entries(images).map(([k, v]) => [k, v.url]));
 
-  if (!works.length) warn.push('no works found: add folders to works/');
+  if (!works.length) {
+    // Never replace a live site with an empty one: if the folder looks empty or unreadable, stop and keep the last published version.
+    if (fromDrive) throw new Error('No works found in the Drive folder (is works/ there, and is the folder shared as "anyone with the link"?). The site was not changed.');
+    warn.push('no works found: add folders to works/');
+  }
   const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, duck, works, refs, texts, about };
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
