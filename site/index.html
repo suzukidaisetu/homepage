@@ -257,7 +257,6 @@ body.inv .app[data-mode="works"] .sheet:not(.ref):hover{opacity:.5}
 .overlay .entry{grid-template-columns:44px minmax(0,1fr);padding:18px 0 22px}
 .ovside{flex-direction:column;align-items:flex-start;gap:18px}
 .overlay .nav{flex-direction:column;align-items:flex-start}
-.overlay #tab-works{display:none}
 .overlay .nav .tab{font-size:20px;padding:6px 0;border:0;letter-spacing:0}
 .overlay .tab .cc,.v-c .nav .tab .cc{font-size:10px;line-height:1.2}
 
@@ -521,6 +520,42 @@ body.inv .duck .dnight{opacity:1}
 .rp-none{font:400 12px/1.4 var(--f-body);color:var(--muted)}
 .rp-collect{justify-self:start;align-self:flex-start;font:500 10.5px/1 var(--f-body);color:var(--fg);background:none;border:1px solid var(--line-hi);padding:7px 10px;cursor:pointer;text-transform:lowercase}
 .rp-collect[aria-pressed="true"],.rp-collect:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.refpanel.left{top:132px;left:0;right:auto;padding:4px 26px 40px 4px;border-left:0;border-right:1px solid var(--line)}
+.refpanel.left.enter{animation:rpInL .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes rpInL{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+.desk.panel-open.panel-left .scroller{padding-right:0;padding-left:min(440px,44%)}
+.sheet .tools button[data-a="note"]{text-transform:none}
+.readwrap{display:grid;grid-template-columns:minmax(0,640px) 210px;column-gap:56px;align-items:start;padding-bottom:60px}
+.readwrap .reading{padding-bottom:0}
+.margin{position:relative}
+.mfig{position:absolute;left:0;width:132px;margin:0;transition:opacity .3s}
+.mfig .mimg{display:block;width:132px;padding:0;border:0;background:none;cursor:pointer;transform-origin:0 0;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.mfig img{display:block;width:100%;height:auto;background:var(--sheet)}
+.mfig figcaption{margin-top:5px;font:400 10.5px/1.35 var(--f-body);color:var(--muted);transition:opacity .25s}
+.margin.focus .mfig{opacity:.28}
+.margin.focus .mfig.on{opacity:1;z-index:2}
+.mfig.on .mimg{transform:scale(1.55)}
+.mfig.on figcaption{opacity:0}
+.rlink{border-bottom:1px solid var(--line-hi);cursor:pointer;transition:background .2s,color .2s}
+.rlink.on,.rlink:focus-visible{background:var(--fg);color:var(--bg);outline:0}
+.v-m .readwrap{grid-template-columns:minmax(0,1fr)}
+.v-m .margin{position:static;display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;min-height:0!important}
+.v-m .mfig{position:static}
+.texts .titem{grid-template-columns:132px 84px minmax(0,1fr);align-items:center;gap:6px 18px;padding:14px 0}
+.texts .titem .tthumbs{grid-column:1;grid-row:1;display:block;width:132px;aspect-ratio:3/2;background:var(--line);overflow:hidden}
+.texts .titem .tthumbs img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);opacity:.75;transition:filter .3s,opacity .3s}
+.texts .titem:hover .tthumbs img{filter:none;opacity:1}
+.texts .titem .tdate{grid-column:2;grid-row:1}
+.texts .titem .tt{grid-column:3;grid-row:1}
+.v-m .texts .titem{grid-template-columns:96px minmax(0,1fr);gap:4px 14px}
+.v-m .texts .titem .tthumbs{width:96px;grid-row:1/3}
+.v-m .texts .titem .tdate{grid-column:2;grid-row:1}
+.v-m .texts .titem .tt{grid-column:2;grid-row:2}
+.ibox{overflow:hidden;position:relative}
+.ibox img{transform-origin:0 0}
+.sheet:not(.big) .ibox img{transform:none!important}
+.sheet.big.zoomed{cursor:grab}
+.sheet.big.zoomed.panning{cursor:grabbing}
 .v-m .refpanel{position:fixed;inset:52px 0 0 0;width:auto;padding:14px 16px 60px;border-left:0}
 .v-m .desk.panel-open .scroller{padding-right:0}
 /* collection: what you keep lines up as tiny icons beside the word */
@@ -562,7 +597,6 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 .v-a .nav{flex-direction:row;gap:18px;margin:0}
 .v-a .nav .tab{font:500 13px/1 var(--f-body);padding:4px 0;border:0;letter-spacing:0;color:var(--muted)}
 .v-a .nav .tab[aria-selected="true"],.v-a .nav .tab.lit{color:var(--fg)}
-.v-a #tab-works{display:none}
 .v-a .btn,.v-a .seg,.v-a .seg button{border:0;background:none;box-shadow:none}
 .v-a .btn{font:500 13px/1 var(--f-body);letter-spacing:0;padding:4px 0;color:var(--muted)}
 .v-a .btn:hover,.v-a .seg button:hover{color:var(--fg)}
@@ -571,8 +605,41 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 .v-a .seg button{font:500 13px/1 var(--f-body);letter-spacing:0;padding:4px 0;color:var(--muted)}
 .v-a .seg button+button{border:0}
 .v-a .seg button[aria-pressed="true"]{background:none;color:var(--fg);text-decoration:underline;text-underline-offset:4px}
-.v-a #rel::before{content:"○ ";font-size:9px;vertical-align:1px}
-.v-a #rel[aria-pressed="true"]::before{content:"● "}
+/* the light switch: a small plate on the table's top-right corner; the duck walks over and flips it */
+.v-a #s-tr{top:0;right:0}
+.v-a #rel{display:flex;align-items:center;gap:9px;padding:0 0 8px 12px;background:var(--bg);color:var(--fg);font:500 12px/1 var(--f-body)}
+.v-a #rel:hover{color:var(--fg)}
+.v-a #rel:hover .plate{background:var(--line)}
+.swl b{font-weight:700;margin-left:3px}
+.plate{position:relative;flex:none;width:20px;height:30px;box-sizing:border-box;border:1.5px solid var(--fg);border-radius:4px;transition:background .2s}
+.plate i{position:absolute;left:4px;right:4px;top:4px;height:10px;border-radius:2px;background:var(--fg);transition:top .16s cubic-bezier(.3,1.7,.5,1)}
+#rel[aria-pressed="true"] .plate i{top:13px}
+#tab-about{display:none!important}
+.v-a #s-tl{top:-16px;left:30px}
+.v-a #rel{position:relative;display:block;width:64px;height:100px;padding:0;border:0;background:none;color:var(--fg);cursor:pointer}
+.v-a #rel .swl{position:absolute;left:50px;top:40px;font:500 11px/1 var(--f-body);white-space:nowrap;color:var(--muted);transition:color .2s}
+.v-a #rel:hover .swl,.v-a #rel:focus-visible .swl{color:var(--fg)}
+.lamp{display:block;overflow:visible}
+.lamp line{stroke:var(--fg);stroke-width:1.2}
+.lamp .pull{stroke-width:1}
+.lamp .shade,.lamp .bead{fill:var(--fg)}
+.lamp .sock{fill:var(--fg)}
+.lamp .rim{stroke-width:1.6}
+.lamp .rays line{stroke-width:1.1;stroke-linecap:round;transition:opacity .35s}
+.lamp .bulb{fill:var(--bg);stroke:var(--fg);stroke-width:1.2;transition:fill .35s}
+#rel[aria-pressed="true"] .lamp .rays line{opacity:0}
+#rel[aria-pressed="true"] .lamp .bulb{fill:var(--muted);stroke:var(--muted)}
+.lampg{transform-box:view-box;transform-origin:26px 0}
+.duck .pw,.duck .ps{position:absolute;inset:0}
+.duck .pw{display:none}
+.duck.flying.up .pw{display:block}
+.duck.flying.up .ps{display:none}
+/* the dark spreads from the lamp with a soft, wide edge */
+html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr));mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr))}
+.duck.walk{animation:duckwalk .26s ease-in-out infinite alternate}
+@keyframes duckwalk{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-3px) rotate(4deg)}}
+@keyframes duckflip{0%{transform:none}40%{transform:translateY(-6px) scale(1.04,.96)}100%{transform:none}}
+.duck.flip{animation:duckflip .3s cubic-bezier(.3,.7,.3,1)}
 .v-a .colltools{gap:16px;margin-left:auto}
 .v-a .colltools .btn{padding:4px 0}
 .v-a .rail{display:flex;flex-direction:column;min-height:0}
@@ -590,13 +657,18 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 .v-a .rail{margin-bottom:0}
 .v-a .scroller{padding-bottom:24px}
 /* ---- A, revised: the left column is the site; the bar under the table holds only this table's tools ---- */
-.v-a{grid-template:"rail desk" minmax(0,1fr) "rail top" auto/212px minmax(0,1fr);column-gap:28px}
-.v-a .rail{grid-row:1/3;gap:0}
+.v-a{grid-template:"rail desk" minmax(0,1fr) "rail top" auto/224px minmax(0,1fr);column-gap:28px}
+.v-a:not([data-mode="works"]){grid-template:"rail" auto "desk" minmax(0,1fr) "top" auto/minmax(0,1fr)}
+.v-a:not([data-mode="works"]) .rail{grid-row:auto}
+.v-a:not([data-mode="works"]) #s-rail{display:none}
+.v-a:not([data-mode="works"]) #s-rail-top{padding-bottom:24px}
+.v-a[data-mode="refs"] .top,.v-a[data-mode="text"] .top,.v-a[data-mode="about"] .top{display:none}
+.v-a .rail{grid-row:1/3;gap:0;z-index:2000010}
 .v-a #s-rail-foot{display:none}
 /* name on one line; the places in one small line under it; the duck walks along that line to wherever you are */
 .v-a #s-rail-top{position:relative;display:block;padding:0 0 14px}
 .v-a #s-rail-top .brand{display:block;font:700 28px/1 var(--f-body);letter-spacing:-.035em;white-space:nowrap;text-align:left;padding:0}
-.v-a #s-rail-top .nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:9px;margin:44px 0 0}
+.v-a #s-rail-top .nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:8px;margin:44px 0 0}
 .v-a #s-rail-top .nav .tab{font:500 11px/1 var(--f-body);padding:2px 0}
 .v-a #s-rail-top .nav .tab .minis{max-width:40px;margin-left:4px}
 .v-a #s-rail-top .duck{position:absolute;left:0;top:0;width:26px;height:34px;transition:left .65s cubic-bezier(.5,0,.2,1),top .65s cubic-bezier(.5,0,.2,1)}
@@ -604,8 +676,20 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 .v-a #s-top-l{flex:1;min-width:0;gap:16px}
 .v-a #s-top-r{gap:22px}
 /* index: tall images, no gaps, the number always on the image; the open (or pointed) work slides right and shows its name and year turned on its side */
-.v-a .entry{position:relative;display:block;width:212px;padding:0;border:0;overflow:hidden}
-.v-a .entry .ethumb{width:184px;height:max(110px,calc((100vh - 130px)/3.5));transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.v-a .entry{position:relative;display:block;width:224px;padding:0;border:0;overflow:hidden}
+/* every image the same width, each at its own proportions; the strip sits flush on the left edge of the screen */
+.v-a #s-rail{margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)))}
+.v-a .entry .ethumb{width:196px;height:auto;min-height:0;aspect-ratio:auto;transition:none}
+.v-a .entry .ethumb img{height:auto;object-fit:initial}
+/* sliding out is animated; going back is instant */
+.v-a .entry .eno{transition:none!important}
+.v-a .entry:hover .ethumb,.v-a .entry:hover .eno,.v-a .entry[aria-pressed="true"] .ethumb,.v-a .entry[aria-pressed="true"] .eno{transition:transform .45s cubic-bezier(.2,.8,.2,1)!important}
+.v-a .entry .ettl{transition:none!important}
+.v-a .entry:hover .ettl,.v-a .entry[aria-pressed="true"] .ettl{transition:opacity .3s .15s!important}
+/* works with nothing chosen: a bare table */
+.v-a.home .top{visibility:hidden}
+/* leave the lamp its own strip of air above the table */
+.v-a[data-mode="works"]:not(.home) .scroller{padding-top:84px;box-sizing:border-box}
 .v-a .entry .eno{display:block!important;position:absolute;left:8px;top:8px;padding:0;font:700 15px/1 var(--f-body)!important;letter-spacing:-.02em;color:#fff!important;opacity:1!important;mix-blend-mode:difference;pointer-events:none;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
 .v-a .entry:hover .ethumb,.v-a .entry:hover .eno,.v-a .entry[aria-pressed="true"] .ethumb,.v-a .entry[aria-pressed="true"] .eno{transform:translateX(28px)}
 .v-a .entry .ettl{display:block!important;position:absolute;left:0;top:0;bottom:0;width:28px;box-sizing:border-box;padding:10px 0;writing-mode:vertical-rl;transform:rotate(180deg);font:600 11.5px/28px var(--f-body)!important;letter-spacing:.01em;color:var(--fg)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0!important;transition:opacity .2s;pointer-events:none}
@@ -760,14 +844,14 @@ function toggleColl(k,el,src){if(isColl(k)){coll=coll.filter(x=>x!==k);if(mode==
 
 function renderList(){list.innerHTML='';
   P.forEach((it,i)=>{const li=document.createElement('li');li.className='item';
-    li.innerHTML=`<button class="entry" type="button" aria-pressed="false"><span class="ethumb"><img alt="" src="${src(it.sheets[it.cover].img,'s')}" decoding="async" loading="lazy"></span><span class="eno">${it.no}</span><span class="ettl">${it.title}${it.period?`<span class="eyr">${it.period}</span>`:''}</span></button>`;
-    const bt=li.querySelector('button');bt.addEventListener('click',()=>{if(mode==='works'&&cur===i)return;go('works',()=>openWork(i))});
+    li.innerHTML=`<button class="entry" type="button" aria-pressed="false"><span class="ethumb"><img alt="" src="${src(it.sheets[it.cover].img,'s')}" decoding="async" style="aspect-ratio:${it.sheets[it.cover].ar}" loading="lazy"></span><span class="eno">${it.no}</span><span class="ettl">${it.title}${it.period?`<span class="eyr">${it.period}</span>`:''}</span></button>`;
+    const bt=li.querySelector('button');bt.addEventListener('click',()=>{if(mode==='works'&&cur===i)return;list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',j===i?'true':'false'));go('works',()=>openWork(i))});
     bt.setAttribute('aria-label',it.no+' '+it.title);bt.addEventListener('mouseenter',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=`<span class="cno">${it.no}</span><span class="ct">${it.title}</span>${it.period?`<span class="cm">${it.period}</span>`:''}`;cr.classList.toggle('peek',!(mode==='works'&&cur===i))});
     bt.addEventListener('mouseleave',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=cr._html||'';cr.classList.remove('peek')});list.appendChild(li)})}
 function mark(){list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',mode==='works'&&j===cur?'true':'false'))}
-function updProj(){const b=$('projBtn');if(!b)return;const names={refs:'References',text:'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
-function setMode(m){if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
-  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{placeDuck()}catch(e){}});layBtn.hidden=!(m==='works'||m==='collect');app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
+function updProj(){const b=$('projBtn');if(!b)return;const names={works:'Works',refs:'References',text:'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
+function setMode(m){app.classList.remove('home');if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
+  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=!(m==='works'||m==='collect');app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
 
 /* ---- table surface ---- */
 function newCanvas(){scroller.innerHTML='';canvas=document.createElement('div');canvas.className='canvas';scroller.appendChild(canvas);scroller.scrollTop=0;return canvas}
@@ -780,41 +864,58 @@ const hOf=el=>{if(el._text){el._ar=el.offsetWidth/Math.max(1,el.offsetHeight);re
 
 const linksHTML=ls=>ls&&ls.length?`<span class="links">${ls.map(l=>`<a href="${l.url}" target="_blank" rel="noopener">▶ ${l.label}</a>`).join('')}</span>`:'';
 function makeSheet(o){const el=document.createElement('div');el.className='sheet'+(o.ref?' ref':'');el.tabIndex=0;el._ar=o.ar;
-  el._cap=o.ref?27+(o.links&&o.links.length?26:0):0;
+  el._cap=o.ref?27+(o.links&&o.links.length?26:0):o.cap?27:0;if(o.cap)el.classList.add('cover');
   el.setAttribute('role','group');el.setAttribute('aria-label',o.left);el._img=o.img;
-  el.innerHTML=`${o.html?`<div class="tsheet">${o.html}</div>`:`<img alt="${o.left}" ${SZ.length?`data-k="${o.img}"`:`src="${IMG[o.img]}"`} loading="lazy" decoding="async" draggable="false" style="aspect-ratio:${o.ar}">`}${o.ref?`<div class="sheet-cap"><span>${o.left}</span><span>${o.right}</span></div>${o.links&&o.links.length?`<div class="sheet-links">${linksHTML(o.links)}</div>`:''}`:''}<div class="tools"><button type="button" data-a="collect" data-k="${o.key}" aria-pressed="false">+ Collect</button></div>`;
-  el.addEventListener('click',e=>{if(isM()&&layoutMode!=='free'&&!e.target.closest('button,a'))zoom(el)});
-  el.addEventListener('pointerdown',e=>{if(e.target.closest('button,a'))return;if(isM()&&layoutMode!=='free')return;e.preventDefault();el.focus({preventScroll:true});
+  el.innerHTML=`${o.html?`<div class="tsheet">${o.html}</div>`:`<div class="ibox"><img alt="${o.left}" ${SZ.length?`data-k="${o.img}"`:`src="${IMG[o.img]}"`} loading="lazy" decoding="async" draggable="false" style="aspect-ratio:${o.ar}"></div>`}${o.ref||o.cap?`<div class="sheet-cap"><span>${o.left}</span><span>${o.right}</span></div>${o.links&&o.links.length?`<div class="sheet-links">${linksHTML(o.links)}</div>`:''}`:''}<div class="tools">${o.ref?`<button type="button" data-a="note">${lang==='ja'?'解説':'notes'}</button>`:''}<button type="button" data-a="collect" data-k="${o.key}" aria-pressed="false">+ Collect</button></div>`;
+  const act=()=>o.open?o.open():zoom(el);
+  /* opened large, the image zooms with the wheel (or a trackpad pinch) around the pointer; drag to look around */
+  el._z={s:1,x:0,y:0};
+  const clampZ=()=>{const z=el._z,f=el._im.parentNode,w=f.clientWidth,h=f.clientHeight;z.x=Math.min(0,Math.max(w-w*z.s,z.x));z.y=Math.min(0,Math.max(h-h*z.s,z.y))};
+  const applyZ=()=>{const im=el._im;if(!im)return;const z=el._z;im.style.transform=z.s===1?'':`translate(${z.x}px,${z.y}px) scale(${z.s})`;el.classList.toggle('zoomed',z.s>1);if(im.dataset.k&&z.s>1)im.sizes=Math.round(el._w*z.s)+'px'};
+  el._resetZ=()=>{el._z={s:1,x:0,y:0};applyZ()};
+  el.addEventListener('wheel',e=>{if(!el.classList.contains('big')||!el._im)return;e.preventDefault();
+    const f=el._im.parentNode.getBoundingClientRect(),z=el._z,px=e.clientX-f.left,py=e.clientY-f.top,dy=e.deltaMode===1?e.deltaY*16:e.deltaY;
+    const sN=Math.min(8,Math.max(1,z.s*Math.exp(-dy*(e.ctrlKey?.01:.0018)))),r=sN/z.s;z.x=px-(px-z.x)*r;z.y=py-(py-z.y)*r;z.s=sN;clampZ();applyZ()},{passive:false});
+  el.addEventListener('click',e=>{if(isM()&&layoutMode!=='free'&&!e.target.closest('button,a'))act()});
+  el.addEventListener('pointerdown',e=>{if(e.target.closest('button,a'))return;
+    if(el.classList.contains('big')&&el._z.s>1){e.preventDefault();el.setPointerCapture(e.pointerId);el.classList.add('panning');const z=el._z,s0={x:e.clientX,y:e.clientY,tx:z.x,ty:z.y};let moved=false;
+      const mv=ev=>{z.x=s0.tx+ev.clientX-s0.x;z.y=s0.ty+ev.clientY-s0.y;if(Math.hypot(ev.clientX-s0.x,ev.clientY-s0.y)>4)moved=true;clampZ();applyZ()};
+      const up=ev=>{el.classList.remove('panning');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(!moved&&ev.type==='pointerup')act()};
+      el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);return}if(isM()&&layoutMode!=='free')return;e.preventDefault();el.focus({preventScroll:true});
     el.setPointerCapture(e.pointerId);raise(el);el.classList.remove('move');el.classList.add('dragging');
     const s={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top)};
     const mv=ev=>{el.style.left=s.l+ev.clientX-s.x+'px';el.style.top=s.t+ev.clientY-s.y+'px'};
-    const up=ev=>{const moved=Math.hypot(ev.clientX-s.x,ev.clientY-s.y)>4;el.classList.remove('dragging');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(!moved&&ev.type==='pointerup')zoom(el);else clamp(el)};
+    const up=ev=>{const moved=Math.hypot(ev.clientX-s.x,ev.clientY-s.y)>4;el.classList.remove('dragging');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(!moved&&ev.type==='pointerup')act();else clamp(el)};
     el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)});
-  el._im=el.querySelector('img');el.querySelector('[data-a=collect]').addEventListener('click',()=>toggleColl(o.key,el,el.querySelector('img')||el));el._key=o.key;
+  el._im=el.querySelector('img');const nb=el.querySelector('[data-a=note]');if(nb)nb.addEventListener('click',()=>{if(panelJ===el._ref)closeRefPanel();else openRefPanel(el._ref,{behind:true})});el.querySelector('[data-a=collect]').addEventListener('click',()=>toggleColl(o.key,el,el.querySelector('img')||el));el._key=o.key;
   el.addEventListener('keydown',e=>{const d={ArrowLeft:[-16,0],ArrowRight:[16,0],ArrowUp:[0,-16],ArrowDown:[0,16]}[e.key];
     if(d){e.preventDefault();el.style.left=parseFloat(el.style.left)+d[0]+'px';el.style.top=parseFloat(el.style.top)+d[1]+'px';clamp(el)}
-    else if(e.key==='Enter'){raise(el);zoom(el)}});
+    else if(e.key==='Enter'){raise(el);act()}});
   return el}
 
-function zoom(el){const big=!el.classList.contains('big');
+function zoom(el){const big=!el.classList.contains('big');el._resetZ&&el._resetZ();
   if(big){el._prev={w:el._w,l:el.style.left,t:el.style.top};hOf(el);const w=el._text?Math.min(W()*.6,VH()*.9*el._ar,620):Math.min(W()*.92,(VH()*.9-el._cap)*el._ar);el.classList.add('big');animate(el);raise(el);setW(el,w);
     el.style.left=(W()-w)/2+'px';el.style.top=scroller.scrollTop+Math.max(0,(VH()-hOf(el))/2)+'px'}
   else{const p=el._prev;el.classList.remove('big');animate(el);setW(el,p.w);el.style.left=p.l;el.style.top=p.t}grow()}
 
 /* Sizes with a clear hierarchy: one lead image, then a random mix of large, medium and small. */
 function sizeAll(els,r,lead=true){const w=W(),narrow=w<620;
-  const opts=narrow?[.92,.72,.56]:[.46,.36,.28,.21,.17],wts=narrow?[2,3,3]:[1.4,2,3,3,2];
+  const opts=narrow?[.92,.8,.7]:[.34,.3,.27,.24],wts=narrow?[2,3,3]:[2,3,3,2];
   const pick=()=>{let s=wts.reduce((a,b)=>a+b),x=r()*s;for(let k=0;k<opts.length;k++){x-=wts[k];if(x<=0)return opts[k]}return opts[opts.length-1]};
-  els.forEach((el,k)=>{let f=lead&&k===0?(narrow?1:.6):pick();if(el._ar<1)f*=Math.sqrt(el._ar)*1.1;
+  els.forEach((el,k)=>{let f=lead&&k===0?(narrow?1:.42):pick();if(el._ar<1)f*=Math.sqrt(el._ar)*1.1;
     let ww=f*w*(.92+r()*.16);ww=Math.min(ww,(VH()*.88-el._cap)*el._ar,w);if(el._text)ww=Math.min(w,Math.max(narrow?w*.8:260,Math.min(ww,380)));setW(el,ww)})}
 /* Random collage: each sheet drops to the highest free spot at a random x, so the table grows downward with irregular gaps. */
-function collage(els,r){const w=W(),placed=[];
+function collage(els,r){const W0=W(),w=W0<620?W0:W0*.78,placed=[];
   const hit=(x,y,ww,hh)=>placed.some(p=>x<p.x+p.w+G&&x+ww+G>p.x&&y<p.y+p.h+G&&y+hh+G>p.y);
   els.forEach(el=>{const ww=el._w,hh=hOf(el);let best=null;
     for(let s=0;s<18;s++){const x=s===0?0:s===1?Math.max(0,w-ww):r()*Math.max(0,w-ww);
       const ys=[0,...placed.map(p=>p.y+p.h+G)].sort((a,b)=>a-b);
       for(const y0 of ys){const y=y0+(y0?r()*28:0);if(!hit(x,y,ww,hh)){if(!best||y<best.y-6||(Math.abs(y-best.y)<=6&&r()<.5))best={x,y};break}}}
-    placed.push({x:best.x,y:best.y,w:ww,h:hh});el.style.left=best.x+'px';el.style.top=best.y+'px';raise(el)});
+    placed.push({x:best.x,y:best.y,w:ww,h:hh,el});raise(el)});
+  /* centre the whole group on the table: across, and down too when it is shorter than the view */
+  let x0=1e9,x1=-1e9,y1=0;placed.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x+p.w);y1=Math.max(y1,p.y+p.h)});
+  const dx=(W0-(x1-x0))/2-x0,dy=Math.max(0,(VH()-y1)/2-8);
+  placed.forEach(p=>{p.el.style.left=p.x+dx+'px';p.el.style.top=p.y+dy+'px'});
   grow()}
 function rowsFor(els,t,w,g){const rows=[];let row=[],sum=0;
   els.forEach(el=>{row.push(el);sum+=el._ar;if(sum*t+g*(row.length-1)>=w){rows.push({row,h:(w-g*(row.length-1))/sum});row=[];sum=0}});
@@ -832,34 +933,76 @@ const refSheet=j=>{const r=R[j];const el=makeSheet({img:r.img,ar:r.ar,ref:1,left
 
 /* ---- inverted mode, revealed as a circle from the button ---- */
 /* White to black (and back) as a slow, even dimming, like lights going off. */
+let VR_OK=false;try{CSS.registerProperty({name:'--vr',syntax:'<length>',inherits:false,initialValue:'0px'});VR_OK=true}catch(e){VR_OK=!!(window.CSS&&CSS.registerProperty)&&String(e).includes('already')}
 function invert(on,origin,update){const run=()=>{document.body.classList.toggle('inv',on);update&&update()};
   if(document.body.classList.contains('inv')===on||reduce||!document.startViewTransition){run();return}
   const vt=document.startViewTransition(run);
-  vt.ready.then(()=>{const o={duration:1300,easing:'cubic-bezier(.45,0,.25,1)',fill:'both'};
+  vt.ready.then(()=>{if(origin&&VR_OK){const de=document.documentElement,r=Math.hypot(Math.max(origin.x,innerWidth-origin.x),Math.max(origin.y,innerHeight-origin.y))+280;
+      de.style.setProperty('--vx',origin.x+'px');de.style.setProperty('--vy',origin.y+'px');de.classList.add('vt-radial');
+      de.animate({'--vr':['0px',r+'px']},{duration:1150,easing:'cubic-bezier(.4,0,.25,1)',fill:'both',pseudoElement:'::view-transition-new(root)'});
+      de.animate({opacity:[1,1]},{duration:1150,fill:'both',pseudoElement:'::view-transition-old(root)'});vt.finished.finally(()=>de.classList.remove('vt-radial'));return}
+    if(origin){const r=Math.hypot(Math.max(origin.x,innerWidth-origin.x),Math.max(origin.y,innerHeight-origin.y));
+      document.documentElement.animate({clipPath:[`circle(0px at ${origin.x}px ${origin.y}px)`,`circle(${r}px at ${origin.x}px ${origin.y}px)`]},{duration:900,easing:'cubic-bezier(.45,0,.2,1)',fill:'both',pseudoElement:'::view-transition-new(root)'});
+      document.documentElement.animate({opacity:[1,1]},{duration:900,fill:'both',pseudoElement:'::view-transition-old(root)'});return}
+    const o={duration:1300,easing:'cubic-bezier(.45,0,.25,1)',fill:'both'};
     document.documentElement.animate({opacity:[0,1]},{...o,pseudoElement:'::view-transition-new(root)'});
     document.documentElement.animate({opacity:[1,1]},{...o,pseudoElement:'::view-transition-old(root)'})}).catch(()=>{})}
 function originOf(el){const b=el.getBoundingClientRect();return{x:b.left+b.width/2,y:b.top+b.height/2}}
 
 function addRefs(focus,quick){const ids=relOf(cur);const r=rng(500+cur*13);const els=ids.map(refSheet);els.forEach(el=>canvas.appendChild(el));
   const w=W(),H=Math.max(VH(),canvas.offsetHeight);
-  els.forEach((el,k)=>{if(!reduce){el.classList.add('enter');el.style.animationDelay=(quick?k*90:1000+k*140)+'ms';el.addEventListener('animationend',()=>el.classList.remove('enter'),{once:true})}
+  els.forEach((el,k)=>{if(!reduce){el.classList.add('enter');el.style.animationDelay=(quick?k*90:450+k*120)+'ms';el.addEventListener('animationend',()=>el.classList.remove('enter'),{once:true})}
     setW(el,w*(w<620?.6:.2+r()*.1)*(el._ar<1?Math.sqrt(el._ar)*1.1:1));
     const hh=hOf(el),y=Math.max(0,(k+.5)/els.length*(H-hh)+(r()-.5)*80);el.style.left=r()*Math.max(0,w-el._w)+'px';el.style.top=Math.min(y,H-hh)+'px';raise(el)});
   if(focus!=null){const el=els.find(e=>e._ref===focus);if(el){raise(el);scroller.scrollTo({top:Math.max(0,parseFloat(el.style.top)-VH()*.3),behavior:reduce?'auto':'smooth'})}}}
 /* The reference state is sticky: once the lights are off they stay off on every page until References is pressed again. */
-function setRefs(on,origin,focus){refsOn=on;relBtn.setAttribute('aria-pressed',on);if(variant==='a')relBtn.textContent=on?'lights on':'lights off';$('tab-refs').classList.toggle('lit',on);
-  invert(on,origin,()=>{if(!canvas||mode!=='works')return;if(on)addRefs(focus);else canvas.querySelectorAll('.sheet.ref').forEach(el=>el.remove());if(layoutMode!=='free')applyLayout(layoutMode);syncButtons()})}
+function relLabel(){const n=cur>=0?relOf(cur).length:0;relBtn.title=lang==='ja'?`この作品の後景(リファレンス ${n})`:`What lies behind this work (${n} references)`;relBtn.setAttribute('aria-label',relBtn.title);
+  relBtn.innerHTML=variant==='a'?`${lampSVG()}<span class="swl">behind<b>${n}</b></span>`:`behind ${n}`}
+/* the lamp hangs from the top edge a little away from the name; the duck goes to its cord, takes the bead in its beak and pulls */
+let switching=false;
+function lampSVG(){return `<svg class="lamp" viewBox="0 0 64 104" width="64" height="104" aria-hidden="true"><g class="lampg"><line class="cord" x1="26" y1="0" x2="26" y2="27"/><rect class="sock" x="22.5" y="27" width="7" height="7" rx="1"/><path class="shade" d="M7 51 C9 40 15 34.5 26 34.5 C37 34.5 43 40 45 51 Z"/><line class="rim" x1="7" y1="51" x2="45" y2="51"/><g class="rays"><line x1="26" y1="62" x2="26" y2="68"/><line x1="18.5" y1="59.5" x2="15" y2="64"/><line x1="33.5" y1="59.5" x2="37" y2="64"/><line x1="14" y1="54.5" x2="9.5" y2="56.5"/><line x1="38" y1="54.5" x2="42.5" y2="56.5"/></g><circle class="bulb" cx="26" cy="54.5" r="4.6"/><g class="pullg"><line class="pull" x1="40" y1="48" x2="40" y2="84"/><circle class="bead" cx="40" cy="86.5" r="2.7"/></g></g></svg>`}
+/* the duck walks to a neighbour one or two places away; three or more away, it flaps its wings and flies */
+const DSP=['brand','works','refs','text','collect','lamp'];
+const dimgs=p=>`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`;
+function moveDuck(x,y,spot,done){const d=$('duck');x=Math.max(0,x);const x0=parseFloat(d.style.left),y0=parseFloat(d.style.top);
+  clearTimeout(d._mt);clearInterval(d._flap);d.classList.remove('walk','flying','up');
+  if(isNaN(x0)||reduce||d._spot==null){d.style.transitionDuration='0ms';d.style.left=x+'px';d.style.top=y+'px';d._spot=spot;requestAnimationFrame(()=>requestAnimationFrame(()=>d.style.transitionDuration=''));done&&done();return}
+  const dist=Math.hypot(x-x0,y-y0);if(dist<2){d._spot=spot;done&&done();return}
+  const fly=Math.abs(DSP.indexOf(spot)-DSP.indexOf(d._spot))>=3;d._spot=spot;
+  const end=()=>{d.classList.remove('walk','flying','up');clearInterval(d._flap);d.style.transitionDuration='';d.style.transitionTimingFunction='';done&&done()};
+  if(fly){const t=Math.round(Math.min(1150,620+dist*.9));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='cubic-bezier(.45,0,.3,1)';
+    const p=d.dataset.pose||'stand';d.innerHTML=`<span class="pw">${dimgs('wave')}</span><span class="ps">${dimgs(p==='wave'?'stand':p)}</span>`;d.dataset.pose='';
+    d.classList.add('flying');d._flap=setInterval(()=>d.classList.toggle('up'),105);
+    d.animate([{transform:'none'},{transform:`translateY(${-Math.min(64,26+dist*.1)}px) rotate(${x>x0?-9:9}deg)`,offset:.45},{transform:'none'}],{duration:t,easing:'ease-in-out'});
+    d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(()=>{end();setPose(mode)},t)}
+  else{const t=Math.round(Math.max(260,Math.min(900,dist*2.2)));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='linear';d.classList.add('walk');d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(end,t)}}
+function lampSpot(){const d=$('duck'),box=$('s-rail-top').getBoundingClientRect(),b=relBtn.querySelector('.bead').getBoundingClientRect();return{x:b.left+b.width/2-box.left-d.offsetWidth*.74,y:b.bottom-box.top-4}}
+function pullCord(atBottom){const d=$('duck'),pg=relBtn.querySelector('.pullg'),lg=relBtn.querySelector('.lampg');
+  d.animate([{transform:'none'},{transform:'translateY(-6px)',offset:.25},{transform:'translateY(9px)',offset:.6},{transform:'none'}],{duration:540,easing:'ease-in-out'});
+  pg.animate([{transform:'none'},{transform:'none',offset:.3},{transform:'translateY(11px)',offset:.6},{transform:'translateY(-3px)',offset:.82},{transform:'none'}],{duration:540,easing:'ease-in-out'});
+  setTimeout(()=>{atBottom&&atBottom();lg.animate([{transform:'rotate(0deg)'},{transform:'rotate(6deg)'},{transform:'rotate(-4deg)'},{transform:'rotate(2.2deg)'},{transform:'rotate(-1deg)'},{transform:'rotate(0deg)'}],{duration:1500,easing:'ease-out'})},320)}
+function setRefs(on,origin,focus){if(switching)return;
+  const go2=()=>{refsOn=on;relBtn.setAttribute('aria-pressed',on);flipDark(on,focus)};
+  if(variant==='a'&&!reduce&&relBtn.offsetParent&&relBtn.querySelector('.bead')){switching=true;const sp=lampSpot();
+    moveDuck(sp.x,sp.y,'lamp',()=>{pullCord(go2);setTimeout(()=>{switching=false;if(!on)placeDuck()},on?1500:1150)})}
+  else go2()}
+function flipDark(on,focus){const origin=relBtn.offsetParent?originOf(relBtn.querySelector('.bulb')||relBtn):null;
+  invert(on,origin,()=>{if(!canvas||mode!=='works'||cur<0)return;if(on)addRefs(focus);else{canvas.querySelectorAll('.sheet.ref').forEach(el=>el.remove());if(panelJ!=null&&mode==='works')closeRefPanel()}if(layoutMode!=='free')applyLayout(layoutMode);syncButtons()})}
 
 /* ---- views ---- */
 function openWork(i,opts={}){setLayout('free');setMode('works');cur=i;mark();const p=P[i];
-  relBtn.disabled=false;relBtn.textContent=variant==='a'?(refsOn?'lights on':'lights off'):'References';relBtn.title='Show the references that shaped this work';
+  relBtn.disabled=false;relLabel();relBtn.hidden=!(relOf(i).length||refsOn);
   head('No. '+p.no,p.title,[p.period,p.type,p.tag,p.sheets.length+(p.sheets.length===1?' sheet':' sheets')+(p.text?' + text':'')]);
   newCanvas();const els=projSheets(i);els.forEach(el=>canvas.appendChild(el));
   const r=rng(seed());shuffle(els,r);sizeAll(els,r);if(isM()){setLayout('grid');layGrid(els)}else collage(els,r);syncButtons();updProj();
   if(opts.refs&&!refsOn)setRefs(true,opts.origin,opts.focus);else if(refsOn){relBtn.setAttribute('aria-pressed','true');addRefs(opts.focus,true);if(layoutMode!=='free')applyLayout(layoutMode)}}
 
+function showWorksHome(){setLayout('free');setMode('works');cur=-1;mark();relBtn.hidden=true;
+  head('Works','Works',[P.length+(P.length===1?' work':' works')]);
+  newCanvas();updProj();if(!isM()){app.classList.add('home');return}const els=P.map((p,i)=>{const sh=p.sheets[p.cover];return makeSheet({img:sh.img,ar:sh.ar,left:`${p.no}　${p.title}`,right:p.period||'',key:`w:${i}:${p.cover}`,cap:1,open:()=>go('works',()=>openWork(i))})});
+  els.forEach(el=>canvas.appendChild(el));const r=rng(seed());sizeAll(els,r,false);if(isM()){setLayout('grid');layGrid(els)}else collage(els,r);syncButtons();updProj()}
 let tagOn='All';
-function showGrid(origin){if(!refsOn)setRefs(true,origin);
+function showGrid(origin){
   setMode('refs');mark();head('Index','References',[R.length+' items','Tagged by kind, each linked to the works it shaped']);
   scroller.innerHTML='';canvas=null;
   const tags=['All',...new Set(R.flatMap(r=>r.tags))];
@@ -884,7 +1027,7 @@ function showGrid(origin){if(!refsOn)setRefs(true,origin);
 const noteOf=r=>{const n=r.note;if(!n)return[];return(n[lang]&&n[lang].length?n[lang]:n.ja&&n.ja.length?n.ja:n.en)||[]};
 const textsOf=j=>T.map((x,k)=>x.refs.includes(j)?k:-1).filter(k=>k>=0);
 let panelJ=null;
-function openRefPanel(j){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=noteOf(r),tx=textsOf(j);panelJ=j;
+function openRefPanel(j,o={}){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=noteOf(r),tx=textsOf(j);panelJ=j;const behind=!!o.behind;pn.classList.remove('left');desk.classList.remove('panel-left');
   const works=r.rel.map(i=>`<button type="button" data-p="${i}"><img alt="" src="${src(P[i].sheets[P[i].cover].img,'s')}"><span>${P[i].no} ${P[i].title}</span></button>`).join('');
   const texts=tx.map(k=>`<button type="button" data-t="${k}"><span>${T[k].date}</span><span>${L(T[k]).title}</span></button>`).join('');
   pn.innerHTML=`<div class="rp-top"><span>${r.no} · ${r.kind}</span><span class="rp-nav"><button type="button" data-step="-1" aria-label="Previous">←</button><button type="button" data-step="1" aria-label="Next">→</button><button type="button" data-close>${ja?'閉じる':'close'}</button></span></div>
@@ -896,13 +1039,14 @@ function openRefPanel(j){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=noteOf(
     <div class="rp-sec"><span class="rp-h">${ja?'関連するテキスト':'Related texts'}</span>${texts?`<div class="rp-texts">${texts}</div>`:`<span class="rp-none">—</span>`}</div>`;
   pn.hidden=false;desk.classList.add('panel-open');if(!reduce){pn.classList.remove('enter');void pn.offsetWidth;pn.classList.add('enter')}pn.scrollTop=0;
   pn.querySelector('[data-close]').addEventListener('click',closeRefPanel);
-  pn.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const vis=[...scroller.querySelectorAll('.tile:not([hidden])')].map(t=>+t.dataset.j);const n=vis.indexOf(j);openRefPanel(vis[(n+ +b.dataset.step+vis.length)%vis.length])}));
+  pn.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const vis=behind?relOf(cur):[...scroller.querySelectorAll('.tile:not([hidden])')].map(t=>+t.dataset.j);const n=vis.indexOf(j);openRefPanel(vis[(n+ +b.dataset.step+vis.length)%vis.length],{behind})}));
+  if(behind){canvas&&canvas.querySelectorAll('.sheet.ref').forEach(el=>el.classList.toggle('center',el._ref===j));const el=canvas&&[...canvas.querySelectorAll('.sheet.ref')].find(e=>e._ref===j);if(el)raise(el)}
   pn.querySelector('.rp-collect').addEventListener('click',()=>toggleColl('r:'+j,null,pn.querySelector('.rp-img img')));
   pn.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',e=>{closeRefPanel();openWork(+b.dataset.p,{refs:true,focus:j,origin:originOf(e.currentTarget)})}));
   pn.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('text',()=>showText(+b.dataset.t))}));
   scroller.querySelectorAll('.tile').forEach(t=>{const on=+t.dataset.j===j;t.classList.toggle('sel',on);t.querySelector('.frame').setAttribute('aria-expanded',on)});
   const tile=scroller.querySelector(`.tile[data-j="${j}"]`);if(tile)tile.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});syncButtons()}
-function closeRefPanel(){panelJ=null;$('refpanel').hidden=true;desk.classList.remove('panel-open');scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
+function closeRefPanel(){panelJ=null;$('refpanel').hidden=true;desk.classList.remove('panel-open','panel-left');canvas&&canvas.querySelectorAll('.sheet.ref.center').forEach(el=>el.classList.remove('center'));scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
 
 const AB=D.about;
 function showAbout(){leave();const A=L(AB);
@@ -913,26 +1057,40 @@ function showAbout(){leave();const A=L(AB);
 function setLang(l){lang=l;try{localStorage.setItem('desk-lang',l)}catch(e){}document.documentElement.lang=l;
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
   document.querySelectorAll('.sheet.text').forEach(el=>{el.querySelector('.tsheet').innerHTML=textHTML(el._ti);hOf(el);clamp(el)});
-  if(mode==='text')showText(curText);else if(mode==='about')showAbout();else if(mode==='refs'){const j=panelJ;showGrid();if(j!=null)openRefPanel(j)}else if(mode==='collect')updCollTools()}
+  if(mode==='text')showText(curText);else if(mode==='about')showAbout();else if(mode==='refs'){const j=panelJ;showGrid();if(j!=null)openRefPanel(j)}else if(mode==='collect')updCollTools();if(cur>=0)relLabel()}
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
 let curText=null;
 function leave(){}
+/* a text's thumbnail: its first reference, or else the first work it belongs to */
+const textThumb=x=>x.refs.length&&R[x.refs[0]]?R[x.refs[0]].img:x.works.length&&P[x.works[0]]?P[x.works[0]].sheets[P[x.works[0]].cover].img:null;
 function showText(n){leave();setMode('text');curText=n;app.classList.toggle('reading',n!=null);mark();scroller.innerHTML='';canvas=null;
   if(n==null){head('Index','Text',[T.length+' pieces','Essays, notes and project statements']);
     const l=document.createElement('ol');l.className='texts';
     T.forEach((x,k)=>{const li=document.createElement('li');
-      const y=L(x);li.innerHTML=`<button type="button" class="titem"><span class="tdate">${x.date}</span><span class="tt">${y.title}</span></button>`;
+      const y=L(x),im=textThumb(x);li.innerHTML=`<button type="button" class="titem"><span class="tthumbs">${im?`<img alt="" src="${src(im,'s')}" loading="lazy">`:''}</span><span class="tdate">${x.date}</span><span class="tt">${y.title}</span></button>`;
       li.querySelector('button').addEventListener('click',()=>showText(k));l.appendChild(li)});
     scroller.appendChild(l)}
   else{const x=T[n],y=L(x);head(x.no+' · '+x.date,y.title,[y.kind,x.draft?(lang==='ja'?'仮の文章':'Draft'):'']);
+    const wrap=document.createElement('div');wrap.className='readwrap';
     const d=document.createElement('article');d.className='reading';
-    const rel=[...x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`),...x.refs.map(j=>`<button type="button" class="plink" data-r="${j}">${R[j].title}</button>`)].join('');
+    const rel=x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`).join('');
     d.innerHTML=`<button type="button" class="backlink">← All texts</button>${y.body.map((p,k)=>`<p${k===0?' class="lead"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
     d.querySelector('.backlink').addEventListener('click',()=>showText());
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
-    d.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.r;go('refs',()=>{showGrid();openRefPanel(j)})}));
-    scroller.appendChild(d)}
+    /* the references sit small in the margin beside the text; a word tied to one makes it grow */
+    const mg=document.createElement('aside');mg.className='margin';mg.setAttribute('aria-label',lang==='ja'?'リファレンス':'References');
+    mg.innerHTML=x.refs.map(j=>`<figure class="mfig" data-j="${j}"><button type="button" class="mimg" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"></button><figcaption>${R[j].title}</figcaption></figure>`).join('');
+    wrap.append(d,mg);scroller.appendChild(wrap);
+    const figs=[...mg.querySelectorAll('.mfig')];let pin=null;
+    const lit=j=>{const on=j!=null;mg.classList.toggle('focus',on);figs.forEach(f=>f.classList.toggle('on',on&&+f.dataset.j===j));d.querySelectorAll('.rlink').forEach(w=>w.classList.toggle('on',on&&+w.dataset.r===j))};
+    d.querySelectorAll('.rlink').forEach(w=>{const j=+w.dataset.r;w.tabIndex=0;w.addEventListener('mouseenter',()=>lit(j));w.addEventListener('mouseleave',()=>lit(pin));w.addEventListener('focus',()=>lit(j));w.addEventListener('blur',()=>lit(pin));w.addEventListener('click',()=>{pin=pin===j?null:j;lit(pin)})});
+    figs.forEach(f=>{const j=+f.dataset.j;f.addEventListener('mouseenter',()=>lit(j));f.addEventListener('mouseleave',()=>lit(pin));f.querySelector('.mimg').addEventListener('click',()=>go('refs',()=>{showGrid();openRefPanel(j)}))});
+    requestAnimationFrame(()=>placeMargin(d,mg))}
   scroller.scrollTop=0}
+/* each margin image lines up with the first word that names it, or follows the one above */
+function placeMargin(d,mg){if(!mg.isConnected||getComputedStyle(mg).position!=='relative')return;const base=mg.getBoundingClientRect().top;let y=0;
+  [...mg.children].forEach(f=>{const w=d.querySelector(`.rlink[data-r="${f.dataset.j}"]`);let t=w?w.getBoundingClientRect().top-base-2:y;t=Math.max(t,y);f.style.top=t+'px';y=t+f.offsetHeight+16});mg.style.minHeight=y+'px'}
+addEventListener('resize',()=>{const mg=scroller.querySelector('.margin'),d=scroller.querySelector('.reading');if(mg&&d)placeMargin(d,mg)});
 function showCollect(keys){setLayout('free');leave();setMode('collect');shared=keys&&keys.length?keys:null;const list=shared||coll;mark();head('Your table','Collection',[list.length+(list.length===1?' item':' items'),shared?'Shared with you':'Kept in this browser']);
   newCanvas();updCollTools();
   if(!list.length){canvas.innerHTML='<div class="empty"><p class="lead">Nothing collected yet.</p><p>Press <b>+ Collect</b> on any drawing, render or reference and it gathers here, on a table of your own.</p></div>';return}
@@ -979,12 +1137,15 @@ async function collImage(){const els=[...canvas.querySelectorAll('.sheet')];if(!
   return cv.toDataURL('image/png')}
 $('saveImg').addEventListener('click',async()=>{try{const url=await collImage();if(url)showOut(url)}catch(e){console.error(e);toast(lang==='ja'?'画像を作れませんでした':'Could not make the image')}});
 /* in layout A the duck stands on the word of the place you are in, or beside the name while you look at works */
-function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.top='';return}
-  const box=$('s-rail-top'),tab=[...$('nav').querySelectorAll('.tab[aria-selected="true"]')].find(t=>t.offsetParent),br=$('brand');if(!box.offsetParent)return;
-  const w=d.offsetWidth,h=d.offsetHeight;let x,y;
-  if(tab&&mode!=='works'){let tw=tab.offsetWidth;const t0=tab.firstChild;if(t0&&t0.nodeType===3){const r=document.createRange();r.selectNodeContents(t0);tw=r.getBoundingClientRect().width}x=tab.offsetLeft+tw/2-w/2;y=tab.offsetTop-h-1}
-  else{x=br.offsetLeft+br.offsetWidth+8;y=br.offsetTop+br.offsetHeight-h+2}
-  d.style.left=Math.max(0,x)+'px';d.style.top=y+'px'}
+function syncNight(){const want=refsOn&&mode==='works'&&cur>=0;if(document.body.classList.contains('inv')!==want&&!switching)invert(want)}
+function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.top='';return}if(switching)return;
+  const box=$('s-rail-top');if(!box.offsetParent)return;
+  if(refsOn&&mode==='works'&&cur>=0&&relBtn.offsetParent&&relBtn.querySelector('.bead')){const sp=lampSpot();moveDuck(sp.x,sp.y,'lamp');return}
+  const tab=[...$('nav').querySelectorAll('.tab[aria-selected="true"]')].find(t=>t.offsetParent),br=$('brand');
+  const w=d.offsetWidth,h=d.offsetHeight;let x,y,spot;
+  if(tab){let tw=tab.offsetWidth;const t0=tab.firstChild;if(t0&&t0.nodeType===3){const r=document.createRange();r.selectNodeContents(t0);tw=r.getBoundingClientRect().width}x=tab.offsetLeft+tw/2-w/2;y=tab.offsetTop-h-1;spot=tab.id.slice(4)}
+  else{x=br.offsetLeft+br.offsetWidth+8;y=br.offsetTop+br.offsetHeight-h+2;spot='brand'}
+  moveDuck(x,y,spot)}
 addEventListener('resize',()=>requestAnimationFrame(placeDuck));
 const POSE={works:'stand',refs:'sleep',text:'read',collect:'carry',about:'wave'};
 function setPose(m){const d=$('duck');if(d.dataset.pose===POSE[m])return;const p=POSE[m];d.dataset.pose=p;d.innerHTML=`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`}
@@ -995,13 +1156,13 @@ $('tab-text').addEventListener('click',()=>go('text',()=>showText()));
 $('tab-collect').addEventListener('click',()=>go('collect',()=>showCollect()));
 $('tab-about').addEventListener('click',()=>{if(mode!=='about')go('about',()=>showAbout())});
 relBtn.addEventListener('click',e=>setRefs(!refsOn,originOf(e.currentTarget)));
-$('tab-works').addEventListener('click',e=>{if(mode!=='works')openWork(Math.max(0,cur),{origin:originOf(e.currentTarget)})});
-$('tab-refs').addEventListener('click',e=>{if(mode!=='refs')go('refs',()=>showGrid());else{setRefs(false);go('works',()=>openWork(Math.max(0,cur)))}});
+$('tab-works').addEventListener('click',()=>{if(mode==='works'&&cur<0)return;go('works',()=>{if(mode!=='works'&&cur>=0)openWork(cur);else showWorksHome()})});
+$('tab-refs').addEventListener('click',()=>{if(mode!=='refs')go('refs',()=>showGrid())});
 /* Three ways to lay the table: free (a fresh random collage), grid (equal cells), column (one packed column to scroll). */
 let layoutMode='free';const MQ=matchMedia('(max-width:720px)');const isM=()=>variant==='m';
 const seed=()=>Math.floor(Math.random()*1e9);
 function setLayout(m){layoutMode=m;app.dataset.layout=m;layBtn.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lay===m))}
-function layGrid(els){const w=W(),g=18,cols=w>1100?4:w>760?3:2,cw=(w-g*(cols-1))/cols,ch=cw*.78;
+function layGrid(els){const w=W(),g=18,cols=w>760?3:2,cw=(w-g*(cols-1))/cols,ch=cw*.78;
   els.forEach((el,k)=>{el.classList.remove('big');const c=k%cols,rw=Math.floor(k/cols);animate(el);
     if(el._text){setW(el,cw);for(let k=0;k<4;k++){const h=hOf(el);if(h<=ch)break;setW(el,el._w*ch/h*.97)}}else{const fit=Math.min(cw,(ch-el._cap)*el._ar);setW(el,fit)}
     if(el._ref!=null){setW(el,el._w*.86)}const h=hOf(el);let l=c*(cw+g)+(cw-el._w)/2,t=rw*(ch+g)+(ch-h)/2;
@@ -1026,14 +1187,14 @@ layBtn.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>appl
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>canvas&&canvas.querySelectorAll('.sheet').forEach(clamp),120)});
 /* ---- comparison patterns: same content, three ways of organising the controls ---- */
 const SLOTS={
-  a:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-top-l':['collTools'],'s-top-r':['layout','rel'],'s-dhead':['label']},
+  a:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-top-l':['collTools'],'s-top-r':['layout'],'s-tl':['rel'],'s-dhead':['label']},
   b:{'s-top-l':['brand'],'s-top-c':['nav'],'s-top-r':['lang'],'s-rail':['list'],'s-dhead':['label'],'s-bc':['rel','layout']},
   c:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-dhead':['label'],'s-tr':['rel','collTools'],'s-bl':['layout']},
   d:{'s-tl':['brand','crumb'],'s-tr':['rel','layout','indexBtn'],'s-ov-main':['list'],'s-ov-side':['nav','lang']},
   m:{'s-top-l':['brand'],'s-top-r':['duck','indexBtn'],'s-dhead':['projBtn'],'s-tr':['collTools'],'s-bc':['rel','layout'],'s-ov-main':['nav','list']}};
 let variant='b',drawerOpen=false;
 function rerender(){const m=mode;
-  if(m==='works'){const on=refsOn;openWork(Math.max(0,cur),{refs:on})}
+  if(m==='works'){if(cur<0)showWorksHome();else openWork(cur,{refs:refsOn})}
   else if(m==='refs')showGrid();else if(m==='text')showText(curText);else if(m==='about')showAbout();
   else if(m==='collect')showCollect(shared)}
 function setVariant(v,keep){variant=v;app.className='app v-'+v;const pool=$('pool');
@@ -1057,7 +1218,7 @@ $('indexBtn').addEventListener('click',()=>toggleOverlay(true));$('projBtn').add
 $('overlay').addEventListener('click',e=>{if(e.target.closest('.entry,.tab'))toggleOverlay(false)});
 addEventListener('keydown',e=>{if(e.key==='Escape'){toggleOverlay(false);toggleDrawer(false);if(panelJ!=null)closeRefPanel();$('imgout').hidden=true}
   else if(panelJ!=null&&mode==='refs'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')&&!e.target.closest('input,textarea')){const b=$('refpanel').querySelector(`[data-step="${e.key==='ArrowLeft'?-1:1}"]`);b&&b.click()}});
-$('brand').addEventListener('click',()=>openWork(0));
+$('brand').addEventListener('click',()=>{if(mode!=='about')go('about',()=>showAbout())});
 document.querySelectorAll('.pattern button[data-v]').forEach(b=>b.addEventListener('click',()=>setVariant(b.dataset.v)));
 /* Circle pointer: follows the mouse, grows over things you can act on. */
 (function(){const c=$('cursor');if(!c||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;document.documentElement.classList.add('has-cursor');
@@ -1085,11 +1246,11 @@ renderList();updCount();setVariant(MQ.matches?'m':'a',false);MQ.addEventListener
   /* the language is only chosen here (Japanese unless changed); a click anywhere else enters */
   const mark=()=>{g.querySelectorAll('.gopt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));$('genter').textContent=lang==='ja'?'クリックして入る':'Click anywhere to enter'};mark();
   g.querySelectorAll('.gopt').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setLang(b.dataset.l);mark()}));
-  const enter=()=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works')openWork(Math.max(0,cur));
+  const enter=()=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works'){if(cur<0)showWorksHome();else openWork(cur)}
     clearTimeout(timer);if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})};
   const key=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.gopt')){e.preventDefault();enter()}};
   g.addEventListener('click',enter);addEventListener('keydown',key);
-})();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));{const sh=readShared();if(sh)showCollect(sh);else openWork(0)}
+})();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));{const sh=readShared();if(sh)showCollect(sh);else showWorksHome()}
 })();
 
 }).catch(err=>{document.body.insertAdjacentHTML('beforeend','<p style="position:fixed;left:16px;bottom:16px;font:13px sans-serif">Could not load the archive. Please reload.</p>');console.error(err)});

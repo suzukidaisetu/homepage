@@ -300,11 +300,17 @@ async function main() {
     const doc = parseDoc(await text(tf));
     const entry = { no: 'T-' + (leadNo(tf.name) || String(texts.length + 1).padStart(2, '0')), date: esc(doc.head.date || ''), draft: /^(yes|true|1)$/i.test(doc.head.draft || ''),
       works: list(doc.head.works).map(workIndex).filter(i => i >= 0), refs: list(doc.head.refs).map(refIndex).filter(i => i >= 0) };
+    // a word tied to a reference: [後景](04) or ［後景］（04） — the word lights up its image in the margin
+    const linkRefs = b => b.replace(/[\[［]([^\]］\n]+)[\]］][(（]\s*(?:REF-?)?(\d{1,3})\s*[)）]/gi, (m, w, n) => {
+      const j = refIndex(n); if (j < 0) return w;
+      if (!entry.refs.includes(j)) entry.refs.push(j);
+      return `<span class="rlink" data-r="${j}">${w}</span>`;
+    });
     for (const l of ['ja', 'en']) {
       const s = doc.lang[l];
-      if (s) entry[l] = { kind: esc(s.meta.kind || ''), title: esc(s.title || stripNo(tf.name)), body: s.body.map(esc) };
+      if (s) entry[l] = { kind: esc(s.meta.kind || ''), title: esc(s.title || stripNo(tf.name)), body: s.body.map(b => linkRefs(esc(b))) };
     }
-    if (!entry.ja && !entry.en) { const s = section((await text(tf))); entry.ja = { kind: '', title: esc(s.title || stripNo(tf.name)), body: s.body.map(esc) }; }
+    if (!entry.ja && !entry.en) { const s = section((await text(tf))); entry.ja = { kind: '', title: esc(s.title || stripNo(tf.name)), body: s.body.map(b => linkRefs(esc(b))) }; }
     texts.push(entry);
   }
 
