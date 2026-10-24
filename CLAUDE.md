@@ -8,7 +8,7 @@ This repo is Aga Shunsei's archive site. Content lives in a Google Drive folder;
   (https://suzukidaisetu.github.io/homepage/) and saves the built site to the `snapshot` branch.
 
 ## Design loop (preview first, then publish)
-1. `git fetch --depth 1 origin snapshot:refs/remotes/origin/snapshot` — latest real content.
+1. `git fetch --depth 1 origin +snapshot:refs/remotes/origin/snapshot` — latest real content.
 2. Edit `site/index.html`.
 3. `node scripts/make-preview.mjs` — writes `preview/` (current page + real content).
 4. Publish `preview/index.html` with the files under `preview/` as an Artifact for the owner to review.

@@ -4,13 +4,16 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import sharp from 'sharp';
+import os from 'node:os';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DIST = path.join(ROOT, 'dist');
 const CACHE = path.join(ROOT, '.cache', 'img');
 const MAX = 1800;            // longest side of published images, px
 const QUALITY = 82;
-const IMAGE_EXT = /\.(jpe?g|png|webp|gif|tiff?|avif)$/i;
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf)$/i;
+const SKIP_EXT = /\.(txt|md|ds_store|ini|db)$/i;
 
 const { DRIVE_FOLDER_ID, GOOGLE_API_KEY } = process.env;
 const CONTENT_DIR = path.resolve(ROOT, process.env.CONTENT_DIR || 'content');
@@ -120,6 +123,29 @@ const list = s => (s || '').split(/[,、]/).map(x => x.trim()).filter(Boolean);
 /* ---------- images ---------- */
 
 const images = {};
+// HEIC photos and PDF boards are turned into a raster first (needs libheif-examples / poppler-utils on the runner).
+async function toRaster(name, buf) {
+  const ext = (name.match(/\.([^.]+)$/) || [])[1]?.toLowerCase();
+  if (ext !== 'pdf' && ext !== 'heic' && ext !== 'heif') return buf;
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'raster-'));
+  const inp = path.join(dir, 'in.' + ext);
+  await fs.writeFile(inp, buf);
+  try {
+    if (ext === 'pdf') { execFileSync('pdftoppm', ['-f', '1', '-l', '1', '-r', '150', '-jpeg', '-singlefile', inp, path.join(dir, 'out')]); return await fs.readFile(path.join(dir, 'out.jpg')); }
+    execFileSync('heif-convert', ['-q', '92', inp, path.join(dir, 'out.jpg')]); return await fs.readFile(path.join(dir, 'out.jpg'));
+  } finally { await fs.rm(dir, { recursive: true, force: true }); }
+}
+// every image in a folder, including ones tucked into subfolders, in name order
+function imagesIn(children, prefix = '') {
+  const out = [];
+  for (const e of [...children].sort(byName)) {
+    if (e.kind === 'dir') out.push(...imagesIn(e.children, prefix + e.name + '/'));
+    else if (IMAGE_EXT.test(e.name)) out.push(e);
+    else if (!SKIP_EXT.test(e.name)) skipped.push(prefix + e.name);
+  }
+  return out;
+}
+const skipped = [];
 async function addImage(f) {
   const buf = f.md5 ? null : await f.read();
   const key = f.md5 || crypto.createHash('md5').update(buf).digest('hex');
@@ -128,7 +154,7 @@ async function addImage(f) {
   let out, meta;
   try { out = await fs.readFile(cached); }
   catch {
-    const src = buf || await f.read();
+    const src = await toRaster(f.name, buf || await f.read());
     out = await sharp(src, { failOn: 'none' }).rotate().resize({ width: MAX, height: MAX, fit: 'inside', withoutEnlargement: true })
       .flatten({ background: '#ffffff' }).jpeg({ quality: QUALITY, mozjpeg: true }).toBuffer();
     await fs.writeFile(cached, out);
@@ -161,7 +187,9 @@ async function main() {
   for (const wf of workFolders) {
     const no = leadNo(wf.name) || String(works.length + 1).padStart(3, '0');
     const doc = parseDoc(await text(file(wf.children, 'info.txt')));
-    const pics = wf.children.filter(e => e.kind === 'file' && IMAGE_EXT.test(e.name)).sort(byName);
+    const before = skipped.length;
+    const pics = imagesIn(wf.children);
+    skipped.splice(before).forEach(n => warn.push(`works/${wf.name}/${n}: not a supported image`));
     if (!pics.length) { warn.push(`works/${wf.name}: no images, skipped`); continue; }
     const sheets = [];
     for (const [k, pf] of pics.entries()) {
@@ -186,6 +214,9 @@ async function main() {
   }
   const workIndex = no => works.findIndex(w => w.no === no || +w.no === +no);
 
+  const seen = new Set(['works', 'references', 'texts', 'about.txt', 'readme.txt']);
+  tree.filter(e => !seen.has(e.name.toLowerCase())).forEach(e => warn.push(`${e.name}: outside works/references/texts, ignored`));
+  if (worksDir) worksDir.children.filter(e => e.kind === 'file' && !SKIP_EXT.test(e.name)).forEach(e => warn.push(`works/${e.name}: put files inside a project folder`));
   // references
   const refDir = dir(tree, 'references');
   const refs = [];
@@ -258,7 +289,8 @@ async function main() {
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
   console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images.`);
-  if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Build::${fromDrive ? 'Google Drive' : 'content/ (Drive not connected)'}: ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images${warn.length ? ' | ' + warn.slice(0, 5).join(' / ') : ''}`);
+  if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Build::${fromDrive ? 'Google Drive' : 'content/ (Drive not connected)'}: ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images${warn.length ? ' | ' + warn.slice(0, 40).join(' / ') : ''}`);
+  if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Works found::${works.map(w => w.no + ' ' + w.title + ' (' + w.sheets.length + ')').join(' / ')}`);
   if (warn.length) console.log('Notes:\n  ' + warn.join('\n  '));
 }
 

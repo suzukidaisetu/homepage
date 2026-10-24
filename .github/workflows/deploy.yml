@@ -30,6 +30,8 @@ jobs:
           path: .cache
           key: images-${{ github.run_id }}
           restore-keys: images-
+      - name: Tools for PDF boards and iPhone photos
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils libheif-examples >/dev/null
       - run: npm install --no-audit --no-fund
       - name: Build from Google Drive (falls back to content/ when the secrets are not set)
         run: node scripts/build.mjs

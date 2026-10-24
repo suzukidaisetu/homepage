@@ -1,6 +1,6 @@
 // Builds a preview folder for viewing inside Claude: the current site/index.html + the latest built content
 // from the snapshot branch. Usage (in a clone):
-//   git fetch --depth 1 origin snapshot:refs/remotes/origin/snapshot
+//   git fetch --depth 1 origin +snapshot:refs/remotes/origin/snapshot
 //   node scripts/make-preview.mjs           -> writes preview/
 import fs from 'node:fs/promises';
 import path from 'node:path';
