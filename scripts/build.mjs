@@ -258,6 +258,7 @@ async function main() {
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
   console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images.`);
+  if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Build::${fromDrive ? 'Google Drive' : 'content/ (Drive not connected)'}: ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images${warn.length ? ' | ' + warn.slice(0, 5).join(' / ') : ''}`);
   if (warn.length) console.log('Notes:\n  ' + warn.join('\n  '));
 }
 
