@@ -1,0 +1,17 @@
+title: Elevated Deck
+year: 2024
+type: Studio
+tag: Infrastructure
+cover: 01
+
+--- ja
+# 持ち上げられた広場
+地上から持ち上げられた細長いデッキと、その上に並ぶヴォールト屋根の小屋。
+
+細い柱で地面との接点を減らし、下を風と人が抜けていく。屋上は誰もが歩ける広場として開き、小屋はそこに寄り添う休憩所になる。
+
+--- en
+# A Raised Square
+A long deck lifted off the ground, with small vaulted huts along its top.
+
+Thin columns keep contact with the ground to a minimum, so wind and people pass underneath. The roof opens as a square anyone can walk on, and the huts become shelters beside it.

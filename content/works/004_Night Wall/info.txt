@@ -1,0 +1,17 @@
+title: Night Wall
+year: 2025
+type: Study
+tag: Landscape
+cover: 01
+
+--- ja
+# 暗さで描く場所
+夜の公園に、一枚の長い壁を置く習作。
+
+照明を最小限にし、壁に当たるわずかな光と木々の影だけで場所の輪郭をつくる。昼には見えない、暗さによって立ち上がる空間を探った。
+
+--- en
+# A Place Drawn in Darkness
+A study that places one long wall in a park at night.
+
+Lighting is kept to a minimum, so the place takes shape only from the faint light on the wall and the shadows of the trees. It looks for a space that appears through darkness and cannot be seen by day.

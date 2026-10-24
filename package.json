@@ -1,0 +1,12 @@
+{
+  "name": "aga-shunsei-archive",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "npx --yes http-server dist -p 8080 -c-1"
+  },
+  "dependencies": {
+    "sharp": "0.33.5"
+  }
+}

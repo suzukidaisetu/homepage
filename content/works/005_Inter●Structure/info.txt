@@ -1,0 +1,17 @@
+title: Inter●Structure
+year: 2025
+type: Final project
+tag: Housing
+cover: 01
+
+--- ja
+# 骨組みとしての住棟
+川沿いに伸びる一本の長い住棟。円形の中庭を一定の間隔で挟み込み、住戸と共用の場が交互に現れる。
+
+構造フレームを外に露出させ、設備や階段、植栽が後から取り付いていく余地を残した。建物を完成品ではなく、住み手が手を加え続ける骨組みとして考えている。
+
+--- en
+# A Frame to Live In
+One long housing block runs along the river. Round courtyards are set into it at a steady rhythm, so homes and shared spaces alternate.
+
+The structural frame is left exposed, with room for services, stairs and planting to attach over time. The building is treated as a frame its residents keep adding to, not a finished object.

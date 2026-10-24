@@ -1,0 +1,17 @@
+title: Solar Canopy
+year: 2024
+type: Study
+tag: Detail
+cover: 01
+
+--- ja
+# 庇としての太陽光パネル
+太陽光パネルを屋根材としてではなく、庇として扱う詳細のスタディ。
+
+パネルを傾けて重ね、隙間から光と雨を落とす。鉄骨の階段や梁と同じ部品の言葉でまとめ、設備と建築の境目をなくすことを試みた。
+
+--- en
+# Solar Panels as Eaves
+A detail study that treats solar panels as eaves rather than as roofing.
+
+The panels are tilted and overlapped so light and rain fall through the gaps. They share one vocabulary of parts with the steel stair and beams, removing the line between equipment and architecture.

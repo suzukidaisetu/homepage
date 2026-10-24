@@ -1,0 +1,21 @@
+date: 2026.10
+works: 006
+refs: 
+
+--- ja
+kind: プロジェクト文
+# こども園のなかの仕事場を見つける
+こども園を街に開くことはよく提案されるが、管理の負担は大きく、幼い子供たちがそこから何を受け取るのかもはっきりしない。この提案は、外ではなく内側に目を向ける。
+
+こども園には、すでに多くの仕事場がある。事務室、保育室、調理室、搬入口、そして出入りする業者。0〜1歳にとって、保育者は仕事をしている他者である。2〜3歳になれば、給食を作る人がいる。4〜5歳になれば、外から来る多くの人が園を支えていることがわかる。
+
+子供棟と仕事場棟をはっきり分けて雁行させ、社会、交通、遊戯、食事、供給の五本の橋でつなぐ。橋を渡るたびに、子供は誰かの仕事を見て、その仕事がつくったものを受け取る。その授受を通して、社会のいちばん小さな単位である相互扶助が、子供にとって見えるものになる。
+
+--- en
+kind: Project statement
+# Finding the Workplaces Inside a Kindergarten
+Opening a kindergarten to the town is often proposed, but it adds a heavy load of supervision, and it is unclear what small children actually take from it. This proposal looks inward instead.
+
+A kindergarten is already full of workplaces: the office, the nursery rooms, the kitchen, the loading bay, and the suppliers who come and go. For the youngest children, the caregivers are people at work. At two or three, someone cooks their lunch. By four or five, many people from outside keep the place running.
+
+The children's wing and the workplace wing are set clearly apart and staggered, and five bridges join them: society, traffic, play, meals and supply. Crossing a bridge, a child sees someone at work and receives what that work makes. Through that exchange, the smallest unit of a society, people helping one another, becomes something a child can see.

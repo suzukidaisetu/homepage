@@ -1,0 +1,40 @@
+# references.txt — one block per image in this folder.
+# works: project numbers it relates to (e.g. 006, 005). tags: comma separated.
+
+[01_Collage drawing.jpg]
+title: Collage drawing
+kind: DRAWING
+tags: Architecture, Drawing
+works: 002, 001
+
+[02_Exhibition of white models.jpg]
+title: Exhibition of white models
+kind: EXHIBITION
+tags: Architecture, Art
+works: 005, 002, 006
+
+[03_Section model of a round dwelling.jpg]
+title: Section model of a round dwelling
+kind: MODEL
+tags: Architecture, Model
+works: 006, 005
+
+[04_sakimori — Koukei.jpg]
+title: sakimori — Koukei
+kind: MUSIC
+tags: Music
+works: 004
+spotify: https://open.spotify.com/album/1WCYlIGhn2iFPiRdLNOaZ4
+apple music: https://music.apple.com/jp/album/6795463512
+
+[05_Model of towers on water.jpg]
+title: Model of towers on water
+kind: PHOTO
+tags: Architecture, Model, Landscape
+works: 003, 005
+
+[06_White city model.jpg]
+title: White city model
+kind: MODEL
+tags: Architecture, Model, City
+works: 005, 003, 006

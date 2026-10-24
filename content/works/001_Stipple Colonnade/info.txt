@@ -1,0 +1,17 @@
+title: Stipple Colonnade
+year: 2023
+type: Drawing
+tag: Public space
+cover: 01
+
+--- ja
+# 点だけで描く
+点描だけで描いた列柱廊のドローイング。
+
+線を使わず点の密度だけで光と影を表すと、建物は輪郭を失い、空気の濃淡として現れてくる。描き方そのものを設計の手段として試した一枚。
+
+--- en
+# Drawn Only in Dots
+A drawing of a colonnade made only with stippling.
+
+Without lines, light and shadow come from the density of dots alone. The building loses its outline and appears as shades of air. The drawing tests a way of drawing as a way of designing.

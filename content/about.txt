@@ -1,0 +1,25 @@
+name: Aga Shunsei
+
+--- ja
+role: 建築学生 / 武井研究室・KIT
+建築を学びながら、つくったものと見てきたものを記録する場所として、この机を置いています。図面、パース、模型、参照を同じ重さで並べることで、そのあいだのつながりが見えるようにしています。
+
+都市を固定された幾何学ではなく座標系として捉えること、そして場所が溜め込む光や霧、音といった現象に関心があります。設計では、建物のなかにすでにある仕事を見つけ、それを見えるものにすることを考えています。
+
+所属: 武井研究室・KIT
+ツール: Rhinoceros、ArchiCAD、Twinmotion
+関心: 都市とグリッド、京都、現象、建物の裏側にある仕事
+連絡先: 
+リンク: 
+
+--- en
+role: Architecture student / Takei Lab, KIT
+I study architecture and keep this table as a record of what I make and what I look at. Drawings, renders, models and references sit side by side, so the links between them stay visible.
+
+I am interested in how a city works as a coordinate system rather than a fixed geometry, and in the phenomena a place collects, such as light, fog and sound, more than in its objects. In design work I look for the work that already exists inside a building and try to make it visible.
+
+Study: Takei Lab, KIT
+Tools: Rhinoceros, ArchiCAD, Twinmotion
+Interests: Cities and grids, Kyoto, phenomena, the work behind buildings
+Contact: 
+Elsewhere: 

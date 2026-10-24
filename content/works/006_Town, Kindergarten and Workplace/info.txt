@@ -1,0 +1,17 @@
+title: Town, Kindergarten and Workplace
+year: 2026
+type: Competition
+tag: Kindergarten
+cover: 01
+
+--- ja
+# まちとこども園としごと場
+園のなかには、すでに多くの仕事場がある。事務室、調理室、搬入口、そこへ出入りする業者。街と園の境界を曖昧にするのではなく、子供棟と仕事場棟をはっきりと分けて雁行させ、五本のブリッジでつないだ。
+
+橋を渡るたびに、自分を支えている誰かの仕事が見える。仕事をする人を見て、その人から何かを受け取る。その授受の積み重ねが、社会のいちばん小さな単位である相互扶助を、子供にとって見えるものにする。
+
+--- en
+# Finding the Workplaces Inside
+A kindergarten is already full of workplaces: the office, the kitchen, the loading bay, and the suppliers who come and go. Instead of blurring the line between town and school, the children's wing and the workplace wing are set clearly apart, staggered, and joined by five bridges.
+
+Each time a child crosses a bridge, they see someone whose work supports them, and receive what that work makes. Through that exchange, people helping one another, the smallest unit of a society, becomes something a child can see.
