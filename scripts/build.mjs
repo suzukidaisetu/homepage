@@ -47,15 +47,21 @@ async function driveTree(folderId) {
   let pageToken = '';
   do {
     const q = encodeURIComponent(`'${folderId}' in parents and trashed = false`);
-    const url = `${DRIVE}?q=${q}&fields=nextPageToken,files(id,name,mimeType,md5Checksum)&pageSize=1000&key=${GOOGLE_API_KEY}` + (pageToken ? `&pageToken=${pageToken}` : '');
+    const url = `${DRIVE}?q=${q}&fields=nextPageToken,files(id,name,mimeType,md5Checksum,shortcutDetails)&pageSize=1000&key=${GOOGLE_API_KEY}` + (pageToken ? `&pageToken=${pageToken}` : '');
     const j = await driveJSON(url);
-    for (const f of j.files) {
+    for (let f of j.files) {
+      // follow shortcuts to the file or folder they point at
+      if (f.mimeType === 'application/vnd.google-apps.shortcut' && f.shortcutDetails) {
+        f = { ...f, id: f.shortcutDetails.targetId, mimeType: f.shortcutDetails.targetMimeType, md5Checksum: undefined };
+      }
       if (f.mimeType === 'application/vnd.google-apps.folder') {
         out.push({ name: f.name, kind: 'dir', children: await driveTree(f.id) });
       } else if (f.mimeType === 'application/vnd.google-apps.document') {
         // a Google Doc can stand in for a .txt file
         out.push({ name: f.name.replace(/(\.txt)?$/, '.txt'), kind: 'file', read: () => driveDownload(`${DRIVE}/${f.id}/export?mimeType=text/plain&key=${GOOGLE_API_KEY}`) });
-      } else if (!f.mimeType.startsWith('application/vnd.google-apps.')) {
+      } else if (f.mimeType.startsWith('application/vnd.google-apps.')) {
+        out.push({ name: f.name + ' (Google ' + f.mimeType.split('.').pop() + ')', kind: 'file', read: async () => Buffer.alloc(0) });
+      } else {
         out.push({ name: f.name, kind: 'file', md5: f.md5Checksum, read: () => driveDownload(`${DRIVE}/${f.id}?alt=media&key=${GOOGLE_API_KEY}`) });
       }
     }
