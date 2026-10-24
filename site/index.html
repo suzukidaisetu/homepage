@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Aga Shunsei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400&family=Noto+Sans+JP:wght@400;500;700&display=swap">
 <meta name="description" content="Works, references and texts by Aga Shunsei.">
 <link rel="icon" href="assets/duck/stand_day.png">
 <style>
@@ -21,8 +23,9 @@ html,body{margin:0}body{font:14px/1.5 system-ui,sans-serif}img{max-width:100%}[h
   --sheet:#f4f4f2;
   --chip:#141414;
   --chip-fg:#ffffff;
-  --f-body:"Helvetica Neue",Helvetica,Arial,"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;
-  --f-mono:"Helvetica Neue",Helvetica,Arial,"Hiragino Sans",sans-serif;
+  --f-body:"Inter","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  --f-name:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",sans-serif;
+  --f-mono:"Inter","Hiragino Sans","Noto Sans JP",sans-serif;
   --blue:#2c6bcf;--orange:#f28a1e;--ink:#161616;
   color-scheme:light;
 }
@@ -331,6 +334,9 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 .gate[hidden]{display:none}
 .gname{position:absolute;top:max(20px,env(safe-area-inset-top,0px));left:max(20px,env(safe-area-inset-left,0px));font:600 12px/1 var(--f-body);letter-spacing:.01em}
 .gcenter{display:grid;justify-items:center;gap:14px}
+/* the name sits exactly where the page's name will be, so it stays put as the film lifts away */
+.gtitle{position:absolute;top:16px;left:max(16px,env(safe-area-inset-left,0px));font:700 28px/1 var(--f-body);letter-spacing:-.035em;color:#141414;white-space:nowrap}
+@media (max-width:720px){.gtitle{top:17px;font-size:18px;letter-spacing:-.02em}}
 .gfilm{width:min(240px,56vw);aspect-ratio:3/2;max-width:100%;background:#f2f2f2;overflow:hidden}
 .gfilm img{width:100%;height:100%;object-fit:cover;display:block}
 .gmeta{display:flex;justify-content:space-between;gap:12px;width:min(240px,56vw);font:400 9.5px/1.2 var(--f-body);color:#8b8a85;font-variant-numeric:tabular-nums}
@@ -536,11 +542,17 @@ body.inv .duck .dnight{opacity:1}
 .margin.focus .mfig.on{opacity:1;z-index:2}
 .mfig.on .mimg{transform:scale(1.55)}
 .mfig.on figcaption{opacity:0}
+.mnote{position:absolute;top:6px;left:6px;z-index:3;font:500 10.5px/1 var(--f-body);color:var(--fg);background:var(--bg);border:1px solid var(--fg);padding:5px 8px;cursor:pointer;opacity:0;transition:opacity .15s}
+.mfig:hover .mnote,.mfig:focus-within .mnote,.mfig.sel .mnote{opacity:1}
+.mnote:hover,.mfig.sel .mnote{background:var(--fg);color:var(--bg)}
+.mfig.sel .mimg{outline:1px solid var(--fg);outline-offset:4px}
+.v-m .mnote{opacity:1}
 .rlink{border-bottom:1px solid var(--line-hi);cursor:pointer;transition:background .2s,color .2s}
 .rlink.on,.rlink:focus-visible{background:var(--fg);color:var(--bg);outline:0}
-.v-m .readwrap{grid-template-columns:minmax(0,1fr)}
+.v-m .readwrap{grid-template-columns:minmax(0,1fr);grid-template-areas:"art" "mg"}
+.v-m .rmeta{position:static;margin:4px 0 22px}
 .v-m .margin{position:static;display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;min-height:0!important}
-.v-m .mfig{position:static}
+.v-m .mfig{position:relative}
 .texts .titem{grid-template-columns:132px 84px minmax(0,1fr);align-items:center;gap:6px 18px;padding:14px 0}
 .texts .titem .tthumbs{grid-column:1;grid-row:1;display:block;width:132px;aspect-ratio:3/2;background:var(--line);overflow:hidden}
 .texts .titem .tthumbs img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);opacity:.75;transition:filter .3s,opacity .3s}
@@ -556,6 +568,41 @@ body.inv .duck .dnight{opacity:1}
 .sheet:not(.big) .ibox img{transform:none!important}
 .sheet.big.zoomed{cursor:grab}
 .sheet.big.zoomed.panning{cursor:grabbing}
+/* text pages, lighter: no rules, quieter weights */
+.texts{border-top:0}
+.texts .titem{border-bottom:0;padding:11px 0}
+.texts .titem .tt{font-weight:500!important}
+.app.reading .label h1{font-weight:500!important}
+.reading .lead{font-weight:500!important}
+.trel{border-top:0;padding-top:6px}
+.rlink{border-bottom:0;text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:var(--line-hi);text-underline-offset:4px}
+.rlink.on{text-decoration-color:transparent}
+.app[data-mode="text"] .refpanel{border-left:0}
+.app[data-mode="text"] .rp-sec{border-top:0;padding-top:4px}
+.app[data-mode="text"] .rp-texts button{border-bottom:0;padding:6px 0}
+/* the name one step lighter */
+.brand,.v-a #s-rail-top .brand,.gtitle{font-family:var(--f-name)!important;font-weight:600!important;letter-spacing:-.025em!important}
+/* Japanese held a little tighter: proportional kana, a hair of tracking kept */
+:lang(ja) body{font-feature-settings:"palt";letter-spacing:.02em}
+body{font-feature-settings:"palt","cv11";-webkit-font-smoothing:antialiased}
+/* ---- reading a text, after an essay page laid out like fala's: text in the right half, the left half quiet ---- */
+.readwrap{grid-template-columns:minmax(0,1fr) minmax(0,680px);grid-template-areas:"mg art";column-gap:56px;padding:4px 0 120px}
+.readwrap .reading{grid-area:art;max-width:none;gap:0}
+.readwrap .margin{grid-area:mg}
+.readwrap .mfig{left:auto;right:0}
+.readwrap .mfig .mimg{transform-origin:100% 0}
+.readwrap .reading p,.readwrap .reading .lead{font:400 17px/1.62 var(--f-body)!important;letter-spacing:0;margin:0 0 1.05em}
+:lang(ja) .readwrap .reading p,:lang(ja) .readwrap .reading .lead{font-size:16px!important;line-height:1.9!important;letter-spacing:.03em}
+.readwrap .reading .backlink{display:none}
+.readwrap .trel{margin-top:1.6em;padding:0;font-size:12px}
+.rmeta{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;z-index:5;display:grid;gap:3px;font:400 13.5px/1.35 var(--f-body);color:var(--fg);max-width:min(380px,40vw)}
+.rmeta .rk{color:var(--muted)}
+.rmeta button{justify-self:start;margin-bottom:10px;font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
+.rmeta button:hover{color:var(--fg)}
+.v-a.reading #s-dhead{display:none}
+.v-a[data-mode="text"] .refpanel{left:0;right:auto;top:0;bottom:96px;padding:4px 24px 40px 0;border:0}
+.v-a[data-mode="text"] .desk.panel-open .scroller{padding-right:0}
+
 .v-m .refpanel{position:fixed;inset:52px 0 0 0;width:auto;padding:14px 16px 60px;border-left:0}
 .v-m .desk.panel-open .scroller{padding-right:0}
 /* collection: what you keep lines up as tiny icons beside the word */
@@ -743,10 +790,9 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 <div class="imgout" id="imgout" hidden role="dialog" aria-label="Collection image"><img alt="Collection" id="imgoutImg"><div class="row" id="imgoutRow"></div><span class="hint2" id="imgoutHint"></span></div>
 <div class="toast" id="toast" role="status"></div>
 <div class="gate" id="gate" role="dialog" aria-label="Choose a language">
-  <span class="js-name gname">Aga Shunsei</span>
   <div class="gcenter">
-    <div class="gduck" id="gduck" aria-hidden="true"><img alt="" id="gduckimg"></div>
-    <div class="gfilm" id="gfilm"><img alt="" id="gimg"></div>
+    <div class="js-name gtitle">Aga Shunsei</div>
+    <div class="gfilm" id="gfilm"></div>
     <div class="gcap" id="gcap"></div>
         <div class="glang"><button type="button" class="gopt" data-l="ja" aria-pressed="true">日本語</button><span aria-hidden="true">/</span><button type="button" class="gopt" data-l="en" aria-pressed="false">English</button></div>
   </div>
@@ -1039,14 +1085,15 @@ function openRefPanel(j,o={}){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=no
     <div class="rp-sec"><span class="rp-h">${ja?'関連するテキスト':'Related texts'}</span>${texts?`<div class="rp-texts">${texts}</div>`:`<span class="rp-none">—</span>`}</div>`;
   pn.hidden=false;desk.classList.add('panel-open');if(!reduce){pn.classList.remove('enter');void pn.offsetWidth;pn.classList.add('enter')}pn.scrollTop=0;
   pn.querySelector('[data-close]').addEventListener('click',closeRefPanel);
-  pn.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const vis=behind?relOf(cur):[...scroller.querySelectorAll('.tile:not([hidden])')].map(t=>+t.dataset.j);const n=vis.indexOf(j);openRefPanel(vis[(n+ +b.dataset.step+vis.length)%vis.length],{behind})}));
+  pn.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const vis=o.list?o.list:behind?relOf(cur):[...scroller.querySelectorAll('.tile:not([hidden])')].map(t=>+t.dataset.j);const n=vis.indexOf(j);openRefPanel(vis[(n+ +b.dataset.step+vis.length)%vis.length],{behind,list:o.list})}));
+  scroller.querySelectorAll('.mfig').forEach(f=>f.classList.toggle('sel',+f.dataset.j===j));
   if(behind){canvas&&canvas.querySelectorAll('.sheet.ref').forEach(el=>el.classList.toggle('center',el._ref===j));const el=canvas&&[...canvas.querySelectorAll('.sheet.ref')].find(e=>e._ref===j);if(el)raise(el)}
   pn.querySelector('.rp-collect').addEventListener('click',()=>toggleColl('r:'+j,null,pn.querySelector('.rp-img img')));
   pn.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',e=>{closeRefPanel();openWork(+b.dataset.p,{refs:true,focus:j,origin:originOf(e.currentTarget)})}));
   pn.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('text',()=>showText(+b.dataset.t))}));
   scroller.querySelectorAll('.tile').forEach(t=>{const on=+t.dataset.j===j;t.classList.toggle('sel',on);t.querySelector('.frame').setAttribute('aria-expanded',on)});
   const tile=scroller.querySelector(`.tile[data-j="${j}"]`);if(tile)tile.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});syncButtons()}
-function closeRefPanel(){panelJ=null;$('refpanel').hidden=true;desk.classList.remove('panel-open','panel-left');canvas&&canvas.querySelectorAll('.sheet.ref.center').forEach(el=>el.classList.remove('center'));scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
+function closeRefPanel(){panelJ=null;scroller.querySelectorAll('.mfig.sel').forEach(f=>f.classList.remove('sel'));$('refpanel').hidden=true;desk.classList.remove('panel-open','panel-left');canvas&&canvas.querySelectorAll('.sheet.ref.center').forEach(el=>el.classList.remove('center'));scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
 
 const AB=D.about;
 function showAbout(){leave();const A=L(AB);
@@ -1079,12 +1126,15 @@ function showText(n){leave();setMode('text');curText=n;app.classList.toggle('rea
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
     /* the references sit small in the margin beside the text; a word tied to one makes it grow */
     const mg=document.createElement('aside');mg.className='margin';mg.setAttribute('aria-label',lang==='ja'?'リファレンス':'References');
-    mg.innerHTML=x.refs.map(j=>`<figure class="mfig" data-j="${j}"><button type="button" class="mimg" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"></button><figcaption>${R[j].title}</figcaption></figure>`).join('');
-    wrap.append(d,mg);scroller.appendChild(wrap);
+    mg.innerHTML=x.refs.map(j=>`<figure class="mfig" data-j="${j}"><button type="button" class="mimg" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"></button><figcaption>${R[j].title}</figcaption><button type="button" class="mnote">${lang==='ja'?'解説':'notes'}</button></figure>`).join('');
+    const meta=document.createElement('div');meta.className='rmeta';meta.innerHTML=`<button type="button">← ${lang==='ja'?'テキスト一覧':'all texts'}</button><span>${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
+    meta.querySelector('button').addEventListener('click',()=>showText());
+    if(isM())wrap.before?scroller.appendChild(meta):0;wrap.append(d,mg);scroller.appendChild(wrap);if(!isM())scroller.appendChild(meta);
     const figs=[...mg.querySelectorAll('.mfig')];let pin=null;
     const lit=j=>{const on=j!=null;mg.classList.toggle('focus',on);figs.forEach(f=>f.classList.toggle('on',on&&+f.dataset.j===j));d.querySelectorAll('.rlink').forEach(w=>w.classList.toggle('on',on&&+w.dataset.r===j))};
     d.querySelectorAll('.rlink').forEach(w=>{const j=+w.dataset.r;w.tabIndex=0;w.addEventListener('mouseenter',()=>lit(j));w.addEventListener('mouseleave',()=>lit(pin));w.addEventListener('focus',()=>lit(j));w.addEventListener('blur',()=>lit(pin));w.addEventListener('click',()=>{pin=pin===j?null:j;lit(pin)})});
-    figs.forEach(f=>{const j=+f.dataset.j;f.addEventListener('mouseenter',()=>lit(j));f.addEventListener('mouseleave',()=>lit(pin));f.querySelector('.mimg').addEventListener('click',()=>go('refs',()=>{showGrid();openRefPanel(j)}))});
+    const note=j=>{if(panelJ===j)closeRefPanel();else openRefPanel(j,{list:x.refs})};
+    figs.forEach(f=>{const j=+f.dataset.j;f.addEventListener('mouseenter',()=>lit(j));f.addEventListener('mouseleave',()=>lit(pin));f.querySelector('.mimg').addEventListener('click',()=>note(j));f.querySelector('.mnote').addEventListener('click',()=>note(j))});
     requestAnimationFrame(()=>placeMargin(d,mg))}
   scroller.scrollTop=0}
 /* each margin image lines up with the first word that names it, or follows the one above */
@@ -1240,14 +1290,17 @@ document.querySelectorAll('.pattern button[data-v]').forEach(b=>b.addEventListen
   addEventListener('pointermove',wake);addEventListener('scroll',wake,true);addEventListener('pointerdown',wake);wake()})();
 renderList();updCount();setVariant(MQ.matches?'m':'a',false);MQ.addEventListener('change',e=>setVariant(e.matches?'m':'a'));
 /* arrival: choose a language, then the page lifts like a shutter */
-(function(){$('gduckimg').src=DUCKIMG.stand_night;const g=$('gate'),im=$('gimg'),cap=$('gcap'),frames=P.flatMap((p,i)=>p.sheets.map(s=>({img:s.img,t:p.title,n:p.no})));let f=0,timer,gone=false;
-  const show=()=>{const x=frames[f%frames.length];im.src=src(x.img,'s');cap.textContent=x.t;f++;
-    timer=setTimeout(show,reduce?1600:(f%9===0?1100:340))};show();
+(function(){const g=$('gate'),film=$('gfilm'),cap=$('gcap'),frames=P.flatMap((p,i)=>p.sheets.map(s=>({img:s.img,t:p.title,n:p.no})));let f=0,gone=false;
+  /* an even film: each frame is fetched and decoded a few frames ahead, then shown on a fixed beat; if one is late the film waits rather than stutters */
+  const STEP=reduce?1600:400,AHEAD=8,store=new Map();
+  const load=k=>{k%=frames.length;if(store.has(k))return store.get(k);const im=new Image();im.alt='';im.decoding='async';const o={im,ok:false};im.src=src(frames[k].img,'s');im.decode().then(()=>o.ok=true).catch(()=>{o.ok=true;o.bad=true});store.set(k,o);return o};
+  for(let i=0;i<AHEAD;i++)load(i);
+  let next=0;const tick=t=>{if(gone)return;if(frames.length&&t>=next){const o=load(f);if(o.ok){if(!o.bad){film.replaceChildren(o.im);cap.textContent=frames[f%frames.length].t}f++;next=(next&&t-next<STEP?next:t)+STEP;for(let i=1;i<=AHEAD;i++)load(f+i)}}requestAnimationFrame(tick)};requestAnimationFrame(tick);
   /* the language is only chosen here (Japanese unless changed); a click anywhere else enters */
   const mark=()=>{g.querySelectorAll('.gopt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));$('genter').textContent=lang==='ja'?'クリックして入る':'Click anywhere to enter'};mark();
   g.querySelectorAll('.gopt').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setLang(b.dataset.l);mark()}));
   const enter=()=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works'){if(cur<0)showWorksHome();else openWork(cur)}
-    clearTimeout(timer);if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})};
+    if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})};
   const key=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.gopt')){e.preventDefault();enter()}};
   g.addEventListener('click',enter);addEventListener('keydown',key);
 })();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));{const sh=readShared();if(sh)showCollect(sh);else showWorksHome()}
