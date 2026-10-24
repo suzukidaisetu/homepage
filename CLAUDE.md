@@ -12,7 +12,11 @@ This repo is Aga Shunsei's archive site. Content lives in a Google Drive folder;
 2. Edit `site/index.html`.
 3. `node scripts/make-preview.mjs` — writes `preview/` (current page + real content).
 4. Publish `preview/index.html` with the files under `preview/` as an Artifact for the owner to review.
-   The existing preview artifact is https://claude.ai/artifact/Xoi3x9U1fajzoEkksaQwxG (update it by url).
+   The preview artifact is https://claude.ai/artifact/HjioDupJi4uTvMNWc4ftgu (private; update it by url).
+   The older one (Xoi3x9U1fajzoEkksaQwxG) is public and can't be republished from a session.
+   The snapshot may predate the small image sizes: if data/site.json has no "sizes", make img/s (480px) and img/m (1200px)
+   copies locally and add "sizes": ["s","m"] so the preview matches the live site.
+   Wrap preview/index.html with <!DOCTYPE html>, charset and viewport before publishing (make-preview strips them).
 5. When the owner approves, commit `site/index.html` to `main` and push. The site updates in a few minutes.
 
 The owner writes in Japanese and prefers to see changes quickly in the preview before they go live.

@@ -12,6 +12,8 @@ const DIST = path.join(ROOT, 'dist');
 const CACHE = path.join(ROOT, '.cache', 'img');
 const MAX = 1800;            // longest side of published images, px
 const QUALITY = 82;
+// smaller copies for thumbnails and mid-size sheets: img/s/<key>.jpg and img/m/<key>.jpg
+const SIZES = { s: 480, m: 1200 };
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf)$/i;
 const SKIP_EXT = /\.(txt|md|ds_store|ini|db)$/i;
 
@@ -125,6 +127,30 @@ function section(block, withRows = false) {
   return { meta, title, body, rows };
 }
 const list = s => (s || '').split(/[,、]/).map(x => x.trim()).filter(Boolean);
+// A reference's own words: "note:" (or 一言: / メモ:) for Japanese, "note en:" for English.
+// The note may run over several lines until the next known key; blank lines start a new paragraph.
+const REF_KEYS = /^\s*(title|kind|tags|works|spotify|apple music|youtube|link|url|note|note ja|note en|一言|メモ)\s*[:：]\s*(.*)$/i;
+function refNote(lines) {
+  const out = { ja: [], en: [] };
+  let cur = null, para = [];
+  const flush = () => { if (cur && para.length) { out[cur].push(esc(para.reduce((t, l) => t + (/[\x21-\x7E]$/.test(t) && /^[\x21-\x7E]/.test(l) ? ' ' : '') + l, ''))); } para = []; };
+  for (const raw of lines) {
+    if (/^\s*#/.test(raw)) continue;
+    const m = raw.match(REF_KEYS);
+    if (m) {
+      flush();
+      const k = m[1].toLowerCase();
+      cur = k === 'note en' ? 'en' : /^(note|note ja|一言|メモ)$/.test(k) ? 'ja' : null;
+      if (cur && m[2].trim()) para.push(m[2].trim());
+      continue;
+    }
+    if (!cur) continue;
+    if (!raw.trim()) { flush(); continue; }
+    para.push(raw.trim());
+  }
+  flush();
+  return out.ja.length || out.en.length ? out : '';
+}
 
 /* ---------- images ---------- */
 
@@ -167,6 +193,16 @@ async function addImage(f) {
   }
   meta = await sharp(out).metadata();
   await fs.writeFile(path.join(DIST, 'img', key + '.jpg'), out);
+  for (const [sz, px] of Object.entries(SIZES)) {
+    const cachedSz = path.join(CACHE, `${key}.${sz}.jpg`);
+    let small;
+    try { small = await fs.readFile(cachedSz); }
+    catch {
+      small = await sharp(out).resize({ width: px, height: px, fit: 'inside', withoutEnlargement: true }).jpeg({ quality: QUALITY, mozjpeg: true }).toBuffer();
+      await fs.writeFile(cachedSz, small);
+    }
+    await fs.writeFile(path.join(DIST, 'img', sz, key + '.jpg'), small);
+  }
   images[key] = { url: `img/${key}.jpg`, ar: +(meta.width / meta.height).toFixed(4) };
   return key;
 }
@@ -180,6 +216,7 @@ async function main() {
 
   await fs.rm(DIST, { recursive: true, force: true });
   await fs.mkdir(path.join(DIST, 'img'), { recursive: true });
+  for (const sz of Object.keys(SIZES)) await fs.mkdir(path.join(DIST, 'img', sz), { recursive: true });
   await fs.mkdir(path.join(DIST, 'data'), { recursive: true });
   await fs.mkdir(CACHE, { recursive: true });
   await fs.cp(path.join(ROOT, 'site'), DIST, { recursive: true });
@@ -239,7 +276,8 @@ async function main() {
     for (const [k, pf] of pics.entries()) {
       try {
         const key = await addImage(pf);
-        const o = kv((blocks[pf.name] || blocks[pf.name.replace(/\.[^.]+$/, '')] || []).join('\n'));
+        const blk = blocks[pf.name] || blocks[pf.name.replace(/\.[^.]+$/, '')] || [];
+        const o = kv(blk.join('\n'));
         const links = [];
         for (const [label, name] of [['spotify', 'Spotify'], ['apple music', 'Apple Music'], ['youtube', 'YouTube'], ['link', 'Link'], ['url', 'Link']]) {
           if (o[label]) links.push({ label: name, url: o[label] });
@@ -248,7 +286,7 @@ async function main() {
         list(o.works).filter(n => workIndex(n) < 0).forEach(n => warn.push(`references/${pf.name}: work ${n} not found`));
         refs.push({
           img: key, no: 'REF-' + String(k + 1).padStart(2, '0'), title: esc(o.title || stripNo(pf.name)), kind: esc((o.kind || 'IMAGE').toUpperCase()),
-          rel, note: '', tags: list(o.tags).map(esc).length ? list(o.tags).map(esc) : ['Other'], links: links.filter(l => /^https?:\/\//.test(l.url)).map(l => ({ label: l.label, url: esc(l.url) })), ar: images[key].ar
+          rel, note: refNote(blk), tags: list(o.tags).map(esc).length ? list(o.tags).map(esc) : ['Other'], links: links.filter(l => /^https?:\/\//.test(l.url)).map(l => ({ label: l.label, url: esc(l.url) })), ar: images[key].ar
         });
       } catch (e) { warn.push(`references/${pf.name}: could not read (${e.message})`); }
     }
@@ -291,7 +329,7 @@ async function main() {
     if (fromDrive) throw new Error('No works found in the Drive folder (is works/ there, and is the folder shared as "anyone with the link"?). The site was not changed.');
     warn.push('no works found: add folders to works/');
   }
-  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, duck, works, refs, texts, about };
+  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, sizes: Object.keys(SIZES), duck, works, refs, texts, about };
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
   console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images.`);

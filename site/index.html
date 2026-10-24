@@ -78,6 +78,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);overflow:hid
 .sheet:hover,.sheet.dragging,.sheet:focus-visible{outline-color:var(--line-hi)}
 .sheet.dragging{cursor:grabbing}
 .sheet.move{transition:left .28s cubic-bezier(.2,.8,.2,1),top .28s cubic-bezier(.2,.8,.2,1),width .28s cubic-bezier(.2,.8,.2,1)}
+.sheet.text.move{transition:left .28s cubic-bezier(.2,.8,.2,1),top .28s cubic-bezier(.2,.8,.2,1)}
 .sheet img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none}
 .sheet-cap{display:flex;justify-content:space-between;gap:8px;padding:6px 8px 7px;border-top:1px solid var(--line);font:400 9.5px/1.2 var(--f-mono);color:var(--fg);letter-spacing:.03em;white-space:nowrap;overflow:hidden}
 .sheet-cap span:first-child{overflow:hidden;text-overflow:ellipsis}
@@ -89,10 +90,10 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);overflow:hid
 .sheet.text:hover,.sheet.text.dragging,.sheet.text:focus-visible{outline-color:rgba(255,255,255,.7)}
 .sheet.text .tools button{mix-blend-mode:normal}
 body.inv .sheet.text{filter:none}
-.tsheet{box-sizing:border-box;padding:calc(var(--u,3px)*8) calc(var(--u,3px)*8) calc(var(--u,3px)*7);display:flex;flex-direction:column;gap:calc(var(--u,3px)*4.2);overflow:hidden;color:var(--fg);pointer-events:none}
+.tsheet{box-sizing:border-box;padding:calc(var(--u,3px)*7) calc(var(--u,3px)*7) calc(var(--u,3px)*6);display:flex;flex-direction:column;gap:calc(var(--u,3px)*3.4);overflow:hidden;color:var(--fg);pointer-events:none}
 .tsheet .tk{font:500 calc(var(--u,3px)*3)/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.tsheet h3{margin:0;font:600 calc(var(--u,3px)*6.4)/1.35 var(--f-body);letter-spacing:.01em;text-wrap:balance}
-.tsheet p{margin:0;font:500 calc(var(--u,3px)*3.9)/1.85 var(--f-body);text-align:justify}
+.tsheet h3{margin:0;font:600 max(14px,calc(var(--u,3px)*5))/1.4 var(--f-body);letter-spacing:.01em;text-wrap:balance}
+.tsheet p{margin:0;font:500 max(11px,calc(var(--u,3px)*3.1))/1.85 var(--f-body);text-align:justify}
 .tsheet .tf{margin-top:calc(var(--u,3px)*2);font:400 calc(var(--u,3px)*2.8)/1 var(--f-body);color:var(--muted)}
 body.inv .app[data-mode="works"] .sheet:not(.ref){filter:invert(1) grayscale(.35);opacity:.2}
 body.inv .app[data-mode="works"] .sheet:not(.ref):hover{opacity:.5}
@@ -218,7 +219,7 @@ body.inv .app[data-mode="works"] .sheet:not(.ref):hover{opacity:.5}
 .v-b .scroller{padding-bottom:70px}
 
 /* C: everything sits on the edges of the table; no tabs, the index is the navigation */
-.v-c{grid-template:"rail desk" minmax(0,1fr)/236px minmax(0,1fr)}
+.v-c{grid-template:"rail desk" minmax(0,1fr)/236px minmax(0,1fr);column-gap:72px}
 .v-c .rail{display:flex}
 .v-c #s-rail-foot{flex-direction:column;align-items:flex-start;gap:12px;padding-top:14px;border-top:1px solid var(--line)}
 .v-c #tab-works{display:none}
@@ -338,6 +339,12 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 .glang{display:flex;align-items:baseline;gap:8px;margin-top:22px;font:400 11px/1 var(--f-body);color:#b0afaa}
 .gopt{font:500 11px/1 var(--f-body);letter-spacing:.02em;color:#141414;background:none;border:0;padding:4px 2px;cursor:pointer;border-bottom:1px solid transparent}
 .gopt:hover{border-bottom-color:#141414}
+.gopt::before{content:"○ ";font-size:8px;vertical-align:1px;color:#b0afaa}
+.gopt[aria-pressed="true"]::before{content:"● ";color:#141414}
+.gopt:not([aria-pressed="true"]){color:#8b8a85}
+.gate{cursor:pointer}
+.gcap{width:min(240px,56vw);min-height:1.3em;font:500 11px/1.3 var(--f-body);color:#141414;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.genter{position:absolute;bottom:max(22px,env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font:400 10px/1 var(--f-body);letter-spacing:.06em;color:#b0afaa}
 .gopt:focus-visible{outline:1px solid #141414;outline-offset:3px}
 .gduck{width:76px;height:76px;margin-bottom:10px;border-radius:50%;background:#0b0b0b;overflow:hidden;display:grid;place-items:center;box-shadow:0 0 14px rgba(255,61,154,.28)}
 .gduck img{width:70%;height:86%;object-fit:contain;animation:duckspin 2.6s linear infinite}
@@ -395,7 +402,7 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 .tiw .plink{grid-template-columns:44px minmax(0,1fr);gap:8px;font-size:11px}
 .tiw .plink img{width:44px}
 /* name with the four sections directly under it */
-.v-c .brand{text-transform:none;font-size:16px;padding-bottom:0}
+.v-c .brand{text-transform:none;font-size:21px;letter-spacing:-.02em;padding-bottom:2px}
 .v-c #s-rail-top{flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:6px}
 .v-c .nav{flex-direction:column;align-items:flex-start;gap:0}
 .v-c .nav .tab{font-size:13.5px;padding:3px 0}
@@ -403,7 +410,7 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 .v-c .nav .tab .cc{background:none;padding:0;min-width:0;margin-left:5px;color:var(--muted);font-size:11px}
 /* the duck lives beside the name: drawn by hand, posterized blue by day, an x-ray negative at night */
 .v-c #s-rail-top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;column-gap:8px}
-.v-c #s-rail-top .brand{grid-column:1;grid-row:1}
+.v-c #s-rail-top .brand{grid-column:1;grid-row:1;justify-self:start;text-align:left}
 .v-c #s-rail-top .nav{grid-column:1;grid-row:2}
 .duck{position:relative;grid-column:2;grid-row:1/3;width:74px;height:100px;align-self:end;transform-origin:50% 100%}
 .duck img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;transition:opacity .9s ease}
@@ -418,7 +425,7 @@ body.inv .duck .dnight{opacity:1}
 /* ---- phone layout (pattern m): one thin bar, current project line, column table, tools at the thumb ---- */
 .v-m{grid-template:"top" auto "desk" minmax(0,1fr)/minmax(0,1fr);padding-block:0 0}
 .v-m .top{display:flex;justify-content:space-between;align-items:center;height:52px;border-bottom:1px solid var(--line);position:relative;z-index:5}
-.v-m .brand{text-transform:none;font-size:15px}
+.v-m .brand{text-transform:none;font-size:18px;letter-spacing:-.02em}
 .v-m #s-top-r{gap:10px}
 .v-m .duck{width:30px;height:40px;align-self:center}
 .v-m #indexBtn{border:0;background:none;padding:8px 0 8px 6px;font-size:13px;font-weight:600}
@@ -457,7 +464,7 @@ body.inv .duck .dnight{opacity:1}
 .v-m .overlay .entry .ettl{font-size:17px}
 .v-m .overlay .entry .eno{font-size:13px}
 @media (max-width:720px){
-  .gfilm,.gmeta{width:64vw}
+  .gfilm,.gmeta,.gcap{width:64vw}
   .glang{margin-top:28px;gap:14px}
   .gopt{font-size:15px;padding:8px 4px}
 }
@@ -479,8 +486,138 @@ body.inv .duck .dnight{opacity:1}
   .v-c .dhead{padding-right:0;padding-top:40px}
   .ovbody{grid-template-columns:minmax(0,1fr)}
 }
+/* references: no grid lines, open space around each image */
+.refgrid{border:0;gap:28px 22px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.tile{border:0}
+.tile .frame{background:none}
+.tile .frame>img{padding:0}
+.tile.sel .frame{outline:1px solid var(--fg);outline-offset:6px}
+.tile .tcap .tnote{flex:1 1 100%;font:400 10.5px/1.45 var(--f-body);color:rgba(255,255,255,.8);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.desk.panel-open .scroller{padding-right:min(460px,46%);box-sizing:border-box}
+/* a reference opened: its words, its links, and what it touches */
+.refpanel{position:absolute;top:0;right:0;bottom:0;z-index:2000003;width:min(420px,42%);box-sizing:border-box;padding:4px 4px 40px 26px;border-left:1px solid var(--line);background:var(--bg);color:var(--fg);overflow-y:auto;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin}
+.refpanel[hidden]{display:none}
+.refpanel.enter{animation:rpIn .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes rpIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.rp-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font:500 10px/1 var(--f-body);letter-spacing:.12em;color:var(--muted)}
+.rp-nav{display:flex;gap:2px}
+.rp-nav button{font:500 12px/1 var(--f-body);background:none;border:0;color:var(--fg);padding:6px 7px;cursor:pointer;text-transform:lowercase}
+.rp-nav button:hover{text-decoration:underline;text-underline-offset:3px}
+.refpanel h2{margin:0;font:700 22px/1.2 var(--f-body);letter-spacing:-.015em;text-wrap:balance}
+.rp-img{background:var(--sheet)}
+.rp-img img{display:block;width:100%;height:auto;max-height:46vh;object-fit:contain}
+.rp-note{display:grid;gap:10px}
+.rp-note p{margin:0;font:400 13.5px/1.85 var(--f-body)}
+.rp-sec{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.rp-h{font:500 10px/1 var(--f-body);letter-spacing:.1em;color:var(--muted)}
+.rp-works{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}
+.rp-works button{display:grid;gap:6px;text-align:left;background:none;border:0;padding:0;color:var(--fg);cursor:pointer;font:600 12px/1.3 var(--f-body)}
+.rp-works img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.rp-works button:hover span{text-decoration:underline;text-underline-offset:3px}
+.rp-texts{display:grid;gap:2px}
+.rp-texts button{display:flex;gap:12px;align-items:baseline;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:8px 0;color:var(--fg);cursor:pointer;font:600 13px/1.4 var(--f-body)}
+.rp-texts button span:first-child{flex:none;font:400 10px/1 var(--f-body);color:var(--muted)}
+.rp-texts button:hover span:last-child{text-decoration:underline;text-underline-offset:3px}
+.rp-none{font:400 12px/1.4 var(--f-body);color:var(--muted)}
+.rp-collect{justify-self:start;align-self:flex-start;font:500 10.5px/1 var(--f-body);color:var(--fg);background:none;border:1px solid var(--line-hi);padding:7px 10px;cursor:pointer;text-transform:lowercase}
+.rp-collect[aria-pressed="true"],.rp-collect:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.v-m .refpanel{position:fixed;inset:52px 0 0 0;width:auto;padding:14px 16px 60px;border-left:0}
+.v-m .desk.panel-open .scroller{padding-right:0}
+/* collection: what you keep lines up as tiny icons beside the word */
+.minis{display:inline-flex;flex-wrap:wrap;gap:2px;margin-left:8px;max-width:110px;vertical-align:-1px}
+.mini{width:9px;height:9px;display:block;object-fit:cover;outline:1px solid var(--line);background:var(--sheet)}
+span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
+.mini.wait{opacity:0}
+.mini.pop{animation:miniPop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes miniPop{from{transform:scale(2.4)}to{transform:none}}
+.minis .more{font:500 9px/9px var(--f-body);color:var(--muted);margin-left:2px}
+.flyer{position:fixed;z-index:5500000;pointer-events:none;object-fit:cover;transform-origin:50% 50%;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+/* collection tools: keep as an image, pass on as a link */
+.colltools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.colltools .btn{background:var(--bg)}
+.colltools .shared{font:500 11px/1 var(--f-body);color:var(--muted);margin-right:4px}
+.toast{position:fixed;left:50%;bottom:28px;z-index:5600000;transform:translateX(-50%);background:var(--fg);color:var(--bg);font:500 12px/1 var(--f-body);padding:10px 14px;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.on{opacity:1}
+.imgout{position:fixed;inset:0;z-index:5000001;background:rgba(10,10,10,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}
+.imgout[hidden]{display:none}
+.imgout img{max-width:min(92vw,1100px);max-height:76vh;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#fff}
+.imgout .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.imgout a,.imgout button{font:500 12px/1 var(--f-body);color:#141414;background:#fff;border:0;padding:10px 14px;text-decoration:none;cursor:pointer}
+.imgout .hint2{font:400 11px/1.4 var(--f-body);color:rgba(255,255,255,.7)}
+.imgout .linkbox{font:400 12px/1.4 var(--f-body);color:#fff;background:rgba(255,255,255,.08);padding:10px 12px;max-width:min(92vw,640px);word-break:break-all;user-select:all}
+/* ---- A: every word on one bar along the bottom; the index is a thin strip of grey squares on the right ---- */
+.v-a{grid-template:"rail desk" minmax(0,1fr) "top top" auto/168px minmax(0,1fr);column-gap:32px;padding-block:16px 0}
+.v-a .top{display:flex;align-items:center;gap:24px;height:46px;border-top:1px solid var(--line);font:500 13px/1 var(--f-body)}
+.v-a #s-top-l{flex:none;gap:10px}
+.v-a #s-top-c{flex:1;min-width:0;gap:14px}
+.v-a #s-top-r{flex:none;gap:26px}
+.v-a .brand{text-transform:none;font:700 17px/1 var(--f-body);letter-spacing:-.02em}
+.v-a .duck{width:24px;height:32px;align-self:center}
+.v-a .crumb{display:flex;align-items:baseline;gap:12px;max-width:none;min-width:0;font:500 13px/1 var(--f-body);color:var(--fg)}
+.v-a .crumb::before{content:none}
+.v-a .crumb .cno{color:var(--muted)}
+.v-a .crumb .ct{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-a .crumb .cm{color:var(--muted);white-space:nowrap}
+.v-a .crumb.peek .ct{color:var(--muted)}
+.v-a .nav{flex-direction:row;gap:18px;margin:0}
+.v-a .nav .tab{font:500 13px/1 var(--f-body);padding:4px 0;border:0;letter-spacing:0;color:var(--muted)}
+.v-a .nav .tab[aria-selected="true"],.v-a .nav .tab.lit{color:var(--fg)}
+.v-a #tab-works{display:none}
+.v-a .btn,.v-a .seg,.v-a .seg button{border:0;background:none;box-shadow:none}
+.v-a .btn{font:500 13px/1 var(--f-body);letter-spacing:0;padding:4px 0;color:var(--muted)}
+.v-a .btn:hover,.v-a .seg button:hover{color:var(--fg)}
+.v-a .btn[aria-pressed="true"]{background:none;color:var(--fg)}
+.v-a .seg{gap:12px}
+.v-a .seg button{font:500 13px/1 var(--f-body);letter-spacing:0;padding:4px 0;color:var(--muted)}
+.v-a .seg button+button{border:0}
+.v-a .seg button[aria-pressed="true"]{background:none;color:var(--fg);text-decoration:underline;text-underline-offset:4px}
+.v-a #rel::before{content:"○ ";font-size:9px;vertical-align:1px}
+.v-a #rel[aria-pressed="true"]::before{content:"● "}
+.v-a .colltools{gap:16px;margin-left:auto}
+.v-a .colltools .btn{padding:4px 0}
+.v-a .rail{display:flex;flex-direction:column;min-height:0}
+.v-a .list{gap:0;padding:0}
+.v-a .entry{display:block;padding:0;border:0}
+.v-a .entry .eno,.v-a .entry .ettl,.v-a .entry .emeta{display:none}
+/* three and a half works fit the height, so the strip reads as a list that continues */
+.v-a .entry .ethumb{display:block;width:168px;height:calc((100vh - 64px)/3.5);min-height:120px;aspect-ratio:auto;margin:0;background:var(--line)}
+.v-a .entry .ethumb img{opacity:.55;filter:grayscale(1)}
+.v-a .entry:hover .ethumb img{opacity:1;filter:none;transform:none}
+.v-a .entry[aria-pressed="true"] .ethumb{outline:0}
+.v-a .entry[aria-pressed="true"] .ethumb img{opacity:1;filter:none}
+.v-a .dhead{min-height:0;padding:0}
+.v-a.reading .dhead{padding-bottom:16px}
+.v-a .rail{margin-bottom:0}
+.v-a .scroller{padding-bottom:24px}
+/* ---- A, revised: the left column is the site; the bar under the table holds only this table's tools ---- */
+.v-a{grid-template:"rail desk" minmax(0,1fr) "rail top" auto/212px minmax(0,1fr);column-gap:28px}
+.v-a .rail{grid-row:1/3;gap:0}
+.v-a #s-rail-foot{display:none}
+/* name on one line; the places in one small line under it; the duck walks along that line to wherever you are */
+.v-a #s-rail-top{position:relative;display:block;padding:0 0 14px}
+.v-a #s-rail-top .brand{display:block;font:700 28px/1 var(--f-body);letter-spacing:-.035em;white-space:nowrap;text-align:left;padding:0}
+.v-a #s-rail-top .nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:9px;margin:44px 0 0}
+.v-a #s-rail-top .nav .tab{font:500 11px/1 var(--f-body);padding:2px 0}
+.v-a #s-rail-top .nav .tab .minis{max-width:40px;margin-left:4px}
+.v-a #s-rail-top .duck{position:absolute;left:0;top:0;width:26px;height:34px;transition:left .65s cubic-bezier(.5,0,.2,1),top .65s cubic-bezier(.5,0,.2,1)}
+.v-a .top{gap:20px}
+.v-a #s-top-l{flex:1;min-width:0;gap:16px}
+.v-a #s-top-r{gap:22px}
+/* index: tall images, no gaps, the number always on the image; the open (or pointed) work slides right and shows its name and year turned on its side */
+.v-a .entry{position:relative;display:block;width:212px;padding:0;border:0;overflow:hidden}
+.v-a .entry .ethumb{width:184px;height:max(110px,calc((100vh - 130px)/3.5));transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.v-a .entry .eno{display:block!important;position:absolute;left:8px;top:8px;padding:0;font:700 15px/1 var(--f-body)!important;letter-spacing:-.02em;color:#fff!important;opacity:1!important;mix-blend-mode:difference;pointer-events:none;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.v-a .entry:hover .ethumb,.v-a .entry:hover .eno,.v-a .entry[aria-pressed="true"] .ethumb,.v-a .entry[aria-pressed="true"] .eno{transform:translateX(28px)}
+.v-a .entry .ettl{display:block!important;position:absolute;left:0;top:0;bottom:0;width:28px;box-sizing:border-box;padding:10px 0;writing-mode:vertical-rl;transform:rotate(180deg);font:600 11.5px/28px var(--f-body)!important;letter-spacing:.01em;color:var(--fg)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0!important;transition:opacity .2s;pointer-events:none}
+.v-a .entry:hover .ettl,.v-a .entry[aria-pressed="true"] .ettl{opacity:1!important;transition:opacity .3s .15s}
+.v-a .entry .eyr{display:inline!important;margin-inline-start:10px;font-weight:400;color:var(--muted)}
+.eyr{display:none}
+.minis:empty{display:none}
+/* the page itself also gets the class "reading" while a text is open; keep it from taking the article's narrow width */
+.app.reading{max-width:none;padding-top:16px;padding-bottom:16px;gap:0 28px}
+.app.v-a.reading{padding-bottom:0;column-gap:22px}
+.app.v-m.reading{padding-block:0}
 </style>
-
 </head>
 <body>
 <div class="app v-b" id="app">
@@ -492,6 +629,7 @@ body.inv .duck .dnight{opacity:1}
     <div class="slot corner tl" id="s-tl"></div><div class="slot corner tr" id="s-tr"></div>
     <div class="slot corner bl" id="s-bl"></div><div class="slot corner br" id="s-br"></div>
     <div class="slot corner bc" id="s-bc"></div>
+    <aside class="refpanel" id="refpanel" hidden aria-label="Reference"></aside>
     <section class="drawer" id="drawer" aria-label="Collection">
       <div class="dtop"><span>Collection <span id="drawer-n">0</span></span><span class="dnote">Kept in this browser</span><button type="button" id="drawer-close">Close</button></div>
       <div class="ditems" id="drawer-items"></div>
@@ -516,14 +654,19 @@ body.inv .duck .dnight{opacity:1}
   <button class="btn" id="tray" type="button" aria-pressed="false">Collection</button>
   <button class="btn" id="indexBtn" type="button" aria-expanded="false">menu</button>
   <button class="projbtn" id="projBtn" type="button" aria-label="Choose a project"></button>
+  <div class="colltools" id="collTools"><span class="shared" id="sharedNote" hidden></span><button class="btn" id="adopt" type="button" hidden>add to my collection</button><button class="btn" id="saveImg" type="button">save image</button><button class="btn" id="shareColl" type="button">share link</button></div>
 </div>
+<div class="imgout" id="imgout" hidden role="dialog" aria-label="Collection image"><img alt="Collection" id="imgoutImg"><div class="row" id="imgoutRow"></div><span class="hint2" id="imgoutHint"></span></div>
+<div class="toast" id="toast" role="status"></div>
 <div class="gate" id="gate" role="dialog" aria-label="Choose a language">
   <span class="js-name gname">Aga Shunsei</span>
   <div class="gcenter">
     <div class="gduck" id="gduck" aria-hidden="true"><img alt="" id="gduckimg"></div>
     <div class="gfilm" id="gfilm"><img alt="" id="gimg"></div>
-        <div class="glang"><button type="button" class="gopt" data-l="ja">日本語</button><span aria-hidden="true">/</span><button type="button" class="gopt" data-l="en">English</button></div>
+    <div class="gcap" id="gcap"></div>
+        <div class="glang"><button type="button" class="gopt" data-l="ja" aria-pressed="true">日本語</button><span aria-hidden="true">/</span><button type="button" class="gopt" data-l="en" aria-pressed="false">English</button></div>
   </div>
+  <span class="genter" id="genter">クリックして入る</span>
 </div>
 <div class="cursor" id="cursor" aria-hidden="true"><div class="lens"><img alt=""></div><span></span></div>
 
@@ -531,6 +674,9 @@ body.inv .duck .dnight{opacity:1}
 /* Content comes from data/site.json, which the build makes from the Google Drive folder. */
 fetch('data/site.json',{cache:'no-cache'}).then(r=>r.json()).then(D=>{
 const IMG=D.images,DUCKIMG=D.duck,P=D.works,R=D.refs;
+/* each image comes in three sizes: s (480px) for thumbnails, m (1200px), and the full one; older builds have only the full one */
+const SZ=D.sizes||[];const src=(k,z)=>z&&SZ.includes(z)?IMG[k].replace(/^img\//,'img/'+z+'/'):IMG[k];
+const srcset=k=>SZ.length?`${src(k,'s')} 480w, ${src(k,'m')} 1200w, ${IMG[k]} 1800w`:'';
 document.title=D.site.name;document.querySelectorAll('.js-name').forEach(el=>el.textContent=D.site.name);
 /* ---- the duck: one drawing, five poses; ordinary by day, its skeleton shows once the lights are off ---- */
 const DUCK=(function(){
@@ -595,18 +741,33 @@ const L=o=>o[lang]||o.ja||o.en;
 let coll=[];try{coll=JSON.parse(localStorage.getItem('desk-collection')||'[]')}catch(e){coll=[]}
 const saveColl=()=>{try{localStorage.setItem('desk-collection',JSON.stringify(coll))}catch(e){}};
 const isColl=k=>coll.includes(k);
-function updCount(bump){[$('tab-collect'),$('tray')].forEach(b=>{b.innerHTML=`collection<span class="cc">${coll.length}</span>`;if(bump&&!reduce){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}});if(drawerOpen)renderTray()}
-function syncButtons(){document.querySelectorAll('[data-a=collect]').forEach(b=>{const on=isColl(b.dataset.k);b.setAttribute('aria-pressed',on);b.textContent=mode==='collect'?'− Remove':on?'✓ Collected':'+ Collect'})}
-function toggleColl(k,el){if(isColl(k)){coll=coll.filter(x=>x!==k);if(mode==='collect'&&el){el.remove();if(!coll.length)showCollect()}}else coll.push(k);saveColl();updCount(true);syncButtons();if(mode==='collect')head('Your table','Collection',[coll.length+(coll.length===1?' item':' items'),'Kept in this browser'])}
+const thumbOf=k=>{const [t,a1,a2]=k.split(':');if(t==='w'&&P[+a1]&&P[+a1].sheets[+a2])return src(P[+a1].sheets[+a2].img,'s');if(t==='r'&&R[+a1])return src(R[+a1].img,'s');return null};
+const MAXMINI=12;
+function minisHTML(wait){const shown=coll.slice(-MAXMINI);return `<span class="minis" aria-hidden="true">${coll.length>MAXMINI?`<span class="more">+${coll.length-MAXMINI}</span>`:''}${shown.map((k,n)=>{const src=thumbOf(k),cls='mini'+(wait&&n===shown.length-1?' wait':'');return src?`<img class="${cls}" alt="" src="${src}">`:`<span class="${cls}"></span>`}).join('')}</span>`}
+function updCount(bump,wait){$('tab-collect').innerHTML=`collection${minisHTML(wait)}`;$('tray').innerHTML=`collection<span class="cc">${coll.length}</span>`;if(drawerOpen)renderTray()}
+/* what you collect flies to the word "collection" and settles there as a tiny icon */
+function flyTarget(){const t=$('tab-collect');if(t.offsetParent&&!$('overlay').contains(t)){const m=t.querySelector('.mini.wait');return m||t}const d=$('duck');return d.offsetParent?d:null}
+function fly(src){const land=()=>{const m=$('tab-collect').querySelector('.mini.wait');if(m){m.classList.remove('wait');if(!reduce){m.classList.add('pop')}}const d=$('duck');if(!reduce&&d){d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop')}};
+  const tgt=flyTarget();if(reduce||!src||!tgt||!src.getBoundingClientRect){land();return}
+  const a=src.getBoundingClientRect(),b=tgt.getBoundingClientRect();if(!a.width){land();return}
+  const g=document.createElement(src.tagName==='IMG'?'img':'div');if(src.tagName==='IMG')g.src=src.src;else g.style.background='var(--fg)';g.className='flyer';
+  Object.assign(g.style,{left:a.left+'px',top:a.top+'px',width:a.width+'px',height:a.height+'px'});document.body.appendChild(g);
+  const dx=b.left+b.width/2-(a.left+a.width/2),dy=b.top+b.height/2-(a.top+a.height/2),sc=Math.max(9/a.width,9/a.height);
+  const an=g.animate([{transform:'none',opacity:1},{transform:`translate(${dx*.55}px,${dy*.35-60}px) scale(${Math.max(sc,.35)})`,opacity:1,offset:.55},{transform:`translate(${dx}px,${dy}px) scale(${sc})`,opacity:.9}],{duration:760,easing:'cubic-bezier(.5,0,.25,1)'});
+  an.onfinish=()=>{g.remove();land()}}
+function syncButtons(){document.querySelectorAll('[data-a=collect]').forEach(b=>{const on=isColl(b.dataset.k);b.setAttribute('aria-pressed',on);b.textContent=mode==='collect'&&!shared?'− Remove':on?'✓ Collected':'+ Collect'})}
+function toggleColl(k,el,src){if(isColl(k)){coll=coll.filter(x=>x!==k);if(mode==='collect'&&!shared&&el){el.remove();if(!coll.length)showCollect()}updCount()}else{coll.push(k);updCount(false,true);fly(src)}saveColl();syncButtons();if(mode==='collect'&&!shared){head('Your table','Collection',[coll.length+(coll.length===1?' item':' items'),'Kept in this browser']);updCollTools()}}
 
 function renderList(){list.innerHTML='';
   P.forEach((it,i)=>{const li=document.createElement('li');li.className='item';
-    li.innerHTML=`<button class="entry" type="button" aria-pressed="false"><span class="ethumb"><img alt="" src="${IMG[it.sheets[it.cover].img]}" loading="lazy"></span><span class="eno">${it.no}</span><span class="ettl">${it.title}</span></button>`;
-    li.querySelector('button').addEventListener('click',()=>{if(mode==='works'&&cur===i)return;go('works',()=>openWork(i))});list.appendChild(li)})}
+    li.innerHTML=`<button class="entry" type="button" aria-pressed="false"><span class="ethumb"><img alt="" src="${src(it.sheets[it.cover].img,'s')}" decoding="async" loading="lazy"></span><span class="eno">${it.no}</span><span class="ettl">${it.title}${it.period?`<span class="eyr">${it.period}</span>`:''}</span></button>`;
+    const bt=li.querySelector('button');bt.addEventListener('click',()=>{if(mode==='works'&&cur===i)return;go('works',()=>openWork(i))});
+    bt.setAttribute('aria-label',it.no+' '+it.title);bt.addEventListener('mouseenter',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=`<span class="cno">${it.no}</span><span class="ct">${it.title}</span>${it.period?`<span class="cm">${it.period}</span>`:''}`;cr.classList.toggle('peek',!(mode==='works'&&cur===i))});
+    bt.addEventListener('mouseleave',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=cr._html||'';cr.classList.remove('peek')});list.appendChild(li)})}
 function mark(){list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',mode==='works'&&j===cur?'true':'false'))}
 function updProj(){const b=$('projBtn');if(!b)return;const names={refs:'References',text:'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
-function setMode(m){mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
-  relBtn.hidden=m!=='works';layBtn.hidden=!(m==='works'||m==='collect');app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
+function setMode(m){if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
+  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{placeDuck()}catch(e){}});layBtn.hidden=!(m==='works'||m==='collect');app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
 
 /* ---- table surface ---- */
 function newCanvas(){scroller.innerHTML='';canvas=document.createElement('div');canvas.className='canvas';scroller.appendChild(canvas);scroller.scrollTop=0;return canvas}
@@ -614,14 +775,14 @@ function grow(){let b=0;canvas.querySelectorAll('.sheet').forEach(el=>b=Math.max
 function clamp(el){const w=el.offsetWidth;let l=parseFloat(el.style.left),t=parseFloat(el.style.top);
   l=Math.min(Math.max(l,-w+48),W()-48);t=Math.max(t,0);el.style.left=l+'px';el.style.top=t+'px';grow()}
 function animate(el){if(reduce)return;el.classList.add('move');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('move'),340)}
-const setW=(el,w)=>{el._w=w;el.style.width=Math.round(w)+'px';el.style.setProperty('--u',(Math.round(w)/100)+'px')};
+const setW=(el,w)=>{el._w=w;el.style.width=Math.round(w)+'px';el.style.setProperty('--u',(Math.round(w)/100)+'px');const im=el._im;if(im&&im.dataset.k){im.sizes=Math.round(w)+'px';if(!im.getAttribute('srcset')){im.srcset=srcset(im.dataset.k);im.src=src(im.dataset.k,'m')}}};
 const hOf=el=>{if(el._text){el._ar=el.offsetWidth/Math.max(1,el.offsetHeight);return el.offsetHeight}return el._w/el._ar+el._cap};
 
 const linksHTML=ls=>ls&&ls.length?`<span class="links">${ls.map(l=>`<a href="${l.url}" target="_blank" rel="noopener">▶ ${l.label}</a>`).join('')}</span>`:'';
 function makeSheet(o){const el=document.createElement('div');el.className='sheet'+(o.ref?' ref':'');el.tabIndex=0;el._ar=o.ar;
   el._cap=o.ref?27+(o.links&&o.links.length?26:0):0;
-  el.setAttribute('role','group');el.setAttribute('aria-label',o.left);
-  el.innerHTML=`${o.html?`<div class="tsheet">${o.html}</div>`:`<img alt="${o.left}" src="${IMG[o.img]}" draggable="false">`}${o.ref?`<div class="sheet-cap"><span>${o.left}</span><span>${o.right}</span></div>${o.links&&o.links.length?`<div class="sheet-links">${linksHTML(o.links)}</div>`:''}`:''}<div class="tools"><button type="button" data-a="collect" data-k="${o.key}" aria-pressed="false">+ Collect</button></div>`;
+  el.setAttribute('role','group');el.setAttribute('aria-label',o.left);el._img=o.img;
+  el.innerHTML=`${o.html?`<div class="tsheet">${o.html}</div>`:`<img alt="${o.left}" ${SZ.length?`data-k="${o.img}"`:`src="${IMG[o.img]}"`} loading="lazy" decoding="async" draggable="false" style="aspect-ratio:${o.ar}">`}${o.ref?`<div class="sheet-cap"><span>${o.left}</span><span>${o.right}</span></div>${o.links&&o.links.length?`<div class="sheet-links">${linksHTML(o.links)}</div>`:''}`:''}<div class="tools"><button type="button" data-a="collect" data-k="${o.key}" aria-pressed="false">+ Collect</button></div>`;
   el.addEventListener('click',e=>{if(isM()&&layoutMode!=='free'&&!e.target.closest('button,a'))zoom(el)});
   el.addEventListener('pointerdown',e=>{if(e.target.closest('button,a'))return;if(isM()&&layoutMode!=='free')return;e.preventDefault();el.focus({preventScroll:true});
     el.setPointerCapture(e.pointerId);raise(el);el.classList.remove('move');el.classList.add('dragging');
@@ -629,7 +790,7 @@ function makeSheet(o){const el=document.createElement('div');el.className='sheet
     const mv=ev=>{el.style.left=s.l+ev.clientX-s.x+'px';el.style.top=s.t+ev.clientY-s.y+'px'};
     const up=ev=>{const moved=Math.hypot(ev.clientX-s.x,ev.clientY-s.y)>4;el.classList.remove('dragging');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(!moved&&ev.type==='pointerup')zoom(el);else clamp(el)};
     el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)});
-  el.querySelector('[data-a=collect]').addEventListener('click',()=>toggleColl(o.key,el));el._key=o.key;
+  el._im=el.querySelector('img');el.querySelector('[data-a=collect]').addEventListener('click',()=>toggleColl(o.key,el,el.querySelector('img')||el));el._key=o.key;
   el.addEventListener('keydown',e=>{const d={ArrowLeft:[-16,0],ArrowRight:[16,0],ArrowUp:[0,-16],ArrowDown:[0,16]}[e.key];
     if(d){e.preventDefault();el.style.left=parseFloat(el.style.left)+d[0]+'px';el.style.top=parseFloat(el.style.top)+d[1]+'px';clamp(el)}
     else if(e.key==='Enter'){raise(el);zoom(el)}});
@@ -662,7 +823,7 @@ function arrange(els){const w=W(),g=10,t=Math.min(VH()*.42,w/2.4);let y=0;
   rowsFor(els,t,w,g).forEach(({row,h})=>{let x=0;row.forEach(el=>{animate(el);setW(el,h*el._ar);el.classList.remove('big');el.style.left=x+'px';el.style.top=y+'px';x+=h*el._ar+g});y+=h+Math.max(...row.map(e=>e._cap))+g});grow()}
 
 /* ---- head ---- */
-function head(no,title,meta){$('crumb').textContent=title;$('pno').textContent=no;$('ptitle').textContent=title;$('pmeta').innerHTML=meta.filter(Boolean).map(m=>`<span>${m}</span>`).join('')}
+function head(no,title,meta){const cr=$('crumb');const m=meta.filter(Boolean);cr._html=`${/^No\. /.test(no)?`<span class="cno">${no.slice(4)}</span>`:''}<span class="ct">${title}</span>${m.slice(0,2).filter(x=>x.length<40).map(x=>`<span class="cm">${x}</span>`).join('')}`;cr.innerHTML=cr._html;cr.classList.remove('peek');$('pno').textContent=no;$('ptitle').textContent=title;$('pmeta').innerHTML=meta.filter(Boolean).map(m=>`<span>${m}</span>`).join('')}
 const textHTML=i=>{const p=P[i],x=L(p.text);return `<h3>${x.title}</h3>${x.body.map(b=>`<p>${b}</p>`).join('')}`};
 const textSheet=i=>{const el=makeSheet({ar:.72,left:`${P[i].title}, text`,key:`t:${i}`,html:textHTML(i)});el._text=1;el._ti=i;el.classList.add('text');return el};
 const projSheets=i=>{const els=P[i].sheets.map((sh,k)=>workSheet(sh,i,k));if(P[i].text)els.splice(Math.min(2,els.length),0,textSheet(i));return els};
@@ -686,12 +847,12 @@ function addRefs(focus,quick){const ids=relOf(cur);const r=rng(500+cur*13);const
     const hh=hOf(el),y=Math.max(0,(k+.5)/els.length*(H-hh)+(r()-.5)*80);el.style.left=r()*Math.max(0,w-el._w)+'px';el.style.top=Math.min(y,H-hh)+'px';raise(el)});
   if(focus!=null){const el=els.find(e=>e._ref===focus);if(el){raise(el);scroller.scrollTo({top:Math.max(0,parseFloat(el.style.top)-VH()*.3),behavior:reduce?'auto':'smooth'})}}}
 /* The reference state is sticky: once the lights are off they stay off on every page until References is pressed again. */
-function setRefs(on,origin,focus){refsOn=on;relBtn.setAttribute('aria-pressed',on);$('tab-refs').classList.toggle('lit',on);
+function setRefs(on,origin,focus){refsOn=on;relBtn.setAttribute('aria-pressed',on);if(variant==='a')relBtn.textContent=on?'lights on':'lights off';$('tab-refs').classList.toggle('lit',on);
   invert(on,origin,()=>{if(!canvas||mode!=='works')return;if(on)addRefs(focus);else canvas.querySelectorAll('.sheet.ref').forEach(el=>el.remove());if(layoutMode!=='free')applyLayout(layoutMode);syncButtons()})}
 
 /* ---- views ---- */
 function openWork(i,opts={}){setLayout('free');setMode('works');cur=i;mark();const p=P[i];
-  relBtn.disabled=false;relBtn.textContent='References';
+  relBtn.disabled=false;relBtn.textContent=variant==='a'?(refsOn?'lights on':'lights off'):'References';relBtn.title='Show the references that shaped this work';
   head('No. '+p.no,p.title,[p.period,p.type,p.tag,p.sheets.length+(p.sheets.length===1?' sheet':' sheets')+(p.text?' + text':'')]);
   newCanvas();const els=projSheets(i);els.forEach(el=>canvas.appendChild(el));
   const r=rng(seed());shuffle(els,r);sizeAll(els,r);if(isM()){setLayout('grid');layGrid(els)}else collage(els,r);syncButtons();updProj();
@@ -706,19 +867,42 @@ function showGrid(origin){if(!refsOn)setRefs(true,origin);
   bar.innerHTML=tags.map(t=>`<button type="button" class="chip" data-t="${t}" aria-pressed="${t===tagOn}">${t}</button>`).join('');
   const g=document.createElement('div');g.className='refgrid';
   R.forEach((r,j)=>{const t=document.createElement('div');t.className='tile';t.dataset.tags=r.tags.join('|');
-    const works=r.rel.length?r.rel.map(i=>`<button type="button" class="plink" data-p="${i}"><img alt="" src="${IMG[P[i].sheets[P[i].cover].img]}"><span>${P[i].title}</span></button>`).join(''):'<span class="none">—</span>';
-    t.innerHTML=`<div class="frame" role="button" tabindex="0" aria-expanded="false" aria-label="${r.title}: show related works"><img alt="${r.title}" src="${IMG[r.img]}"><button type="button" class="tcollect" data-a="collect" data-k="r:${j}" aria-pressed="false">+ Collect</button><div class="tcap"><span class="tttl">${r.title}</span>${linksHTML(r.links)}</div><div class="tinfo"><span class="tih">${lang==='ja'?'関連する作品':'Related works'}</span><div class="tiw">${works}</div></div></div>`;
+    const nt=noteOf(r);t.dataset.j=j;
+    t.innerHTML=`<div class="frame" role="button" tabindex="0" aria-expanded="false" aria-label="${r.title}"><img alt="${r.title}" src="${src(r.img,'s')}" loading="lazy" decoding="async"><button type="button" class="tcollect" data-a="collect" data-k="r:${j}" aria-pressed="false">+ Collect</button><div class="tcap"><span class="tttl">${r.title}</span>${nt.length?`<span class="tnote">${nt[0]}</span>`:''}</div></div>`;
     const fr=t.querySelector('.frame');
-    const tog=()=>{const on=!t.classList.contains('open');g.querySelectorAll('.tile.open').forEach(x=>{x.classList.remove('open');x.querySelector('.frame').setAttribute('aria-expanded','false')});t.classList.toggle('open',on);fr.setAttribute('aria-expanded',on)};
+    const tog=()=>{if(panelJ===j)closeRefPanel();else openRefPanel(j)};
     fr.addEventListener('click',e=>{if(e.target.closest('button,a'))return;tog()});
     fr.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===fr){e.preventDefault();tog()}});
-    t.querySelector('.tcollect').addEventListener('click',()=>toggleColl('r:'+j));
-    t.querySelectorAll('.plink').forEach(b=>b.addEventListener('click',e=>openWork(+b.dataset.p,{refs:true,focus:j,origin:originOf(e.currentTarget)})));
+    t.querySelector('.tcollect').addEventListener('click',()=>toggleColl('r:'+j,null,t.querySelector('.frame>img')));
     g.appendChild(t)});
   const apply=()=>{bar.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.t===tagOn));
     g.querySelectorAll('.tile').forEach(t=>t.hidden=!(tagOn==='All'||t.dataset.tags.split('|').includes(tagOn)))};
   bar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(c){tagOn=c.dataset.t;apply()}});
   scroller.appendChild(bar);scroller.appendChild(g);apply();syncButtons();scroller.scrollTop=0}
+
+/* ---- one reference opened beside the grid ---- */
+const noteOf=r=>{const n=r.note;if(!n)return[];return(n[lang]&&n[lang].length?n[lang]:n.ja&&n.ja.length?n.ja:n.en)||[]};
+const textsOf=j=>T.map((x,k)=>x.refs.includes(j)?k:-1).filter(k=>k>=0);
+let panelJ=null;
+function openRefPanel(j){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=noteOf(r),tx=textsOf(j);panelJ=j;
+  const works=r.rel.map(i=>`<button type="button" data-p="${i}"><img alt="" src="${src(P[i].sheets[P[i].cover].img,'s')}"><span>${P[i].no} ${P[i].title}</span></button>`).join('');
+  const texts=tx.map(k=>`<button type="button" data-t="${k}"><span>${T[k].date}</span><span>${L(T[k]).title}</span></button>`).join('');
+  pn.innerHTML=`<div class="rp-top"><span>${r.no} · ${r.kind}</span><span class="rp-nav"><button type="button" data-step="-1" aria-label="Previous">←</button><button type="button" data-step="1" aria-label="Next">→</button><button type="button" data-close>${ja?'閉じる':'close'}</button></span></div>
+    <h2>${r.title}</h2><div class="rp-img"><img alt="${r.title}" src="${src(r.img,'m')}"></div>
+    ${nt.length?`<div class="rp-note">${nt.map(p=>`<p>${p}</p>`).join('')}</div>`:''}
+    ${r.links&&r.links.length?linksHTML(r.links):''}
+    <button type="button" class="rp-collect" data-a="collect" data-k="r:${j}" aria-pressed="false">+ Collect</button>
+    <div class="rp-sec"><span class="rp-h">${ja?'関連する作品':'Related works'}</span>${works?`<div class="rp-works">${works}</div>`:`<span class="rp-none">—</span>`}</div>
+    <div class="rp-sec"><span class="rp-h">${ja?'関連するテキスト':'Related texts'}</span>${texts?`<div class="rp-texts">${texts}</div>`:`<span class="rp-none">—</span>`}</div>`;
+  pn.hidden=false;desk.classList.add('panel-open');if(!reduce){pn.classList.remove('enter');void pn.offsetWidth;pn.classList.add('enter')}pn.scrollTop=0;
+  pn.querySelector('[data-close]').addEventListener('click',closeRefPanel);
+  pn.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const vis=[...scroller.querySelectorAll('.tile:not([hidden])')].map(t=>+t.dataset.j);const n=vis.indexOf(j);openRefPanel(vis[(n+ +b.dataset.step+vis.length)%vis.length])}));
+  pn.querySelector('.rp-collect').addEventListener('click',()=>toggleColl('r:'+j,null,pn.querySelector('.rp-img img')));
+  pn.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',e=>{closeRefPanel();openWork(+b.dataset.p,{refs:true,focus:j,origin:originOf(e.currentTarget)})}));
+  pn.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('text',()=>showText(+b.dataset.t))}));
+  scroller.querySelectorAll('.tile').forEach(t=>{const on=+t.dataset.j===j;t.classList.toggle('sel',on);t.querySelector('.frame').setAttribute('aria-expanded',on)});
+  const tile=scroller.querySelector(`.tile[data-j="${j}"]`);if(tile)tile.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});syncButtons()}
+function closeRefPanel(){panelJ=null;$('refpanel').hidden=true;desk.classList.remove('panel-open');scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
 
 const AB=D.about;
 function showAbout(){leave();const A=L(AB);
@@ -729,7 +913,7 @@ function showAbout(){leave();const A=L(AB);
 function setLang(l){lang=l;try{localStorage.setItem('desk-lang',l)}catch(e){}document.documentElement.lang=l;
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
   document.querySelectorAll('.sheet.text').forEach(el=>{el.querySelector('.tsheet').innerHTML=textHTML(el._ti);hOf(el);clamp(el)});
-  if(mode==='text')showText(curText);else if(mode==='about')showAbout()}
+  if(mode==='text')showText(curText);else if(mode==='about')showAbout();else if(mode==='refs'){const j=panelJ;showGrid();if(j!=null)openRefPanel(j)}else if(mode==='collect')updCollTools()}
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
 let curText=null;
 function leave(){}
@@ -746,14 +930,62 @@ function showText(n){leave();setMode('text');curText=n;app.classList.toggle('rea
     d.innerHTML=`<button type="button" class="backlink">← All texts</button>${y.body.map((p,k)=>`<p${k===0?' class="lead"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
     d.querySelector('.backlink').addEventListener('click',()=>showText());
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
-    d.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.r;if(R[j].rel.length)openWork(R[j].rel[0],{refs:true,focus:j});else showGrid()}));
+    d.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.r;go('refs',()=>{showGrid();openRefPanel(j)})}));
     scroller.appendChild(d)}
   scroller.scrollTop=0}
-function showCollect(){setLayout('free');leave();setMode('collect');mark();head('Your table','Collection',[coll.length+(coll.length===1?' item':' items'),'Kept in this browser']);
-  newCanvas();
-  if(!coll.length){canvas.innerHTML='<div class="empty"><p class="lead">Nothing collected yet.</p><p>Press <b>+ Collect</b> on any drawing, render or reference and it gathers here, on a table of your own.</p></div>';return}
-  const els=coll.map(k=>{const [t,a1,a2]=k.split(':');if(t==='w'){const p=P[+a1];if(!p||!p.sheets[+a2])return null;return workSheet(p.sheets[+a2],+a1,+a2)}if(t==='t'){return P[+a1]&&P[+a1].text?textSheet(+a1):null}if(!R[+a1])return null;return refSheet(+a1)}).filter(Boolean);
+function showCollect(keys){setLayout('free');leave();setMode('collect');shared=keys&&keys.length?keys:null;const list=shared||coll;mark();head('Your table','Collection',[list.length+(list.length===1?' item':' items'),shared?'Shared with you':'Kept in this browser']);
+  newCanvas();updCollTools();
+  if(!list.length){canvas.innerHTML='<div class="empty"><p class="lead">Nothing collected yet.</p><p>Press <b>+ Collect</b> on any drawing, render or reference and it gathers here, on a table of your own.</p></div>';return}
+  const els=list.map(k=>{const [t,a1,a2]=k.split(':');if(t==='w'){const p=P[+a1];if(!p||!p.sheets[+a2])return null;return workSheet(p.sheets[+a2],+a1,+a2)}if(t==='t'){return P[+a1]&&P[+a1].text?textSheet(+a1):null}if(!R[+a1])return null;return refSheet(+a1)}).filter(Boolean);
   els.forEach(el=>canvas.appendChild(el));const r=rng(seed());sizeAll(els,r,false);if(isM()){setLayout('grid');layGrid(els)}else collage(els.sort((a,b)=>b._w-a._w),r);syncButtons()}
+/* a collection can leave the site: as one image of the table, or as a link that lays the same table for someone else */
+let shared=null;
+const toShare=k=>{const [t,a,b]=k.split(':');if(t==='w'&&P[+a])return 'w'+P[+a].no+'.'+b;if(t==='t'&&P[+a])return 't'+P[+a].no;if(t==='r'&&R[+a])return 'r'+R[+a].no.slice(4);return null};
+const fromShare=x=>{const m=x.match(/^([wtr])([^.]+)(?:\.(\d+))?$/);if(!m)return null;if(m[1]==='r'){const j=R.findIndex(r=>r.no.slice(4)===m[2]);return j<0?null:'r:'+j}const i=P.findIndex(p=>p.no===m[2]);if(i<0)return null;if(m[1]==='t')return P[i].text?'t:'+i:null;return P[i].sheets[+m[3]]?`w:${i}:${+m[3]}`:null};
+function readShared(){try{const h=decodeURIComponent(location.hash||'');const m=h.match(/^#c=(.+)$/);if(!m)return null;const ks=m[1].split(',').map(fromShare).filter(Boolean);return ks.length?[...new Set(ks)]:null}catch(e){return null}}
+function updCollTools(){const list=shared||coll,ja=lang==='ja';$('saveImg').hidden=$('shareColl').hidden=!list.length;$('adopt').hidden=!shared;
+  const sn=$('sharedNote');sn.hidden=!shared;sn.textContent=ja?`共有されたコレクション(${list.length})`:`A shared collection (${list.length})`;
+  $('adopt').textContent=ja?'自分のコレクションに加える':'add to my collection';$('saveImg').textContent=ja?'画像で保存':'save image';$('shareColl').textContent=ja?'リンクで共有':'share link'}
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
+function shareLink(){const list=shared||coll;return location.href.split('#')[0]+'#c='+list.map(toShare).filter(Boolean).join(',')}
+$('shareColl').addEventListener('click',async()=>{const url=shareLink(),ja=lang==='ja';
+  if(navigator.share&&matchMedia('(hover:none)').matches){try{await navigator.share({title:D.site.name+' — collection',url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(url);toast(ja?'リンクをコピーしました':'Link copied');return}catch(e){}
+  showOut(null,url)});
+$('adopt').addEventListener('click',()=>{shared.forEach(k=>{if(!coll.includes(k))coll.push(k)});saveColl();updCount();try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}showCollect();toast(lang==='ja'?'自分のコレクションに加えました':'Added to your collection')});
+function showOut(src,link){const o=$('imgout'),ja=lang==='ja',row=$('imgoutRow'),im=$('imgoutImg');im.hidden=!src;if(src)im.src=src;
+  row.innerHTML=(src?`<a href="${src}" download="${D.site.name.replace(/\s+/g,'-').toLowerCase()}-collection.png">${ja?'ダウンロード':'download'}</a>`:`<span class="linkbox">${link}</span>`)+`<button type="button">${ja?'閉じる':'close'}</button>`;
+  $('imgoutHint').textContent=src?(ja?'うまく保存できないときは、画像を長押し(右クリック)して保存してください':'If the download does not start, press and hold (or right-click) the image to save it'):(ja?'このリンクをコピーして送ってください':'Copy this link and send it');
+  row.querySelector('button').addEventListener('click',()=>o.hidden=true);o.hidden=false}
+$('imgout').addEventListener('click',e=>{if(e.target.id==='imgout')e.currentTarget.hidden=true});
+/* draw the table as it lies now into one picture */
+function wrapLines(ctx,text,maxW,words){const out=[];let line='';const parts=words?text.split(/(\s+)/):[...text];for(const p of parts){const t=line+p;if(ctx.measureText(t).width>maxW&&line.trim()){out.push(line.trimEnd());line=words?p.trimStart():p}else line=t}if(line.trim())out.push(line);return out}
+async function collImage(){const els=[...canvas.querySelectorAll('.sheet')];if(!els.length)return null;
+  await Promise.all(els.map(el=>el._im).filter(Boolean).map(im=>{im.loading='eager';return im.decode().catch(()=>{})}));
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;els.forEach(el=>{const l=el.offsetLeft,t=el.offsetTop;x0=Math.min(x0,l);y0=Math.min(y0,t);x1=Math.max(x1,l+el.offsetWidth);y1=Math.max(y1,t+el.offsetHeight)});
+  const pad=56,foot=40,W0=x1-x0+pad*2,H0=y1-y0+pad*2+foot,sc=Math.min(2,4000/W0,8000/H0);
+  const cv=document.createElement('canvas');cv.width=Math.round(W0*sc);cv.height=Math.round(H0*sc);const c=cv.getContext('2d');c.scale(sc,sc);
+  const cs=getComputedStyle(document.body),bg=cs.getPropertyValue('--bg').trim()||'#ececea',fg=cs.getPropertyValue('--fg').trim()||'#141414',font=cs.getPropertyValue('--f-body');
+  c.fillStyle=bg;c.fillRect(0,0,W0,H0);
+  els.sort((a,b)=>(+a.style.zIndex||0)-(+b.style.zIndex||0));
+  for(const el of els){const ox=el.offsetLeft-x0+pad,oy=el.offsetTop-y0+pad,w=el.offsetWidth;
+    if(el._text){c.fillStyle=fg;el.querySelectorAll('.tsheet h3,.tsheet p').forEach(n=>{const st=getComputedStyle(n),lh=parseFloat(st.lineHeight)||parseFloat(st.fontSize)*1.6;c.font=`${st.fontWeight} ${st.fontSize} ${font}`;c.textBaseline='top';
+      let y=oy+n.offsetTop;wrapLines(c,n.textContent,n.clientWidth,lang==='en').forEach(l=>{if(y+lh<=oy+el.offsetHeight+2)c.fillText(l,ox+n.offsetLeft,y+(lh-parseFloat(st.fontSize))/2);y+=lh})});continue}
+    const im=el.querySelector('img');if(im&&im.complete&&im.naturalWidth){try{c.drawImage(im,ox,oy,w,im.offsetHeight)}catch(e){}}
+    c.strokeStyle='rgba(0,0,0,.12)';c.lineWidth=1;c.strokeRect(ox+.5,oy+.5,w-1,el.offsetHeight-1);
+    const cap=el.querySelector('.sheet-cap');if(cap){const cy=oy+cap.offsetTop;c.fillStyle=fg;c.fillRect(ox,cy,w,cap.offsetHeight);c.fillStyle=bg;c.font=`400 10px ${font}`;c.textBaseline='middle';c.fillText(wrapLines(c,cap.textContent.trim(),w-16,true)[0]||'',ox+8,cy+cap.offsetHeight/2)}}
+  c.fillStyle=fg;c.font=`700 13px ${font}`;c.textBaseline='alphabetic';c.fillText(D.site.name,pad,H0-pad/2-6);
+  const d=new Date();c.font=`400 11px ${font}`;c.fillStyle=cs.getPropertyValue('--muted').trim()||'#8b8a85';c.fillText(`collection · ${els.length} · ${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`,pad+c.measureText(D.site.name).width+60,H0-pad/2-6);
+  return cv.toDataURL('image/png')}
+$('saveImg').addEventListener('click',async()=>{try{const url=await collImage();if(url)showOut(url)}catch(e){console.error(e);toast(lang==='ja'?'画像を作れませんでした':'Could not make the image')}});
+/* in layout A the duck stands on the word of the place you are in, or beside the name while you look at works */
+function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.top='';return}
+  const box=$('s-rail-top'),tab=[...$('nav').querySelectorAll('.tab[aria-selected="true"]')].find(t=>t.offsetParent),br=$('brand');if(!box.offsetParent)return;
+  const w=d.offsetWidth,h=d.offsetHeight;let x,y;
+  if(tab&&mode!=='works'){let tw=tab.offsetWidth;const t0=tab.firstChild;if(t0&&t0.nodeType===3){const r=document.createRange();r.selectNodeContents(t0);tw=r.getBoundingClientRect().width}x=tab.offsetLeft+tw/2-w/2;y=tab.offsetTop-h-1}
+  else{x=br.offsetLeft+br.offsetWidth+8;y=br.offsetTop+br.offsetHeight-h+2}
+  d.style.left=Math.max(0,x)+'px';d.style.top=y+'px'}
+addEventListener('resize',()=>requestAnimationFrame(placeDuck));
 const POSE={works:'stand',refs:'sleep',text:'read',collect:'carry',about:'wave'};
 function setPose(m){const d=$('duck');if(d.dataset.pose===POSE[m])return;const p=POSE[m];d.dataset.pose=p;d.innerHTML=`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`}
 let navT=0;
@@ -774,9 +1006,9 @@ function layGrid(els){const w=W(),g=18,cols=w>1100?4:w>760?3:2,cw=(w-g*(cols-1))
     if(el._text){setW(el,cw);for(let k=0;k<4;k++){const h=hOf(el);if(h<=ch)break;setW(el,el._w*ch/h*.97)}}else{const fit=Math.min(cw,(ch-el._cap)*el._ar);setW(el,fit)}
     if(el._ref!=null){setW(el,el._w*.86)}const h=hOf(el);let l=c*(cw+g)+(cw-el._w)/2,t=rw*(ch+g)+(ch-h)/2;
     if(el._ref!=null){l+=(c%2?-1:1)*cw*.18;t-=ch*.16}el.style.left=Math.max(0,Math.min(w-el._w,l))+'px';el.style.top=Math.max(0,t)+'px';raise(el)});grow()}
-function layColumn(els){const w=W(),g=isM()?14:22,col=isM()?w:Math.min(w*.62,760);let y=0;
+function layColumn(els){const w=W(),g=isM()?14:22,col=isM()?w:Math.min(w*.48,600);let y=0;
   els.forEach(el=>{el.classList.remove('big');animate(el);
-    if(el._text)setW(el,isM()?w:Math.min(col,520));else setW(el,Math.min(col,(VH()*.9-el._cap)*el._ar));
+    if(el._text)setW(el,isM()?w:Math.min(col,400));else setW(el,Math.min(col,(VH()*.62-el._cap)*el._ar));
     if(el._ref!=null&&y>0){setW(el,Math.min(col*.56,(VH()*.5)*el._ar));const h=hOf(el),side=(el._ref%2)?w-el._w-(isM()?0:w*.06):(isM()?0:w*.06);
       el.style.left=Math.max(0,side)+'px';el.style.top=Math.max(0,y-g-h*.42)+'px';raise(el);y+=h*.58;return}
     el.style.left=(w-el._w)/2+'px';el.style.top=y+'px';raise(el);y+=hOf(el)+g});grow()}
@@ -794,20 +1026,21 @@ layBtn.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>appl
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>canvas&&canvas.querySelectorAll('.sheet').forEach(clamp),120)});
 /* ---- comparison patterns: same content, three ways of organising the controls ---- */
 const SLOTS={
+  a:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-top-l':['collTools'],'s-top-r':['layout','rel'],'s-dhead':['label']},
   b:{'s-top-l':['brand'],'s-top-c':['nav'],'s-top-r':['lang'],'s-rail':['list'],'s-dhead':['label'],'s-bc':['rel','layout']},
-  c:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-dhead':['label'],'s-tr':['rel'],'s-bl':['layout']},
+  c:{'s-rail-top':['brand','nav','duck'],'s-rail':['list'],'s-dhead':['label'],'s-tr':['rel','collTools'],'s-bl':['layout']},
   d:{'s-tl':['brand','crumb'],'s-tr':['rel','layout','indexBtn'],'s-ov-main':['list'],'s-ov-side':['nav','lang']},
-  m:{'s-top-l':['brand'],'s-top-r':['duck','indexBtn'],'s-dhead':['projBtn'],'s-bc':['rel','layout'],'s-ov-main':['nav','list']}};
+  m:{'s-top-l':['brand'],'s-top-r':['duck','indexBtn'],'s-dhead':['projBtn'],'s-tr':['collTools'],'s-bc':['rel','layout'],'s-ov-main':['nav','list']}};
 let variant='b',drawerOpen=false;
 function rerender(){const m=mode;
   if(m==='works'){const on=refsOn;openWork(Math.max(0,cur),{refs:on})}
   else if(m==='refs')showGrid();else if(m==='text')showText(curText);else if(m==='about')showAbout();
-  else if(m==='collect')showCollect()}
+  else if(m==='collect')showCollect(shared)}
 function setVariant(v,keep){variant=v;app.className='app v-'+v;const pool=$('pool');
-  ['brand','colo','duck','crumb','nav','lang','list','label','rel','layout','tray','indexBtn','projBtn'].forEach(id=>pool.appendChild($(id)));
+  ['brand','colo','duck','crumb','nav','lang','list','label','rel','layout','tray','indexBtn','projBtn','collTools'].forEach(id=>pool.appendChild($(id)));
   Object.entries(SLOTS[v]).forEach(([slot,ids])=>ids.forEach(id=>$(slot).appendChild($(id))));
-  document.querySelectorAll('.pattern button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
-  toggleDrawer(false);toggleOverlay(false);if(keep!==false)requestAnimationFrame(rerender)}
+  document.querySelectorAll('.pattern button[data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));
+  toggleDrawer(false);toggleOverlay(false);requestAnimationFrame(()=>{try{placeDuck()}catch(e){}});if(keep!==false)requestAnimationFrame(rerender)}
 function renderTray(){const box=$('drawer-items');box.innerHTML='';$('drawer-n').textContent=coll.length;
   if(!coll.length){box.innerHTML='<p class="dempty">Press + Collect on any sheet. It lands here.</p>';return}
   coll.forEach(k=>{const [t,a1,a2]=k.split(':'),i=+a1;let img=null,label='',go=null;
@@ -815,16 +1048,17 @@ function renderTray(){const box=$('drawer-items');box.innerHTML='';$('drawer-n')
     else if(t==='t'&&P[i]){label=L(P[i].text).title;go=()=>openWork(i)}
     else if(t==='r'&&R[i]){img=R[i].img;label=R[i].title;go=()=>R[i].rel.length?openWork(R[i].rel[0],{refs:true,focus:i}):showGrid()}else return;
     const d=document.createElement('div');d.className='titem2';
-    d.innerHTML=`<button type="button" class="tthumb">${img?`<img alt="" src="${IMG[img]}">`:`<span class="ttext">${label}</span>`}</button><span class="tl">${label}</span><button type="button" class="trm">Remove</button>`;
+    d.innerHTML=`<button type="button" class="tthumb">${img?`<img alt="" src="${src(img,'s')}">`:`<span class="ttext">${label}</span>`}</button><span class="tl">${label}</span><button type="button" class="trm">Remove</button>`;
     d.querySelector('.tthumb').addEventListener('click',go);d.querySelector('.trm').addEventListener('click',()=>toggleColl(k));box.appendChild(d)})}
 function toggleDrawer(on){drawerOpen=on==null?!drawerOpen:on;$('drawer').classList.toggle('open',drawerOpen);$('tray').setAttribute('aria-pressed',drawerOpen);if(drawerOpen)renderTray()}
 function toggleOverlay(on){const o=$('overlay');const v=on==null?o.hidden:on;o.hidden=!v;$('indexBtn').setAttribute('aria-expanded',v);if(v)$('ov-close').focus()}
 $('tray').addEventListener('click',()=>toggleDrawer());$('drawer-close').addEventListener('click',()=>toggleDrawer(false));
 $('indexBtn').addEventListener('click',()=>toggleOverlay(true));$('projBtn').addEventListener('click',()=>{toggleOverlay(true);requestAnimationFrame(()=>{const l=$('list');l.scrollIntoView({block:'start'})})});$('ov-close').addEventListener('click',()=>toggleOverlay(false));
 $('overlay').addEventListener('click',e=>{if(e.target.closest('.entry,.tab'))toggleOverlay(false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){toggleOverlay(false);toggleDrawer(false)}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){toggleOverlay(false);toggleDrawer(false);if(panelJ!=null)closeRefPanel();$('imgout').hidden=true}
+  else if(panelJ!=null&&mode==='refs'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')&&!e.target.closest('input,textarea')){const b=$('refpanel').querySelector(`[data-step="${e.key==='ArrowLeft'?-1:1}"]`);b&&b.click()}});
 $('brand').addEventListener('click',()=>openWork(0));
-document.querySelectorAll('.pattern button').forEach(b=>b.addEventListener('click',()=>setVariant(b.dataset.v)));
+document.querySelectorAll('.pattern button[data-v]').forEach(b=>b.addEventListener('click',()=>setVariant(b.dataset.v)));
 /* Circle pointer: follows the mouse, grows over things you can act on. */
 (function(){const c=$('cursor');if(!c||!matchMedia('(hover:hover) and (pointer:fine)').matches)return;document.documentElement.classList.add('has-cursor');
   let x=-100,y=-100,tx=-100,ty=-100;const lab=c.querySelector('span');let lensSheet=null;
@@ -833,19 +1067,29 @@ document.querySelectorAll('.pattern button').forEach(b=>b.addEventListener('clic
     c.classList.toggle('act',!!act);c.classList.toggle('sheet',!!sh&&!act);const xr=!!sh&&!act&&!sh.classList.contains('text')&&sh.querySelector('img');c.classList.toggle('xray',!!xr);lensSheet=xr?sh:null;lab.textContent=sh&&!act?(sh.classList.contains('big')?'Close':'View'):''});
   addEventListener('pointerdown',()=>c.classList.add('down'));addEventListener('pointerup',()=>c.classList.remove('down'));
   document.addEventListener('pointerleave',()=>c.classList.remove('on'));
-    const lens=c.querySelector('.lens'),li=lens.querySelector('img');let lastSrc='';
-  (function loop(){x+=(tx-x)*(reduce?1:.28);y+=(ty-y)*(reduce?1:.28);c.style.transform=`translate(${x}px,${y}px)`;
-    if(lensSheet&&lensSheet.isConnected){const im=lensSheet.querySelector('img'),r=im.getBoundingClientRect();if(im.src!==lastSrc){li.src=im.src;lastSrc=im.src}
+    const lens=c.querySelector('.lens'),li=lens.querySelector('img');let lastSrc='',running=false,still=0;
+  function loop(){x+=(tx-x)*(reduce?1:.28);y+=(ty-y)*(reduce?1:.28);c.style.transform=`translate(${x}px,${y}px)`;
+    if(lensSheet&&lensSheet.isConnected){const im=lensSheet._im||lensSheet.querySelector('img'),r=im.getBoundingClientRect(),want=lensSheet._img?src(lensSheet._img,'m'):im.currentSrc||im.src;if(want!==lastSrc){li.src=want;lastSrc=want}
       const night=document.body.classList.contains('inv')&&lensSheet._ref==null&&mode==='works';li.style.filter=night?'none':'invert(1)';
       li.style.width=r.width+'px';li.style.height=r.height+'px';li.style.transform=`translate(${r.left-x+32}px,${r.top-y+32}px)`}
-    requestAnimationFrame(loop)})()})();
-renderList();updCount();setVariant(MQ.matches?'m':'c',false);MQ.addEventListener('change',e=>setVariant(e.matches?'m':'c'));
+    /* stop once the pointer has caught up and nothing under it is moving */
+    if(Math.abs(tx-x)<.3&&Math.abs(ty-y)<.3&&!document.querySelector('.sheet.dragging,.sheet.move')){if(++still>20){running=false;return}}else still=0;
+    requestAnimationFrame(loop)}
+  const wake=()=>{still=0;if(!running){running=true;requestAnimationFrame(loop)}};
+  addEventListener('pointermove',wake);addEventListener('scroll',wake,true);addEventListener('pointerdown',wake);wake()})();
+renderList();updCount();setVariant(MQ.matches?'m':'a',false);MQ.addEventListener('change',e=>setVariant(e.matches?'m':'a'));
 /* arrival: choose a language, then the page lifts like a shutter */
-(function(){$('gduckimg').src=DUCKIMG.stand_night;const g=$('gate'),im=$('gimg'),frames=P.flatMap((p,i)=>p.sheets.map(s=>({img:s.img,t:p.title,n:p.no})));let f=0,timer;
-  const show=()=>{const x=frames[f%frames.length];im.src=IMG[x.img];f++;
-    timer=setTimeout(show,reduce?1600:(f%9===0?1100:340))};show();g.querySelectorAll('.gopt').forEach(b=>b.addEventListener('click',()=>{setLang(b.dataset.l);if(mode==='works')openWork(Math.max(0,cur));
-  clearTimeout(timer);if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})}));
-})();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));openWork(0);
+(function(){$('gduckimg').src=DUCKIMG.stand_night;const g=$('gate'),im=$('gimg'),cap=$('gcap'),frames=P.flatMap((p,i)=>p.sheets.map(s=>({img:s.img,t:p.title,n:p.no})));let f=0,timer,gone=false;
+  const show=()=>{const x=frames[f%frames.length];im.src=src(x.img,'s');cap.textContent=x.t;f++;
+    timer=setTimeout(show,reduce?1600:(f%9===0?1100:340))};show();
+  /* the language is only chosen here (Japanese unless changed); a click anywhere else enters */
+  const mark=()=>{g.querySelectorAll('.gopt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));$('genter').textContent=lang==='ja'?'クリックして入る':'Click anywhere to enter'};mark();
+  g.querySelectorAll('.gopt').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setLang(b.dataset.l);mark()}));
+  const enter=()=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works')openWork(Math.max(0,cur));
+    clearTimeout(timer);if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})};
+  const key=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.gopt')){e.preventDefault();enter()}};
+  g.addEventListener('click',enter);addEventListener('keydown',key);
+})();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));{const sh=readShared();if(sh)showCollect(sh);else openWork(0)}
 })();
 
 }).catch(err=>{document.body.insertAdjacentHTML('beforeend','<p style="position:fixed;left:16px;bottom:16px;font:13px sans-serif">Could not load the archive. Please reload.</p>');console.error(err)});
