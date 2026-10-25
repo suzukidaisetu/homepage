@@ -21,3 +21,6 @@ This repo is Aga Shunsei's archive site. Content lives in a Google Drive folder;
 
 The owner writes in Japanese and prefers to see changes quickly in the preview before they go live.
 Content format is described in `content/README.txt` (same structure as the Drive folder).
+References are a spreadsheet (Google Sheets, read as .xlsx; old references.txt still works) and texts are Google Docs (read as .docx;
+old .txt still works). `scripts/office.mjs` reads both without dependencies. `scripts/make-templates.py <site.json> <dir>` turns a built
+site.json into the sheet + docs (used for the move to this format). The sheet's Apps Script menu is `drive/リファレンス表のスクリプト.gs`.

@@ -577,6 +577,11 @@ body.inv .duck .dnight{opacity:1}
 .trel{border-top:0;padding-top:6px}
 .rlink{border-bottom:0;text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:var(--line-hi);text-underline-offset:4px}
 .rlink.on{text-decoration-color:transparent}
+/* a picture pasted into a text: an invisible mark that holds its place in the margin */
+.rpin{display:inline-block;width:0;height:1em;vertical-align:top;text-decoration:none!important;background:none!important}
+.reading p.pin{margin:0;height:0;overflow:visible}
+.reading a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:var(--line-hi);text-underline-offset:4px}
+.reading b{font-weight:600}
 .app[data-mode="text"] .refpanel{border-left:0}
 .app[data-mode="text"] .rp-sec{border-top:0;padding-top:4px}
 .app[data-mode="text"] .rp-texts button{border-bottom:0;padding:6px 0}
@@ -1121,7 +1126,7 @@ function showText(n){leave();setMode('text');curText=n;app.classList.toggle('rea
     const wrap=document.createElement('div');wrap.className='readwrap';
     const d=document.createElement('article');d.className='reading';
     const rel=x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`).join('');
-    d.innerHTML=`<button type="button" class="backlink">← All texts</button>${y.body.map((p,k)=>`<p${k===0?' class="lead"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
+    d.innerHTML=`<button type="button" class="backlink">← All texts</button>${y.body.map((p,k)=>`<p${/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p)?' class="pin"':k===0?' class="lead"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
     d.querySelector('.backlink').addEventListener('click',()=>showText());
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
     /* the references sit small in the margin beside the text; a word tied to one makes it grow */
