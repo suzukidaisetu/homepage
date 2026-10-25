@@ -417,7 +417,21 @@ html.has-cursor,html.has-cursor *{cursor:none!important}
 .v-c #s-rail-top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:start;column-gap:8px}
 .v-c #s-rail-top .brand{grid-column:1;grid-row:1;justify-self:start;text-align:left}
 .v-c #s-rail-top .nav{grid-column:1;grid-row:2}
-.duck{position:relative;grid-column:2;grid-row:1/3;width:74px;height:100px;align-self:end;transform-origin:50% 100%}
+.duck{position:relative;grid-column:2;grid-row:1/3;width:90px;height:80px;align-self:end;transform-origin:50% 100%}
+.duck svg.fd{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transform-origin:50% 100%}
+.duck.left svg.fd{transform:scaleX(-1)}
+.duck .ol{stroke:rgba(20,20,20,.3);stroke-width:.7px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.duck .ln{stroke-width:.6px;vector-effect:non-scaling-stroke}
+body.inv .duck .ol{stroke:rgba(255,255,255,.0)}
+.duck .fr{display:none}
+.duck[data-pose="stand"] .p-stand,.duck[data-pose="carry"] .p-stand,.duck[data-pose="read"] .p-read,.duck[data-pose="wave"] .p-wave,.duck[data-pose="sleep"] .p-sleep{display:inline}
+.duck.walk .fr,.duck.flying .fr,.duck.pull .fr{display:none!important}
+.duck.walk[data-wf="0"] .p-walk.w0,.duck.walk[data-wf="1"] .p-walk.w1,
+.duck.flying[data-ff="0"] .p-fly.f0,.duck.flying[data-ff="1"] .p-fly.f1,.duck.flying[data-ff="2"] .p-fly.f2,.duck.flying[data-ff="3"] .p-fly.f1,
+.duck.pull:not(.tug) .p-pull.t0,.duck.pull.tug .p-pull.t1{display:inline!important}
+.duck .breathe{transform-box:fill-box;transform-origin:50% 100%;animation:breathe 3.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:none}50%{transform:scale(1.012,1.035)}}
+@media (prefers-reduced-motion:reduce){.duck .breathe{animation:none}}
 .duck img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;transition:opacity .9s ease}
 .duck .dnight{opacity:0}
 body.inv .duck .dday{opacity:0}
@@ -432,7 +446,7 @@ body.inv .duck .dnight{opacity:1}
 .v-m .top{display:flex;justify-content:space-between;align-items:center;height:52px;border-bottom:1px solid var(--line);position:relative;z-index:5}
 .v-m .brand{text-transform:none;font-size:18px;letter-spacing:-.02em}
 .v-m #s-top-r{gap:10px}
-.v-m .duck{width:30px;height:40px;align-self:center}
+.v-m .duck{width:40px;height:36px;align-self:center}
 .v-m #indexBtn{border:0;background:none;padding:8px 0 8px 6px;font-size:13px;font-weight:600}
 .v-m .dhead{padding:0;min-height:0}
 .projbtn{display:flex;align-items:baseline;gap:10px;width:100%;padding:12px 0;background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg);text-align:left;cursor:pointer}
@@ -550,7 +564,7 @@ body.inv .duck .dnight{opacity:1}
 .rlink{border-bottom:1px solid var(--line-hi);cursor:pointer;transition:background .2s,color .2s}
 .rlink.on,.rlink:focus-visible{background:var(--fg);color:var(--bg);outline:0}
 .v-m .readwrap{grid-template-columns:minmax(0,1fr);grid-template-areas:"art" "mg"}
-.v-m .rmeta{position:static;margin:4px 0 22px}
+.v-m .rmeta{margin:4px 0 22px}
 .v-m .margin{position:static;display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;min-height:0!important}
 .v-m .mfig{position:relative}
 .texts .titem{grid-template-columns:132px 84px minmax(0,1fr);align-items:center;gap:6px 18px;padding:14px 0}
@@ -590,23 +604,91 @@ body.inv .duck .dnight{opacity:1}
 /* Japanese held a little tighter: proportional kana, a hair of tracking kept */
 :lang(ja) body{font-feature-settings:"palt";letter-spacing:.02em}
 body{font-feature-settings:"palt","cv11";-webkit-font-smoothing:antialiased}
-/* ---- reading a text, after an essay page laid out like fala's: text in the right half, the left half quiet ---- */
-.readwrap{grid-template-columns:minmax(0,1fr) minmax(0,680px);grid-template-areas:"mg art";column-gap:56px;padding:4px 0 120px}
-.readwrap .reading{grid-area:art;max-width:none;gap:0}
-.readwrap .margin{grid-area:mg}
-.readwrap .mfig{left:auto;right:0}
-.readwrap .mfig .mimg{transform-origin:100% 0}
-.readwrap .reading p,.readwrap .reading .lead{font:400 17px/1.62 var(--f-body)!important;letter-spacing:0;margin:0 0 1.05em}
-:lang(ja) .readwrap .reading p,:lang(ja) .readwrap .reading .lead{font-size:16px!important;line-height:1.9!important;letter-spacing:.03em}
-.readwrap .reading .backlink{display:none}
+/* ---- reading a text: text on the left with its title and tools above, references and notes on the right ---- */
+.readwrap{grid-template-columns:minmax(0,680px) 220px;grid-template-areas:"art mg";column-gap:64px;padding:0 0 120px}
+.readwrap .rcol{grid-area:art;min-width:0}
+.readwrap .reading{max-width:none;gap:0}
+.readwrap .margin{grid-area:mg;margin-top:var(--mtop,0px)}
+.readwrap .mfig{left:0;right:auto}
+.readwrap .mfig .mimg{transform-origin:0 0}
+.readwrap .reading p{font:400 17px/1.62 var(--f-body)!important;letter-spacing:0;margin:0 0 1.05em}
+:lang(ja) .readwrap .reading p{font-size:16px!important;line-height:1.9!important;letter-spacing:.03em}
 .readwrap .trel{margin-top:1.6em;padding:0;font-size:12px}
-.rmeta{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;z-index:5;display:grid;gap:3px;font:400 13.5px/1.35 var(--f-body);color:var(--fg);max-width:min(380px,40vw)}
+.rmeta{display:grid;gap:3px;margin:0 0 34px;font:400 13.5px/1.35 var(--f-body);color:var(--fg)}
+.rmeta .rt{font-size:15px}
 .rmeta .rk{color:var(--muted)}
-.rmeta button{justify-self:start;margin-bottom:10px;font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
-.rmeta button:hover{color:var(--fg)}
+.rmeta .rback{justify-self:start;margin-bottom:12px;font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
+.rmeta .rback:hover{color:var(--fg)}
+.qline{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='6' viewBox='0 0 40 6'%3E%3Cpath d='M0 3.4 C6 2.2 11 4.4 18 3.2 S31 2.4 40 3.6' fill='none' stroke='%23555' stroke-width='1.1' stroke-linecap='round' opacity='.75'/%3E%3C/svg%3E") repeat-x 0 100%/40px 6px;padding-bottom:2px}
+.qbtn{position:fixed;z-index:5600001;font:500 11px/1 var(--f-body);color:var(--bg);background:var(--fg);border:0;padding:7px 10px;cursor:pointer;box-shadow:0 6px 18px -8px rgba(0,0,0,.5)}
+.qbtn[hidden]{display:none}
+/* ---- the collection as a free board ---- */
+.canvas.board{min-height:100%}
+.sheet.quote .tsheet .qt{font-size:max(12px,calc(var(--u,3px)*3.4));line-height:1.75}
+.sheet.quote .tsheet .tf{margin-top:calc(var(--u,3px)*2)}
+.sheet.obj{background:transparent;outline:1px dashed transparent;touch-action:none}
+.sheet.obj:hover,.sheet.obj:focus-within{outline-color:var(--line-hi)}
+.sheet.note .nbody{min-height:100%;box-sizing:border-box;padding:12px 14px;font:400 14px/1.65 var(--f-body);color:var(--fg);white-space:pre-wrap;outline:0;cursor:text;user-select:text;-webkit-user-select:text}
+.sheet.note .nbody:empty::before{content:attr(data-ph);color:var(--muted)}
+.sheet.note .grip{position:absolute;left:0;right:0;top:-14px;height:14px;cursor:grab;opacity:0;background:repeating-linear-gradient(90deg,var(--line-hi) 0 2px,transparent 2px 5px) center/100% 2px no-repeat}
+.sheet.note:hover .grip,.sheet.note:focus-within .grip{opacity:1}
+.sheet.shape svg{display:block;width:100%;height:100%;overflow:visible}
+.sheet.shape svg *{fill:none;stroke:var(--fg);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.sheet .rs{position:absolute;width:14px;height:14px;opacity:0;z-index:3}
+.sheet .rs::after{content:"";position:absolute;inset:4px;border:1.5px solid var(--fg);background:var(--bg)}
+.sheet .rs.nw{left:-7px;top:-7px;cursor:nwse-resize}.sheet .rs.se{right:-7px;bottom:-7px;cursor:nwse-resize}
+.sheet .rs.ne{right:-7px;top:-7px;cursor:nesw-resize}.sheet .rs.sw{left:-7px;bottom:-7px;cursor:nesw-resize}
+.sheet:hover .rs,.sheet:focus-within .rs{opacity:1}
+.sheet.big .rs{display:none}
+.sheet.obj{color:var(--oc)}
+.sheet.shape svg *{stroke:var(--oc)}
+.sheet.shape.filled svg *{fill:color-mix(in srgb,var(--oc) 22%,transparent)}
+.sheet.note .nbody{color:var(--oc)}
+.sheet.line{outline:0!important;pointer-events:none}
+.sheet.line svg{display:block;width:100%;height:100%;overflow:visible}
+.sheet.line .ln{stroke:var(--oc);stroke-width:1.5;fill:none}
+.sheet.line marker path{fill:var(--oc)}
+.sheet.line .hit{stroke:transparent;stroke-width:16;pointer-events:stroke;cursor:grab}
+.sheet.line .lend{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;border:1.5px solid var(--oc);background:var(--bg);box-sizing:border-box;pointer-events:auto;cursor:crosshair;opacity:0;transition:opacity .15s}
+.sheet.line:hover .lend,.sheet.line:focus-within .lend{opacity:1}
+.sheet.line .tools{pointer-events:auto}
+.sheet.obj .tools{gap:4px;align-items:center;top:-34px;right:0;background:var(--bg);padding:4px;border:1px solid var(--line)}
+.sheet.obj .tools .cdot{width:14px;height:14px;padding:0;border-radius:50%;border:0;background:var(--c);box-shadow:none}
+.sheet.obj .tools .cdot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--fg)}
+.sheet.obj .tools button:not(.cdot){padding:4px 7px}
+/* the duck's pencil */
+.duck .dpen{position:absolute;left:74%;top:19%;width:36%;aspect-ratio:5/1;transform:rotate(16deg);pointer-events:none}
+.duck .dpen svg{transform:scaleX(-1)}
+.duck.walk .dpen,.duck.flying .dpen{display:none}
+.duck .dpen svg{display:block;width:100%;height:100%}
+.app[data-mode="text"] .duck{cursor:pointer}
+html.pencil .app[data-mode="text"] .duck::before{content:"";position:absolute;inset:-10px}
+.app[data-mode="text"] .duck::after{content:attr(data-tip);position:absolute;left:100%;top:50%;margin-left:6px;transform:translateY(-50%);white-space:nowrap;font:400 10.5px/1 var(--f-body);color:var(--muted);opacity:0;transition:opacity .2s;pointer-events:none}
+.app[data-mode="text"] .duck:hover::after{opacity:1}
+.cursor .cpen{display:none;position:absolute;left:-1px;top:-3.5px;width:34px;height:7px;transform:rotate(-55deg);transform-origin:1px 50%;background:no-repeat center/100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M2 4 L8 1.2 H36 a2 2 0 0 1 2 2 v1.6 a2 2 0 0 1 -2 2 H8 Z' fill='%23e8c46a' stroke='%23141414' stroke-width='.8'/%3E%3Cpath d='M2 4 L8 1.2 V6.8 Z' fill='%23f2e3c4' stroke='%23141414' stroke-width='.8'/%3E%3Cpath d='M2 4 L4.2 3 V5 Z' fill='%23141414'/%3E%3Crect x='33' y='1.2' width='3' height='5.6' fill='%23ff9fcb'/%3E%3C/svg%3E")}
+html.pencil .cursor .cpen{display:block}
+html.pencil .cursor::before{opacity:0}
+.reading.pen{cursor:text}
+.reading.pen .qline[data-q]{cursor:pointer}
+.qline.ghost{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='6' viewBox='0 0 40 6'%3E%3Cpath d='M0 3.4 C6 2.2 11 4.4 18 3.2 S31 2.4 40 3.6' fill='none' stroke='%23555' stroke-width='1' stroke-linecap='round' stroke-dasharray='2.5 3' opacity='.35'/%3E%3C/svg%3E")}
+.qcarry{position:fixed;z-index:5600003;height:6px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='6' viewBox='0 0 40 6'%3E%3Cpath d='M0 3.4 C6 2.2 11 4.4 18 3.2 S31 2.4 40 3.6' fill='none' stroke='%23555' stroke-width='1.1' stroke-linecap='round' opacity='.75'/%3E%3C/svg%3E") repeat-x 0 50%/40px 6px;transform-origin:0 50%;transition:width .5s cubic-bezier(.3,.7,.3,1),transform .5s,opacity .25s}
+.qcarry.held{width:46px!important;transform:rotate(-18deg)}
+.qcarry.drop{opacity:0;transform:rotate(-18deg) scale(.4)}
+.icarry{position:fixed;z-index:5600003;height:auto;pointer-events:none;transform-origin:0 0;box-shadow:0 8px 22px -10px rgba(0,0,0,.45);transition:width .45s cubic-bezier(.3,.7,.3,1),transform .45s,opacity .25s}
+.icarry.held{width:44px!important;transform:rotate(14deg)}
+.icarry.drop{opacity:0;transform:rotate(14deg) scale(.3)}
+/* on the board, what you collected reads quieter than what you wrote yourself */
+.sheet.quote{--fg:rgba(255,255,255,.66)}
+.sheet.quote .tsheet .qt{font-weight:400}
+.sheet.note .nbody{font-weight:600!important;font-size:15px!important;letter-spacing:-.005em}
+.qfly{position:fixed;z-index:5600002;background:color-mix(in srgb,var(--fg) 10%,transparent);pointer-events:none}
+.addtools{display:flex;gap:14px;align-items:center;margin-right:10px}
+.addtools button{font:500 13px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:4px 0;cursor:pointer}
+.addtools button:hover{color:var(--fg)}
+.addtools .sep{width:1px;height:12px;background:var(--line)}
+.board-empty{position:absolute;left:0;top:0;max-width:440px;pointer-events:none}
 .v-a.reading #s-dhead{display:none}
-.v-a[data-mode="text"] .refpanel{left:0;right:auto;top:0;bottom:96px;padding:4px 24px 40px 0;border:0}
-.v-a[data-mode="text"] .desk.panel-open .scroller{padding-right:0}
+.v-a[data-mode="text"] .refpanel{border:0}
 
 .v-m .refpanel{position:fixed;inset:52px 0 0 0;width:auto;padding:14px 16px 60px;border-left:0}
 .v-m .desk.panel-open .scroller{padding-right:0}
@@ -639,7 +721,7 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 .v-a #s-top-c{flex:1;min-width:0;gap:14px}
 .v-a #s-top-r{flex:none;gap:26px}
 .v-a .brand{text-transform:none;font:700 17px/1 var(--f-body);letter-spacing:-.02em}
-.v-a .duck{width:24px;height:32px;align-self:center}
+.v-a .duck{width:36px;height:32px;align-self:center}
 .v-a .crumb{display:flex;align-items:baseline;gap:12px;max-width:none;min-width:0;font:500 13px/1 var(--f-body);color:var(--fg)}
 .v-a .crumb::before{content:none}
 .v-a .crumb .cno{color:var(--muted)}
@@ -682,14 +764,10 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 #rel[aria-pressed="true"] .lamp .rays line{opacity:0}
 #rel[aria-pressed="true"] .lamp .bulb{fill:var(--muted);stroke:var(--muted)}
 .lampg{transform-box:view-box;transform-origin:26px 0}
-.duck .pw,.duck .ps{position:absolute;inset:0}
-.duck .pw{display:none}
-.duck.flying.up .pw{display:block}
-.duck.flying.up .ps{display:none}
 /* the dark spreads from the lamp with a soft, wide edge */
 html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr));mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr))}
-.duck.walk{animation:duckwalk .26s ease-in-out infinite alternate}
-@keyframes duckwalk{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-3px) rotate(4deg)}}
+.duck.walk{animation:duckwalk .24s ease-in-out infinite alternate}
+@keyframes duckwalk{from{transform:translateY(0)}to{transform:translateY(-1.5px)}}
 @keyframes duckflip{0%{transform:none}40%{transform:translateY(-6px) scale(1.04,.96)}100%{transform:none}}
 .duck.flip{animation:duckflip .3s cubic-bezier(.3,.7,.3,1)}
 .v-a .colltools{gap:16px;margin-left:auto}
@@ -723,7 +801,7 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 .v-a #s-rail-top .nav{display:flex;flex-direction:row;flex-wrap:nowrap;gap:8px;margin:44px 0 0}
 .v-a #s-rail-top .nav .tab{font:500 11px/1 var(--f-body);padding:2px 0}
 .v-a #s-rail-top .nav .tab .minis{max-width:40px;margin-left:4px}
-.v-a #s-rail-top .duck{position:absolute;left:0;top:0;width:26px;height:34px;transition:left .65s cubic-bezier(.5,0,.2,1),top .65s cubic-bezier(.5,0,.2,1)}
+.v-a #s-rail-top .duck{position:absolute;left:0;top:0;width:36px;height:32px;transition:left .65s cubic-bezier(.5,0,.2,1),top .65s cubic-bezier(.5,0,.2,1)}
 .v-a .top{gap:20px}
 .v-a #s-top-l{flex:1;min-width:0;gap:16px}
 .v-a #s-top-r{gap:22px}
@@ -790,7 +868,7 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
   <button class="btn" id="tray" type="button" aria-pressed="false">Collection</button>
   <button class="btn" id="indexBtn" type="button" aria-expanded="false">menu</button>
   <button class="projbtn" id="projBtn" type="button" aria-label="Choose a project"></button>
-  <div class="colltools" id="collTools"><span class="shared" id="sharedNote" hidden></span><button class="btn" id="adopt" type="button" hidden>add to my collection</button><button class="btn" id="saveImg" type="button">save image</button><button class="btn" id="shareColl" type="button">share link</button></div>
+  <div class="colltools" id="collTools"><span class="addtools" id="addTools"><button type="button" data-add="note">+ 文字</button><button type="button" data-add="rect" aria-label="四角">□</button><button type="button" data-add="oval" aria-label="丸">○</button><button type="button" data-add="line" aria-label="線">╱</button><span class="sep"></span><button type="button" id="tidy">整える</button></span><span class="shared" id="sharedNote" hidden></span><button class="btn" id="adopt" type="button" hidden>add to my collection</button><button class="btn" id="saveImg" type="button">save image</button><button class="btn" id="shareColl" type="button">share link</button></div>
 </div>
 <div class="imgout" id="imgout" hidden role="dialog" aria-label="Collection image"><img alt="Collection" id="imgoutImg"><div class="row" id="imgoutRow"></div><span class="hint2" id="imgoutHint"></span></div>
 <div class="toast" id="toast" role="status"></div>
@@ -803,61 +881,59 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
   </div>
   <span class="genter" id="genter">クリックして入る</span>
 </div>
-<div class="cursor" id="cursor" aria-hidden="true"><div class="lens"><img alt=""></div><span></span></div>
+<div class="cursor" id="cursor" aria-hidden="true"><div class="lens"><img alt=""></div><span></span><i class="cpen"></i></div>
 
 <script>
 /* Content comes from data/site.json, which the build makes from the Google Drive folder. */
 fetch('data/site.json',{cache:'no-cache'}).then(r=>r.json()).then(D=>{
-const IMG=D.images,DUCKIMG=D.duck,P=D.works,R=D.refs;
+const IMG=D.images,P=D.works,R=D.refs;
 /* each image comes in three sizes: s (480px) for thumbnails, m (1200px), and the full one; older builds have only the full one */
 const SZ=D.sizes||[];const src=(k,z)=>z&&SZ.includes(z)?IMG[k].replace(/^img\//,'img/'+z+'/'):IMG[k];
 const srcset=k=>SZ.length?`${src(k,'s')} 480w, ${src(k,'m')} 1200w, ${IMG[k]} 1800w`:'';
 document.title=D.site.name;document.querySelectorAll('.js-name').forEach(el=>el.textContent=D.site.name);
-/* ---- the duck: one drawing, five poses; ordinary by day, its skeleton shows once the lights are off ---- */
-const DUCK=(function(){
-  const P2=(x,y)=>x.toFixed(1)+' '+y.toFixed(1);
-  const rot=(x,y,a,cx,cy)=>{const r=a*Math.PI/180,c=Math.cos(r),s=Math.sin(r);return[cx+x*c-y*s,cy+x*s+y*c]};
-  const POSES={
-    stand:{h:[79,30],c:[73,38],a:8},
-    read:{h:[90,64],c:[88,42],a:72,book:1},
-    carry:{h:[80,31],c:[74,38],a:2,sheet:1},
-    wave:{h:[79,29],c:[73,37],a:-6,wing:1},
-    sleep:{h:[60,39],c:[80,30],a:168,shut:1}};
-  const BASE=[70,47];
-  const qpt=(t,c,h)=>[(1-t)*(1-t)*BASE[0]+2*(1-t)*t*c[0]+t*t*h[0],(1-t)*(1-t)*BASE[1]+2*(1-t)*t*c[1]+t*t*h[1]];
-  function svg(name){const p=POSES[name]||POSES.stand,[hx,hy]=p.h,a=p.a;
-    const bill=[[7,-3.2],[12,-4.4],[18.5,-3.2],[20,0],[18.5,3],[12,3.8],[7,3]].map(([x,y])=>rot(x,y,a,hx,hy));
-    const billD=`M${P2(...bill[0])} C${P2(...bill[1])} ${P2(...bill[2])} ${P2(...bill[3])} C${P2(...bill[4])} ${P2(...bill[5])} ${P2(...bill[6])} Z`;
-    const eye=rot(2.5,-3,a,hx,hy);const tip=rot(20,0,a,hx,hy);
-    const neck=`M${P2(...BASE)} Q${P2(...p.c)} ${P2(hx,hy)}`;
-    const body='M20 52 C16 48 15 44 18 41 C22 44 27 44 33 42 C42 38 58 38 70 44 C80 49 84 58 80 66 C74 78 58 80 44 79 C30 78 22 68 20 52 Z';
-    const wingFlesh=p.wing?'M64 48 C64 38 58 30 48 27 C42 34 44 44 50 50 Z':'M64 52 C56 50 42 50 30 54 C40 58 54 60 64 56 Z';
-    const legs='M49 78 L47 89 M61 78 L62 89';
-    const feet='M47 89 L41 92 L49 92 Z M62 89 L57 92 L66 92 Z';
-    let extra='',xbone='';
-    if(p.book){extra+=`<path class="prop" d="M90 86 L100 83 L110 86 L110 90 L100 87 L90 90 Z M100 83 L100 87"/>`}
-    if(p.sheet){const s1=rot(19,2,a,hx,hy);extra+=`<g transform="translate(${P2(...s1)}) rotate(${a+14})"><rect class="prop sheetp" x="-2" y="0" width="13" height="10" rx=".6"/></g>`}
-    /* flesh: drawn twice, a thick outline pass under a fill pass, so overlapping parts read as one silhouette */
-    const shapes=`<path class="shape" d="${body}"/><path class="limb" style="--w:11px" d="${neck}"/><circle class="shape" cx="${hx}" cy="${hy}" r="8.5"/><path class="shape" d="${wingFlesh}"/>`;
-    /* skeleton */
-    let ticks='';for(let k=1;k<9;k++){const t=k/9,[x,y]=qpt(t,p.c,p.h),[x2,y2]=qpt(t+.01,p.c,p.h),dx=x2-x,dy=y2-y,l=Math.hypot(dx,dy)||1,nx=-dy/l*2.2,ny=dx/l*2.2;ticks+=`M${P2(x-nx,y-ny)} L${P2(x+nx,y+ny)} `}
-    let ribs='';[36,41,46,51,56,61].forEach((x,k)=>{ribs+=`M${x} ${42.5+Math.abs(48-x)*.06} C${x-3} ${50} ${x-3} ${57+k%2} ${x-1} ${62} `});
-    const wingB=p.wing?'M63 48 L57 36 L48 29 M57 36 L51 34':'M63 53 L50 53 L33 55 M50 53 L44 57';
-    xbone=`<path d="M${P2(...BASE)} C58 40 40 40 22 47" stroke-width="1.6"/><path d="${neck}" stroke-width="1.6"/><path d="${ticks}" stroke-width=".9"/>
-      <path d="${ribs}" stroke-width="1"/><path d="M28 47 C30 53 37 54 40 49" stroke-width="1.1"/>
-      <path d="M50 60 L48 78 L47 89 M47 89 L42 92 M47 89 L48.5 92.5 M47 89 L45 93 M60 60 L61.5 78 L62 89 M62 89 L57.5 92 M62 89 L63.5 92.5 M62 89 L66 92" stroke-width="1.2"/>
-      <circle cx="50" cy="60" r="1.6"/><circle cx="60" cy="60" r="1.6"/><circle cx="48" cy="78" r="1.2"/><circle cx="61.5" cy="78" r="1.2"/>
-      <path d="${wingB}" stroke-width="1.3"/><circle cx="${hx}" cy="${hy}" r="6.6" stroke-width="1.4"/>
-      ${p.shut?`<path d="M${P2(eye[0]-2,eye[1])} q2 1.6 4 0" stroke-width="1"/>`:`<circle cx="${P2(...eye).split(' ')[0]}" cy="${eye[1].toFixed(1)}" r="2.1" stroke-width="1"/>`}
-      <path d="${billD}" stroke-width="1.1"/>`;
-    const eyeF=p.shut?`<path class="eyec" d="M${P2(eye[0]-2,eye[1])} q2 1.6 4 0"/>`:`<circle class="eyef" cx="${eye[0].toFixed(1)}" cy="${eye[1].toFixed(1)}" r="1.5"/>`;
-    return `<svg viewBox="8 8 108 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <g class="legs"><path d="${legs}"/><path class="feetp" d="${feet}"/></g>
-      <g class="o">${shapes}</g><g class="f">${shapes}</g>
-      <path class="billp" d="${billD}"/><path class="wingline" d="${p.wing?'M54 47 C55 40 53 34 49 30':'M34 55 C44 57 54 57 62 54'}"/>${eyeF}${extra}
-      <g class="bones">${xbone}</g></svg>`}
-  return{svg,poses:Object.keys(POSES)};
+/* ---- the duck: flat white and yellow after an old matchbox; every pose and frame is a group in one SVG, CSS shows one at a time ---- */
+const FDUCK=(function(){
+  const Y='#f3c531',Y2='#dba51a',W='#ffffff',ST='#8f98b6';
+  const g=(cls,inner)=>`<g class="fr ${cls}">${inner}</g>`;
+  const ol=d=>`<path class="ol" d="${d}" fill="none"/>`;
+  const BODY='M12 62 C20 60 26 56 34 55 C46 53 58 54 66 52 C70 51 72 46 72 40 C72 31 70 23 73 17 C76 11 83 9.5 87.5 12.5 C90.5 14.5 91.5 18 90 21.5 L89 23.5 C86 26 84.5 30 84 36 C83.6 44 85 50 88.5 56 C93.5 64 92 76 82 82 C70 89 46 88.5 32 82 C22 78 14 72 12 62 Z';
+  const body=`<path d="${BODY}" fill="${W}"/>${ol(BODY)}`;
+  const beak=`<path d="M88.6 14.6 C93 14.4 98.5 16.4 104.5 19.4 C105.6 20.2 105 21.8 103.2 21.9 C98 22.2 92.5 22.4 89.2 22.4 Z" fill="${Y}"/><path class="ln" d="M90 18.6 C94 19 98 19.8 102 20.6" fill="none" stroke="${Y2}"/>`;
+  const eye=`<circle cx="84.2" cy="15.6" r="1.5" fill="#141414"/>`;
+  const strokes=`<g class="ln" fill="none" stroke="${ST}" stroke-linecap="round"><path d="M26 69 C36 73 48 74 58 71"/><path d="M32 73.5 C40 76.5 48 77 55 75.5"/><path d="M60 62 C64 60 68 60 72 61"/></g>`;
+  const leg=(x,col,rot)=>`<g transform="rotate(${rot} ${x+1.5} 84)"><path d="M${x} 84 L${x+3} 84 L${x+2.6} 95 L${x+.4} 95 Z" fill="${col}"/><path d="M${x-7} 99 L${x+1.5} 93.5 L${x+9} 99 Z" fill="${col}"/></g>`;
+  const legs=(a=0,b=0)=>leg(65,Y2,b)+leg(56,Y,a);
+  const duck=(o={})=>`<g transform="${o.t||''}">${legs(o.a,o.b)}${body}${strokes}${beak}${eye}</g>`;
+  /* the neck alone can bow or snap down; feet and body stay where they are */
+  const TORSO='M12 62 C20 60 26 56 34 55 C46 53 58 54 66 52 C70 51 71.6 48.4 72 46.4 L84.4 46.4 C84.9 50 86.2 53 88.5 56 C93.5 64 92 76 82 82 C70 89 46 88.5 32 82 C22 78 14 72 12 62 Z';
+  const NECKF='M71.4 53 L72 46 C72.4 36 70.4 24 73 17 C76 11 83 9.5 87.5 12.5 C90.5 14.5 91.5 18 90 21.5 L89 23.5 C86 26 84.5 30 84 36 C83.8 41 84.2 46 85.6 53 Z';
+  const NECKO='M72 46.4 C72.4 36 70.4 24 73 17 C76 11 83 9.5 87.5 12.5 C90.5 14.5 91.5 18 90 21.5 L89 23.5 C86 26 84.5 30 84 36 C83.8 40 84 43.4 84.4 46.4';
+  const bow=rot=>`${legs()}<path d="${TORSO}" fill="${W}"/>${ol(TORSO)}${strokes}<g transform="rotate(${rot} 78 48)"><path d="${NECKF}" fill="${W}"/>${ol(NECKO)}${beak}${eye}</g>`;
+  /* in flight: neck forward, body long, ragged primaries, feet tucked */
+  const FB='M17 50.5 L24 47.6 L22.6 50 L28 48 C38 43.4 52 40.4 64 41 C70 41.4 74 40 78 37 C83 33 88 30 93 29.4 C97 29 100.4 30.4 101 33 L101.4 34.6 C99 36 95 36.6 91 37.6 C85 39.2 80 43 76 48 C72 54 64 58 52 58.6 C40 59 31 56.4 25 53.4 L19 54.4 L22 52 Z';
+  const wing=(d,lines,fill=W)=>`<path d="${d}" fill="${fill}"/>${ol(d)}<g class="ln" fill="none" stroke="${ST}" stroke-linecap="round">${lines}</g>`;
+  const WUP=wing('M67 44 C67 31 62 17 52 3 L50.6 9.6 L46.4 6.4 L46.2 13.4 L41.6 11.2 L42.6 18.6 L38.2 17.8 L40.6 25.2 L36.6 25.6 L41 31.6 C44.4 37 48.6 41.6 53 45.4 Z','<path d="M58 38 C58 30 55 22 50 14"/><path d="M52 41 C51 35 48 29 45 24"/>');
+  const WMID=wing('M66 44 C58 36.4 46 31.6 30 29.4 L34 33 L27.4 33.4 L33.2 36.2 L26.6 37.4 L33.4 39.6 L28.4 41.8 L36 42.8 C42 44.6 48 46.2 53.4 47 Z','<path d="M58 42.6 C52 39.4 44 37 36 35.8"/>');
+  const WDN=wing('M66 47 C64.4 60 58.4 74 48 88 L47.4 81 L42.8 84.6 L43.4 76.6 L38.8 78.4 L41.4 70.2 L37 70.8 L42.4 62.6 C45.6 56.6 49 51.8 53 48.4 Z','<path d="M58 54 C56 62 52 70 47 76"/><path d="M53.6 52.6 C51.4 58 48.6 63 45.4 67.6"/>');
+  const FAR=wing('M62 41.6 C59 35.6 54.6 31.4 48 28 L50.4 33 L46 32.8 L50 36.4 L46.4 37.4 C50 39.8 53.6 41.4 57 42.4 Z','','#efefeb');
+  const fly=(w,back='')=>`${back}<path d="M33 56 L22 59.6 L25 56.4 L19 56.8 L31 53.6 Z" fill="${Y}"/><path d="${FB}" fill="${W}"/>${ol(FB)}<g class="ln" fill="none" stroke="${ST}" stroke-linecap="round"><path d="M34 51 C42 53.4 52 53.6 60 51"/><path d="M76 41.4 C80 39.6 84 38.6 88 38.2"/></g>${w}<path d="M100.8 32 C104 32.1 108 33.2 111.6 34.5 C108 35.5 104 35.8 101.2 35.8 Z" fill="${Y}"/><circle cx="97.4" cy="31.8" r="1.3" fill="#141414"/>`;
+  /* asleep: sunk onto the ground, neck folded back, head resting on the back, breathing slowly */
+  const SLEEPHEAD='M76 72 C80 64 80 55 74 50.6 C69 47 61.6 48.2 58.6 53 C56 57.4 58.6 62.2 64 63.2 C69.4 64 71.4 67.4 70.6 72 Z';
+  const HUMP='M70 66 C72 61 76 57.6 80 57.6 C84 57.6 86.4 60.2 87.2 63 C87.8 65.4 88.6 67.4 89.8 70 L70 71 Z';
+  const sleep=`<g class="breathe"><g transform="translate(0,14)"><path d="${TORSO}" fill="${W}"/>${ol(TORSO)}${strokes}</g>
+    <path d="${HUMP}" fill="${W}"/>${ol('M78 57.7 C84 57.4 86.4 60.2 87.2 63 C87.8 65.4 88.6 67.4 89.8 70')}
+    <path d="${SLEEPHEAD}" fill="${W}"/>${ol(SLEEPHEAD)}
+    <path d="M59.4 55.4 C55.6 55.2 51.6 56 47.6 57.8 C50.8 59.4 55 59.8 59.2 59.2 Z" fill="${Y}"/>
+    <path class="ln" d="M64 53.6 Q66 55.4 68 53.8" fill="none" stroke="#141414" style="stroke-width:1px"/></g>`;
+  const all=g('p-stand',duck())+g('p-read',bow(12))+g('p-wave',bow(-14))+g('p-sleep',sleep)
+    +g('p-walk w0',duck({a:-16,b:12,t:'translate(0,-1)'}))+g('p-walk w1',duck({a:12,b:-14}))
+    +g('p-fly f0',fly(WUP))+g('p-fly f1',fly(WMID,FAR))+g('p-fly f2',fly(WDN,FAR))
+    +g('p-pull t0',bow(-5))+g('p-pull t1',bow(30));
+  const svg=`<svg class="fd" viewBox="6 4 108 96" preserveAspectRatio="xMidYMax meet" aria-hidden="true">${all}</svg>`;
+  const icon=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 4 108 96">${duck()}</svg>`.replace(/class="[^"]*"/g,'').replace(/<path  d="([^"]+)" fill="none"\/>/g,'<path d="$1" fill="none" stroke="rgba(20,20,20,.35)" stroke-width="1.2"/>');
+  return{svg,icon};
 })();
+{const ic=document.querySelector('link[rel=icon]');if(ic)ic.href='data:image/svg+xml,'+encodeURIComponent(FDUCK.icon)}
 (function(){
 const rng=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
 const $=id=>document.getElementById(id);
@@ -865,7 +941,7 @@ const app=$('app'),layBtn=$('layout'),list=$('list'),desk=$('desk'),scroller=$('
 const G=14;
 let mode='works',cur=-1,refsOn=false,topZ=10,lowZ=0,canvas=null;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const LAYER=1e6;const raise=el=>el.style.zIndex=(el._ref!=null?LAYER:0)+(++topZ), lower=el=>el.style.zIndex=(el._ref!=null?LAYER:0)+(--lowZ);
+const LAYER=1e6;const zbase=el=>el._obj?3*LAYER:(el._ref!=null?LAYER:0);const raise=el=>el.style.zIndex=zbase(el)+(++topZ), lower=el=>el.style.zIndex=zbase(el)+(--lowZ);
 const relOf=i=>R.map((r,j)=>j).filter(j=>R[j].rel.includes(i));
 const pad=n=>String(n).padStart(2,'0');
 const W=()=>canvas.clientWidth, VH=()=>scroller.clientHeight;
@@ -876,13 +952,16 @@ const L=o=>o[lang]||o.ja||o.en;
 let coll=[];try{coll=JSON.parse(localStorage.getItem('desk-collection')||'[]')}catch(e){coll=[]}
 const saveColl=()=>{try{localStorage.setItem('desk-collection',JSON.stringify(coll))}catch(e){}};
 const isColl=k=>coll.includes(k);
-const thumbOf=k=>{const [t,a1,a2]=k.split(':');if(t==='w'&&P[+a1]&&P[+a1].sheets[+a2])return src(P[+a1].sheets[+a2].img,'s');if(t==='r'&&R[+a1])return src(R[+a1].img,'s');return null};
+const thumbOf=k=>{const [t,a1,a2]=k.split(':');if(t==='w'&&P[+a1]&&P[+a1].sheets[+a2])return src(P[+a1].sheets[+a2].img,'s');if(t==='r'&&R[+a1])return src(R[+a1].img,'s');if(t==='q')return null;return null};
 const MAXMINI=12;
 function minisHTML(wait){const shown=coll.slice(-MAXMINI);return `<span class="minis" aria-hidden="true">${coll.length>MAXMINI?`<span class="more">+${coll.length-MAXMINI}</span>`:''}${shown.map((k,n)=>{const src=thumbOf(k),cls='mini'+(wait&&n===shown.length-1?' wait':'');return src?`<img class="${cls}" alt="" src="${src}">`:`<span class="${cls}"></span>`}).join('')}</span>`}
 function updCount(bump,wait){$('tab-collect').innerHTML=`collection${minisHTML(wait)}`;$('tray').innerHTML=`collection<span class="cc">${coll.length}</span>`;if(drawerOpen)renderTray()}
 /* what you collect flies to the word "collection" and settles there as a tiny icon */
 function flyTarget(){const t=$('tab-collect');if(t.offsetParent&&!$('overlay').contains(t)){const m=t.querySelector('.mini.wait');return m||t}const d=$('duck');return d.offsetParent?d:null}
 function fly(src){const land=()=>{const m=$('tab-collect').querySelector('.mini.wait');if(m){m.classList.remove('wait');if(!reduce){m.classList.add('pop')}}const d=$('duck');if(!reduce&&d){d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop')}};
+  if(src&&src.tagName==='IMG'&&canCarry()){const r=src.getBoundingClientRect();if(r.width>4&&r.bottom>0&&r.top<innerHeight){
+      const g=document.createElement('img');g.src=src.currentSrc||src.src;g.alt='';g.className='icarry';Object.assign(g.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px'});
+      carryWith({x:Math.min(r.right-12,innerWidth-36),y:Math.min(r.bottom-6,innerHeight-24)},g,land);return}}
   const tgt=flyTarget();if(reduce||!src||!tgt||!src.getBoundingClientRect){land();return}
   const a=src.getBoundingClientRect(),b=tgt.getBoundingClientRect();if(!a.width){land();return}
   const g=document.createElement(src.tagName==='IMG'?'img':'div');if(src.tagName==='IMG')g.src=src.src;else g.style.background='var(--fg)';g.className='flyer';
@@ -891,7 +970,7 @@ function fly(src){const land=()=>{const m=$('tab-collect').querySelector('.mini.
   const an=g.animate([{transform:'none',opacity:1},{transform:`translate(${dx*.55}px,${dy*.35-60}px) scale(${Math.max(sc,.35)})`,opacity:1,offset:.55},{transform:`translate(${dx}px,${dy}px) scale(${sc})`,opacity:.9}],{duration:760,easing:'cubic-bezier(.5,0,.25,1)'});
   an.onfinish=()=>{g.remove();land()}}
 function syncButtons(){document.querySelectorAll('[data-a=collect]').forEach(b=>{const on=isColl(b.dataset.k);b.setAttribute('aria-pressed',on);b.textContent=mode==='collect'&&!shared?'− Remove':on?'✓ Collected':'+ Collect'})}
-function toggleColl(k,el,src){if(isColl(k)){coll=coll.filter(x=>x!==k);if(mode==='collect'&&!shared&&el){el.remove();if(!coll.length)showCollect()}updCount()}else{coll.push(k);updCount(false,true);fly(src)}saveColl();syncButtons();if(mode==='collect'&&!shared){head('Your table','Collection',[coll.length+(coll.length===1?' item':' items'),'Kept in this browser']);updCollTools()}}
+function toggleColl(k,el,src){if(isColl(k)){coll=coll.filter(x=>x!==k);if(mode==='collect'&&!shared&&el){el.remove();saveBoard();if(!coll.length)showCollect()}updCount()}else{coll.push(k);updCount(false,true);fly(src)}saveColl();syncButtons();if(mode==='collect'&&!shared){head('Your table','Collection',[coll.length+(coll.length===1?' item':' items'),'Kept in this browser']);updCollTools()}}
 
 function renderList(){list.innerHTML='';
   P.forEach((it,i)=>{const li=document.createElement('li');li.className='item';
@@ -901,14 +980,14 @@ function renderList(){list.innerHTML='';
     bt.addEventListener('mouseleave',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=cr._html||'';cr.classList.remove('peek')});list.appendChild(li)})}
 function mark(){list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',mode==='works'&&j===cur?'true':'false'))}
 function updProj(){const b=$('projBtn');if(!b)return;const names={works:'Works',refs:'References',text:'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
-function setMode(m){app.classList.remove('home');if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
-  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=!(m==='works'||m==='collect');app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
+function setMode(m){app.classList.remove('home');if(m!=='text'&&penOut){penOut=false;setTimeout(syncPen)}if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
+  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=m!=='works';app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
 
 /* ---- table surface ---- */
 function newCanvas(){scroller.innerHTML='';canvas=document.createElement('div');canvas.className='canvas';scroller.appendChild(canvas);scroller.scrollTop=0;return canvas}
 function grow(){let b=0;canvas.querySelectorAll('.sheet').forEach(el=>b=Math.max(b,parseFloat(el.style.top)+el.offsetHeight));canvas.style.height=Math.max(VH(),b+80)+'px'}
 function clamp(el){const w=el.offsetWidth;let l=parseFloat(el.style.left),t=parseFloat(el.style.top);
-  l=Math.min(Math.max(l,-w+48),W()-48);t=Math.max(t,0);el.style.left=l+'px';el.style.top=t+'px';grow()}
+  l=Math.min(Math.max(l,-w+48),W()-48);t=Math.max(t,0);el.style.left=l+'px';el.style.top=t+'px';grow();if(mode==='collect')saveBoard()}
 function animate(el){if(reduce)return;el.classList.add('move');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('move'),340)}
 const setW=(el,w)=>{el._w=w;el.style.width=Math.round(w)+'px';el.style.setProperty('--u',(Math.round(w)/100)+'px');const im=el._im;if(im&&im.dataset.k){im.sizes=Math.round(w)+'px';if(!im.getAttribute('srcset')){im.srcset=srcset(im.dataset.k);im.src=src(im.dataset.k,'m')}}};
 const hOf=el=>{if(el._text){el._ar=el.offsetWidth/Math.max(1,el.offsetHeight);return el.offsetHeight}return el._w/el._ar+el._cap};
@@ -1014,23 +1093,23 @@ let switching=false;
 function lampSVG(){return `<svg class="lamp" viewBox="0 0 64 104" width="64" height="104" aria-hidden="true"><g class="lampg"><line class="cord" x1="26" y1="0" x2="26" y2="27"/><rect class="sock" x="22.5" y="27" width="7" height="7" rx="1"/><path class="shade" d="M7 51 C9 40 15 34.5 26 34.5 C37 34.5 43 40 45 51 Z"/><line class="rim" x1="7" y1="51" x2="45" y2="51"/><g class="rays"><line x1="26" y1="62" x2="26" y2="68"/><line x1="18.5" y1="59.5" x2="15" y2="64"/><line x1="33.5" y1="59.5" x2="37" y2="64"/><line x1="14" y1="54.5" x2="9.5" y2="56.5"/><line x1="38" y1="54.5" x2="42.5" y2="56.5"/></g><circle class="bulb" cx="26" cy="54.5" r="4.6"/><g class="pullg"><line class="pull" x1="40" y1="48" x2="40" y2="84"/><circle class="bead" cx="40" cy="86.5" r="2.7"/></g></g></svg>`}
 /* the duck walks to a neighbour one or two places away; three or more away, it flaps its wings and flies */
 const DSP=['brand','works','refs','text','collect','lamp'];
-const dimgs=p=>`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`;
-function moveDuck(x,y,spot,done){const d=$('duck');x=Math.max(0,x);const x0=parseFloat(d.style.left),y0=parseFloat(d.style.top);
-  clearTimeout(d._mt);clearInterval(d._flap);d.classList.remove('walk','flying','up');
+function moveDuck(x,y,spot,done,force){const d=$('duck');x=Math.max(0,x);const x0=parseFloat(d.style.left),y0=parseFloat(d.style.top);
+  clearTimeout(d._mt);clearInterval(d._flap);clearInterval(d._step);d.classList.remove('walk','flying','pull','tug','left');
   if(isNaN(x0)||reduce||d._spot==null){d.style.transitionDuration='0ms';d.style.left=x+'px';d.style.top=y+'px';d._spot=spot;requestAnimationFrame(()=>requestAnimationFrame(()=>d.style.transitionDuration=''));done&&done();return}
   const dist=Math.hypot(x-x0,y-y0);if(dist<2){d._spot=spot;done&&done();return}
-  const fly=Math.abs(DSP.indexOf(spot)-DSP.indexOf(d._spot))>=3;d._spot=spot;
-  const end=()=>{d.classList.remove('walk','flying','up');clearInterval(d._flap);d.style.transitionDuration='';d.style.transitionTimingFunction='';done&&done()};
+  const fly=force||Math.abs(DSP.indexOf(spot)-DSP.indexOf(d._spot))>=3;d._spot=spot;
+  if(x<x0-2)d.classList.add('left');
+  const end=()=>{d.classList.remove('walk','flying','left');clearInterval(d._flap);clearInterval(d._step);d.style.transitionDuration='';d.style.transitionTimingFunction='';done&&done()};
   if(fly){const t=Math.round(Math.min(1150,620+dist*.9));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='cubic-bezier(.45,0,.3,1)';
-    const p=d.dataset.pose||'stand';d.innerHTML=`<span class="pw">${dimgs('wave')}</span><span class="ps">${dimgs(p==='wave'?'stand':p)}</span>`;d.dataset.pose='';
-    d.classList.add('flying');d._flap=setInterval(()=>d.classList.toggle('up'),105);
+    let n=0;d.dataset.ff=0;d.classList.add('flying');d._flap=setInterval(()=>d.dataset.ff=(++n)%4,110);
     d.animate([{transform:'none'},{transform:`translateY(${-Math.min(64,26+dist*.1)}px) rotate(${x>x0?-9:9}deg)`,offset:.45},{transform:'none'}],{duration:t,easing:'ease-in-out'});
     d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(()=>{end();setPose(mode)},t)}
-  else{const t=Math.round(Math.max(260,Math.min(900,dist*2.2)));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='linear';d.classList.add('walk');d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(end,t)}}
-function lampSpot(){const d=$('duck'),box=$('s-rail-top').getBoundingClientRect(),b=relBtn.querySelector('.bead').getBoundingClientRect();return{x:b.left+b.width/2-box.left-d.offsetWidth*.74,y:b.bottom-box.top-4}}
+  else{const t=Math.round(Math.max(260,Math.min(900,dist*2.2)));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='linear';let k=0;d.dataset.wf=0;d._step=setInterval(()=>d.dataset.wf=(++k)%2,140);d.classList.add('walk');d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(end,t)}}
+function lampSpot(){const d=$('duck'),box=$('s-rail-top').getBoundingClientRect(),b=relBtn.querySelector('.bead').getBoundingClientRect();return{x:b.left+b.width/2-box.left-d.offsetWidth*.84,y:b.top+b.height/2-box.top-d.offsetHeight*.16}}
 function pullCord(atBottom){const d=$('duck'),pg=relBtn.querySelector('.pullg'),lg=relBtn.querySelector('.lampg');
-  d.animate([{transform:'none'},{transform:'translateY(-6px)',offset:.25},{transform:'translateY(9px)',offset:.6},{transform:'none'}],{duration:540,easing:'ease-in-out'});
-  pg.animate([{transform:'none'},{transform:'none',offset:.3},{transform:'translateY(11px)',offset:.6},{transform:'translateY(-3px)',offset:.82},{transform:'none'}],{duration:540,easing:'ease-in-out'});
+  /* only the neck snaps down: feet and body stay put */
+  d.classList.add('pull');setTimeout(()=>d.classList.add('tug'),170);setTimeout(()=>d.classList.remove('tug'),470);
+  pg.animate([{transform:'none'},{transform:'none',offset:.3},{transform:'translateY(6px)',offset:.45},{transform:'translateY(6px)',offset:.85},{transform:'none'}],{duration:540,easing:'ease-out'});
   setTimeout(()=>{atBottom&&atBottom();lg.animate([{transform:'rotate(0deg)'},{transform:'rotate(6deg)'},{transform:'rotate(-4deg)'},{transform:'rotate(2.2deg)'},{transform:'rotate(-1deg)'},{transform:'rotate(0deg)'}],{duration:1500,easing:'ease-out'})},320)}
 function setRefs(on,origin,focus){if(switching)return;
   const go2=()=>{refsOn=on;relBtn.setAttribute('aria-pressed',on);flipDark(on,focus)};
@@ -1126,54 +1205,171 @@ function showText(n){leave();setMode('text');curText=n;app.classList.toggle('rea
     const wrap=document.createElement('div');wrap.className='readwrap';
     const d=document.createElement('article');d.className='reading';
     const rel=x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`).join('');
-    d.innerHTML=`<button type="button" class="backlink">← All texts</button>${y.body.map((p,k)=>`<p${/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p)?' class="pin"':k===0?' class="lead"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
-    d.querySelector('.backlink').addEventListener('click',()=>showText());
+    const ja=lang==='ja';
+    /* title above the text */
+    const meta=document.createElement('div');meta.className='rmeta';
+    meta.innerHTML=`<button type="button" class="rback">← ${ja?'テキスト一覧':'all texts'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
+    d.innerHTML=`${y.body.map((p,k)=>`<p data-p="${k}"${/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p)?' class="pin"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
+    meta.querySelector('.rback').addEventListener('click',()=>showText());
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
     /* the references sit small in the margin beside the text; a word tied to one makes it grow */
-    const mg=document.createElement('aside');mg.className='margin';mg.setAttribute('aria-label',lang==='ja'?'リファレンス':'References');
-    mg.innerHTML=x.refs.map(j=>`<figure class="mfig" data-j="${j}"><button type="button" class="mimg" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"></button><figcaption>${R[j].title}</figcaption><button type="button" class="mnote">${lang==='ja'?'解説':'notes'}</button></figure>`).join('');
-    const meta=document.createElement('div');meta.className='rmeta';meta.innerHTML=`<button type="button">← ${lang==='ja'?'テキスト一覧':'all texts'}</button><span>${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
-    meta.querySelector('button').addEventListener('click',()=>showText());
-    if(isM())wrap.before?scroller.appendChild(meta):0;wrap.append(d,mg);scroller.appendChild(wrap);if(!isM())scroller.appendChild(meta);
+    const mg=document.createElement('aside');mg.className='margin';mg.setAttribute('aria-label',ja?'リファレンス':'References');
+    mg.innerHTML=x.refs.map(j=>`<figure class="mfig" data-j="${j}"><button type="button" class="mimg" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"></button><figcaption>${R[j].title}</figcaption><button type="button" class="mnote">${ja?'解説':'notes'}</button></figure>`).join('');
+    const col=document.createElement('div');col.className='rcol';col.append(meta,d);
+    wrap.append(col,mg);scroller.appendChild(wrap);
     const figs=[...mg.querySelectorAll('.mfig')];let pin=null;
     const lit=j=>{const on=j!=null;mg.classList.toggle('focus',on);figs.forEach(f=>f.classList.toggle('on',on&&+f.dataset.j===j));d.querySelectorAll('.rlink').forEach(w=>w.classList.toggle('on',on&&+w.dataset.r===j))};
-    d.querySelectorAll('.rlink').forEach(w=>{const j=+w.dataset.r;w.tabIndex=0;w.addEventListener('mouseenter',()=>lit(j));w.addEventListener('mouseleave',()=>lit(pin));w.addEventListener('focus',()=>lit(j));w.addEventListener('blur',()=>lit(pin));w.addEventListener('click',()=>{pin=pin===j?null:j;lit(pin)})});
+    const tabs=()=>d.querySelectorAll('.rlink').forEach(w=>w.tabIndex=0);tabs();
+    d.addEventListener('mouseover',e=>{const w=e.target.closest('.rlink');if(w)lit(+w.dataset.r)});
+    d.addEventListener('mouseout',e=>{const w=e.target.closest('.rlink');if(w&&!(e.relatedTarget&&w.contains(e.relatedTarget)))lit(pin)});
+    d.addEventListener('focusin',e=>{const w=e.target.closest('.rlink');if(w)lit(+w.dataset.r)});
+    d.addEventListener('focusout',()=>lit(pin));
+    d.addEventListener('click',e=>{const w=e.target.closest('.rlink');if(!w)return;const j=+w.dataset.r;pin=pin===j?null:j;lit(pin)});
     const note=j=>{if(panelJ===j)closeRefPanel();else openRefPanel(j,{list:x.refs})};
     figs.forEach(f=>{const j=+f.dataset.j;f.addEventListener('mouseenter',()=>lit(j));f.addEventListener('mouseleave',()=>lit(pin));f.querySelector('.mimg').addEventListener('click',()=>note(j));f.querySelector('.mnote').addEventListener('click',()=>note(j))});
+    /* ---- two kinds of line: your own pencil lines (kept here), and the faint trace left where a passage was carried off to your collection ---- */
+    const pkey='desk-pencil:'+x.no+':'+lang;let pencil={};try{pencil=JSON.parse(localStorage.getItem(pkey)||'{}')}catch(e){}
+    const savePencil=()=>{try{localStorage.setItem(pkey,JSON.stringify(pencil))}catch(e){}};
+    const carried=new Set();
+    const paintQ=()=>{const by={};Object.entries(pencil).forEach(([k,l])=>l.forEach(([a,b])=>(by[k]=by[k]||[]).push([a,b,'p'])));
+      Object.entries(QUOTES).forEach(([id,q])=>{if(q.n!==x.no||q.l!==lang||!(coll.includes('q:'+id)||carried.has(id)))return;(q.seg||[]).forEach(([k,a,b])=>(by[k]=by[k]||[]).push([a,b,id]))});
+      d.querySelectorAll('p[data-p]').forEach(p=>{const k=+p.dataset.p;p.innerHTML=y.body[k];if(by[k]){let m=[];by[k].forEach(r=>m=addMark(m,r[0],r[1],r[2]));applyMarks(p,m,c=>c==='p'?'qline':'qline ghost')}});tabs();requestAnimationFrame(()=>placeMargin(d,mg))};
+    paintQ();d._paintQ=paintQ;
+    const offs=(p,node,o)=>{const r=document.createRange();r.setStart(p,0);try{r.setEnd(node,o)}catch(e){return 0}return r.toString().length};
+    const nodeAt=(p,o)=>{const tw=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);let n,pos=0;while(n=tw.nextNode()){if(o<=pos+n.length)return[n,o-pos];pos+=n.length}return[p,p.childNodes.length]};
+    const segsOf=rg=>{const seg=[];d.querySelectorAll('p[data-p]').forEach(p=>{if(!rg.intersectsNode(p))return;const len=p.textContent.length,a=p.contains(rg.startContainer)?offs(p,rg.startContainer,rg.startOffset):0,b=p.contains(rg.endContainer)?offs(p,rg.endContainer,rg.endOffset):len;if(b>a)seg.push([+p.dataset.p,a,b])});return seg};
+    /* with the duck's pencil: drawing across leaves a pencil line; tapping a pencil line rubs it out */
+    const draw=()=>{const sel=getSelection();if(!sel||sel.isCollapsed||!sel.rangeCount||!d.contains(sel.anchorNode))return false;const rg=sel.getRangeAt(0);if(sel.toString().trim().length<2)return false;
+      const seg=segsOf(rg);if(!seg.length)return false;seg.forEach(([k,a,b])=>{pencil[k]=addMark((pencil[k]||[]).map(r=>[r[0],r[1],'p']),a,b,'p').map(r=>[r[0],r[1]])});savePencil();sel.removeAllRanges();paintQ();return true};
+    d.addEventListener('click',e=>{const ln=e.target.closest('.qline[data-q="p"]');if(!ln||!getSelection().isCollapsed)return;const p=ln.closest('p[data-p]'),k=+p.dataset.p,o=offs(p,ln.firstChild||ln,0);
+      if(penOut){pencil[k]=(pencil[k]||[]).filter(r=>!(r[0]<=o&&o<r[1]));if(!pencil[k].length)delete pencil[k];savePencil();paintQ();return}
+      /* without the pencil, tapping your own line offers to take that passage home */
+      const r=(pencil[k]||[]).find(r=>r[0]<=o&&o<r[1]);if(!r)return;const rg=document.createRange();rg.setStart(...nodeAt(p,r[0]));rg.setEnd(...nodeAt(p,r[1]));const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);offer()});
+    /* any selection (or a pencil line) can be taken home: the duck flies over, takes the line in its beak, and carries it to "collection" */
+    let qb=document.getElementById('qbtn');if(!qb){qb=document.createElement('button');qb.type='button';qb.id='qbtn';qb.className='qbtn';document.body.appendChild(qb)}qb.hidden=true;
+    const offer=()=>{const sel=getSelection();if(!sel||sel.isCollapsed||!sel.rangeCount||!d.contains(sel.anchorNode)){qb.hidden=true;return}const rg=sel.getRangeAt(0),t=sel.toString().trim();if(t.length<2){qb.hidden=true;return}
+      const rc=[...rg.getClientRects()].pop()||rg.getBoundingClientRect();qb.textContent=lang==='ja'?'+ 持ち帰る':'+ take home';qb.style.left=Math.min(innerWidth-110,rc.right+6)+'px';qb.style.top=(rc.bottom+6)+'px';qb.hidden=false;
+      qb.onclick=()=>{const seg=segsOf(rg);if(!seg.length)return;const id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);QUOTES[id]={t:t.slice(0,600),n:x.no,l:lang,title:y.title,seg};saveQuotes();
+        const rects=[...rg.getClientRects()].filter(r=>r.width>2);qb.hidden=true;sel.removeAllRanges();carry(id,rects,()=>{carried.delete(id);toggleColl('q:'+id);paintQ()},()=>{carried.add(id);paintQ()})}};
+    d.addEventListener('mouseup',()=>setTimeout(()=>{if(penOut){draw();return}offer()}));d.addEventListener('touchend',()=>setTimeout(()=>{if(penOut){draw();return}offer()},350));
+    document.addEventListener('selectionchange',()=>{const sel=getSelection();if(!sel||sel.isCollapsed)qb.hidden=true});
+    scroller.addEventListener('scroll',()=>qb.hidden=true,{passive:true});
     requestAnimationFrame(()=>placeMargin(d,mg))}
   scroller.scrollTop=0}
+/* ---- marker helpers: a paragraph's marks are [start,end,colour] ranges over its plain text ---- */
+function addMark(list,a,b,c){const out=[];list.forEach(([s,e,k])=>{if(e<=a||s>=b){out.push([s,e,k]);return}if(s<a)out.push([s,a,k]);if(e>b)out.push([b,e,k])});if(c!=null)out.push([a,b,c]);
+  out.sort((p,q)=>p[0]-q[0]);const m=[];out.forEach(r=>{const l=m[m.length-1];if(l&&l[2]===r[2]&&l[1]>=r[0])l[1]=Math.max(l[1],r[1]);else m.push(r.slice())});return m}
+function applyMarks(p,list,cls){if(!list.length)return;const tw=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);const nodes=[];let n,pos=0;while(n=tw.nextNode()){nodes.push([n,pos]);pos+=n.length}
+  for(let i=nodes.length-1;i>=0;i--){const [node,st]=nodes[i],en=st+node.length;
+    list.filter(r=>r[0]<en&&r[1]>st).sort((p,q)=>q[0]-p[0]).forEach(([a,b,c])=>{const s0=Math.max(a,st)-st,e0=Math.min(b,en)-st;const mid=node.splitText(s0);mid.splitText(e0-s0);const m=document.createElement('span');m.className=typeof cls==='function'?cls(c):(cls||'qline');if(typeof c==='string')m.dataset.q=c;mid.replaceWith(m);m.appendChild(mid)})}}
 /* each margin image lines up with the first word that names it, or follows the one above */
-function placeMargin(d,mg){if(!mg.isConnected||getComputedStyle(mg).position!=='relative')return;const base=mg.getBoundingClientRect().top;let y=0;
+function placeMargin(d,mg){if(!mg.isConnected||getComputedStyle(mg).position!=='relative')return;mg.style.setProperty('--mtop',Math.max(0,d.getBoundingClientRect().top-mg.parentNode.getBoundingClientRect().top)+'px');const base=mg.getBoundingClientRect().top;let y=0;
   [...mg.children].forEach(f=>{const w=d.querySelector(`.rlink[data-r="${f.dataset.j}"]`);let t=w?w.getBoundingClientRect().top-base-2:y;t=Math.max(t,y);f.style.top=t+'px';y=t+f.offsetHeight+16});mg.style.minHeight=y+'px'}
 addEventListener('resize',()=>{const mg=scroller.querySelector('.margin'),d=scroller.querySelector('.reading');if(mg&&d)placeMargin(d,mg)});
-function showCollect(keys){setLayout('free');leave();setMode('collect');shared=keys&&keys.length?keys:null;const list=shared||coll;mark();head('Your table','Collection',[list.length+(list.length===1?' item':' items'),shared?'Shared with you':'Kept in this browser']);
-  newCanvas();updCollTools();
-  if(!list.length){canvas.innerHTML='<div class="empty"><p class="lead">Nothing collected yet.</p><p>Press <b>+ Collect</b> on any drawing, render or reference and it gathers here, on a table of your own.</p></div>';return}
-  const els=list.map(k=>{const [t,a1,a2]=k.split(':');if(t==='w'){const p=P[+a1];if(!p||!p.sheets[+a2])return null;return workSheet(p.sheets[+a2],+a1,+a2)}if(t==='t'){return P[+a1]&&P[+a1].text?textSheet(+a1):null}if(!R[+a1])return null;return refSheet(+a1)}).filter(Boolean);
-  els.forEach(el=>canvas.appendChild(el));const r=rng(seed());sizeAll(els,r,false);if(isM()){setLayout('grid');layGrid(els)}else collage(els.sort((a,b)=>b._w-a._w),r);syncButtons()}
+function showCollect(keys){setLayout('free');leave();setMode('collect');shared=keys&&keys.length?keys:(keys&&sharedBoard?keys:null);const list=shared||coll,B=shared?sharedBoard||{pos:{},objs:[]}:board;mark();
+  head('Your table','Collection',[list.length+(list.length===1?' item':' items'),shared?'Shared with you':'Kept in this browser']);
+  newCanvas();canvas.classList.add('board');updCollTools();const ja=lang==='ja';
+  if(!list.length&&!B.objs.length){const e=document.createElement('div');e.className='empty board-empty';e.innerHTML=ja?'<p class="lead">ここは自分の机です。</p><p>作品やリファレンスの「+ collect」、文章を選んで「+ 持ち帰る」で集めたものがここに並びます。下の道具で文字や図形も置けます。整えたら画像やリンクで持ち帰れます。</p>':'<p class="lead">This is your own table.</p><p>What you collect gathers here. Add words and shapes with the tools below, then take it home as an image or a link.</p>';canvas.appendChild(e)}
+  const els=list.map(sheetFor).filter(Boolean);els.forEach(el=>canvas.appendChild(el));const r=rng(seed());sizeAll(els,r,false);
+  const fresh=[];let any=false;
+  els.forEach(el=>{const pz=B.pos[skey(el._key)];if(pz){any=true;if(pz.w)setW(el,pz.w);el.style.left=pz.x+'px';el.style.top=pz.y+'px';const z=(pz.z||0)%LAYER||++topZ;el.style.zIndex=zbase(el)+z;topZ=Math.max(topZ,z)}else{setW(el,el._w*.7);fresh.push(el)}});
+  B.objs.forEach(o=>{any=true;canvas.appendChild(objEl(o));topZ=Math.max(topZ,(o.z||0)%LAYER)});
+  if(fresh.length){if(!any)collage(fresh.sort((a,b)=>b._w-a._w),r);else placeFree(fresh)}
+  canvas.querySelectorAll('.sheet').forEach(addResize);grow();syncButtons();if(fresh.length&&!shared)saveBoard()}
+/* ---- board state: where each collected thing lies, plus your own words and shapes ---- */
+let QUOTES={};try{QUOTES=JSON.parse(localStorage.getItem('desk-quotes')||'{}')}catch(e){}
+const saveQuotes=()=>{try{localStorage.setItem('desk-quotes',JSON.stringify(QUOTES))}catch(e){}};
+let board={pos:{},objs:[]};try{board=Object.assign(board,JSON.parse(localStorage.getItem('desk-board')||'{}'))}catch(e){}
+let sharedBoard=null;
+const skey=k=>k.startsWith('q:')?k:toShare(k);
+const escH=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function quoteSheet(k){const q=QUOTES[k.slice(2)];if(!q)return null;const el=makeSheet({ar:.9,left:'passage',key:k,html:`<p class="qt">${escH(q.t)}</p><p class="tf">— ${escH(q.title||'')}</p>`});el._text=1;el.classList.add('text','quote');return el}
+function sheetFor(k){const [t,a1,a2]=k.split(':');if(t==='q')return quoteSheet(k);if(t==='w'){const p=P[+a1];if(!p||!p.sheets[+a2])return null;return workSheet(p.sheets[+a2],+a1,+a2)}if(t==='t'){return P[+a1]&&P[+a1].text?textSheet(+a1):null}if(!R[+a1])return null;return refSheet(+a1)}
+let sbT=0;function saveBoard(){if(shared||mode!=='collect'||!canvas)return;clearTimeout(sbT);sbT=setTimeout(()=>{const pos={},objs=[];
+  canvas.querySelectorAll('.sheet').forEach(el=>{const x=Math.round(parseFloat(el.style.left)||0),y=Math.round(parseFloat(el.style.top)||0),z=(+el.style.zIndex||0)-zbase(el);
+    if(el._obj){const o=el._obj;if(o.t==='line')objs.push({id:o.id,t:'line',x1:o.x1,y1:o.y1,x2:o.x2,y2:o.y2,a:o.a||0,c:o.c||0,z});else objs.push({id:o.id,t:o.t,x,y,w:el.offsetWidth,h:el.offsetHeight,z,c:o.c||0,f:o.f?1:0,text:o.t==='note'?el.querySelector('.nbody').innerText:''})}
+    else if(el._key&&!el.classList.contains('big')){const k=skey(el._key);if(k)pos[k]={x,y,w:Math.round(el._w),z}}});
+  board={pos,objs};try{localStorage.setItem('desk-board',JSON.stringify(board))}catch(e){}},120)}
+function placeFree(els){const taken=[...canvas.querySelectorAll('.sheet')].filter(e=>!els.includes(e)).map(e=>({x:e.offsetLeft,y:e.offsetTop,w:e.offsetWidth,h:e.offsetHeight}));const w=W();
+  els.forEach(el=>{const ww=el._w,hh=hOf(el);let at=null;for(let y=0;y<6000&&!at;y+=24)for(let x=0;x+ww<=w;x+=24){if(!taken.some(t=>x<t.x+t.w+G&&x+ww+G>t.x&&y<t.y+t.h+G&&y+hh+G>t.y)){at={x,y};break}}at=at||{x:0,y:0};
+    el.style.left=at.x+'px';el.style.top=at.y+'px';raise(el);taken.push({x:at.x,y:at.y,w:ww,h:hh})})}
+const PAL=['#141414','#d23b2e','#2d5fd3','#ff6fae','#e1b400'];
+function shapeSVG(o){return o.t==='rect'?'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="0" y="0" width="100" height="100"/></svg>':'<svg viewBox="0 0 100 100" preserveAspectRatio="none"><ellipse cx="50" cy="50" rx="50" ry="50"/></svg>'}
+/* a line is two free ends; the element is just the box around them */
+const LP=12;
+function layLine(el){const o=el._obj,l=Math.min(o.x1,o.x2)-LP,t=Math.min(o.y1,o.y2)-LP,w=Math.abs(o.x2-o.x1)+LP*2,h=Math.abs(o.y2-o.y1)+LP*2;
+  Object.assign(el.style,{left:l+'px',top:t+'px',width:w+'px',height:h+'px'});el._w=w;el._ar=w/h;
+  const a=[o.x1-l,o.y1-t],b=[o.x2-l,o.y2-t],mk=`m${o.id}`;
+  el.querySelector('svg').innerHTML=`<defs><marker id="${mk}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z"/></marker></defs><line class="hit" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/><line class="ln" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"${o.a>=1?` marker-end="url(#${mk})"`:''}${o.a>=2?` marker-start="url(#${mk})"`:''}/>`;
+  el.querySelector('svg').setAttribute('viewBox',`0 0 ${w} ${h}`);
+  const [e1,e2]=el.querySelectorAll('.lend');e1.style.left=a[0]+'px';e1.style.top=a[1]+'px';e2.style.left=b[0]+'px';e2.style.top=b[1]+'px'}
+function objEl(o){if(o.t==='line'&&o.x1==null){const d=o.d||1;o.x1=o.x;o.y1=d===-1?o.y:o.y+o.h;o.x2=o.x+o.w;o.y2=d===-1?o.y+o.h:o.y}
+  const el=document.createElement('div');el.className='sheet obj '+(o.t==='note'?'note':o.t==='line'?'line':'shape');el.tabIndex=0;el._obj=o;el._cap=0;
+  el.style.setProperty('--oc',PAL[o.c||0]);el.classList.toggle('filled',!!o.f);
+  if(o.t!=='line'){Object.assign(el.style,{left:o.x+'px',top:o.y+'px',width:o.w+'px',height:o.h+'px'});el._w=o.w;el._ar=o.w/Math.max(1,o.h)}
+  el.style.zIndex=3*LAYER+((o.z||0)%LAYER||++topZ);
+  const ja=lang==='ja';
+  const extra=o.t==='line'?`<button type="button" data-a="arrow">${ja?'矢印':'arrow'}</button>`:o.t!=='note'?`<button type="button" data-a="fill">${ja?'塗り':'fill'}</button>`:'';
+  el.innerHTML=(o.t==='note'?`<span class="grip"></span><div class="nbody" contenteditable="${shared?'false':'plaintext-only'}" spellcheck="false" data-ph="${ja?'ここに書く':'write here'}"></div>`:o.t==='line'?'<svg></svg><span class="lend"></span><span class="lend"></span>':shapeSVG(o))
+    +(shared?'':`<div class="tools">${PAL.map((c,k)=>`<button type="button" class="cdot" data-col="${k}" style="--c:${c}" aria-label="${ja?'色':'colour'} ${k+1}" aria-pressed="${(o.c||0)===k}"></button>`).join('')}${extra}<button type="button" data-a="del">×</button></div>`);
+  if(o.t==='line')layLine(el);
+  if(o.t==='note'){const nb=el.querySelector('.nbody');nb.textContent=o.text||'';if(nb.contentEditable!=='plaintext-only'&&!shared)nb.contentEditable='true';nb.addEventListener('input',saveBoard);nb.addEventListener('pointerdown',e=>{e.stopPropagation();raise(el)})}
+  if(!shared){el.querySelector('[data-a=del]').addEventListener('click',()=>{el.remove();saveBoard()});
+    el.querySelectorAll('.cdot').forEach(b=>b.addEventListener('click',()=>{o.c=+b.dataset.col;el.style.setProperty('--oc',PAL[o.c]);el.querySelectorAll('.cdot').forEach(q=>q.setAttribute('aria-pressed',q===b));saveBoard()}));
+    const fb=el.querySelector('[data-a=fill]');if(fb)fb.addEventListener('click',()=>{o.f=!o.f;el.classList.toggle('filled',o.f);saveBoard()});
+    const ab=el.querySelector('[data-a=arrow]');if(ab)ab.addEventListener('click',()=>{o.a=((o.a||0)+1)%3;layLine(el);saveBoard()});
+    el.querySelectorAll('.lend').forEach((h,k)=>h.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();raise(el);h.setPointerCapture(e.pointerId);const sx=e.clientX,sy=e.clientY,px=k?o.x2:o.x1,py=k?o.y2:o.y1;
+      const mv=ev=>{if(k){o.x2=px+ev.clientX-sx;o.y2=py+ev.clientY-sy}else{o.x1=px+ev.clientX-sx;o.y1=py+ev.clientY-sy}layLine(el)};
+      const up=()=>{h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);grow();saveBoard()};h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up)}))}
+  el.addEventListener('pointerdown',e=>{if(shared||e.target.closest('button,.rs,.lend'))return;e.preventDefault();raise(el);el.setPointerCapture(e.pointerId);el.classList.add('dragging');
+    const s0={x:e.clientX,y:e.clientY,l:parseFloat(el.style.left),t:parseFloat(el.style.top),x1:o.x1,y1:o.y1,x2:o.x2,y2:o.y2};
+    const mv=ev=>{const dx=ev.clientX-s0.x,dy=ev.clientY-s0.y;if(o.t==='line'){o.x1=s0.x1+dx;o.y1=s0.y1+dy;o.x2=s0.x2+dx;o.y2=s0.y2+dy;layLine(el)}else{el.style.left=s0.l+dx+'px';el.style.top=s0.t+dy+'px'}};
+    const up=()=>{el.classList.remove('dragging');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);if(o.t==='line'){grow();saveBoard()}else clamp(el)};
+    el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)});
+  return el}
+/* resize from any of the four corners; pictures and passages keep their proportions, your own boxes stretch freely */
+function addResize(el){if(shared||(el._obj&&el._obj.t==='line')||el.querySelector(':scope>.rs'))return;
+  ['nw','ne','sw','se'].forEach(cn=>{const h=document.createElement('span');h.className='rs '+cn;el.appendChild(h);const east=cn[1]==='e',south=cn[0]==='s';
+    h.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();raise(el);h.setPointerCapture(e.pointerId);const w0=el.offsetWidth,h0=el.offsetHeight,l0=parseFloat(el.style.left),t0=parseFloat(el.style.top),x0=e.clientX,y0=e.clientY;
+      const mv=ev=>{const dx=ev.clientX-x0,dy=ev.clientY-y0;let w=Math.max(48,east?w0+dx:w0-dx);
+        if(el._obj){const hh=Math.max(30,south?h0+dy:h0-dy);el.style.width=w+'px';el.style.height=hh+'px';el._w=w;el._ar=w/hh;el.style.left=(east?l0:l0+w0-w)+'px';el.style.top=(south?t0:t0+h0-hh)+'px'}
+        else{setW(el,w);if(el._text)hOf(el);const nh=el.offsetHeight;el.style.left=(east?l0:l0+w0-w)+'px';el.style.top=(south?t0:t0+h0-nh)+'px'}};
+      const up=()=>{h.removeEventListener('pointermove',mv);h.removeEventListener('pointerup',up);grow();saveBoard()};h.addEventListener('pointermove',mv);h.addEventListener('pointerup',up)})})}
+document.querySelectorAll('#addTools [data-add]').forEach(b=>b.addEventListener('click',()=>{if(mode!=='collect'||shared)return;canvas.querySelector('.board-empty')?.remove();const t=b.dataset.add;
+  const w=t==='note'?240:t==='line'?180:150,h=t==='note'?120:t==='line'?0:t==='oval'?150:110,nObj=canvas.querySelectorAll('.sheet.obj').length,cx=Math.round(W()*.18+(nObj%5)*Math.min(220,W()*.14)),cy=Math.round(scroller.scrollTop+VH()*.18+Math.floor(nObj/5)%3*170),
+    o=t==='line'?{id:Date.now().toString(36),t,x1:cx,y1:cy+40,x2:cx+w,y2:cy,a:1,c:0,z:++topZ}:{id:Date.now().toString(36),t,x:cx,y:cy,w,h,z:++topZ,c:0,f:0,text:''};
+  const el=objEl(o);canvas.appendChild(el);addResize(el);grow();saveBoard();if(t==='note')el.querySelector('.nbody').focus()}));
+$('tidy').addEventListener('click',()=>{if(mode!=='collect'||shared)return;const els=[...canvas.querySelectorAll('.sheet:not(.obj)')];els.forEach(el=>{el.classList.remove('big');animate(el)});collage(els.sort((a,b)=>b._w-a._w),rng(seed()));saveBoard()})
 /* a collection can leave the site: as one image of the table, or as a link that lays the same table for someone else */
 let shared=null;
 const toShare=k=>{const [t,a,b]=k.split(':');if(t==='w'&&P[+a])return 'w'+P[+a].no+'.'+b;if(t==='t'&&P[+a])return 't'+P[+a].no;if(t==='r'&&R[+a])return 'r'+R[+a].no.slice(4);return null};
 const fromShare=x=>{const m=x.match(/^([wtr])([^.]+)(?:\.(\d+))?$/);if(!m)return null;if(m[1]==='r'){const j=R.findIndex(r=>r.no.slice(4)===m[2]);return j<0?null:'r:'+j}const i=P.findIndex(p=>p.no===m[2]);if(i<0)return null;if(m[1]==='t')return P[i].text?'t:'+i:null;return P[i].sheets[+m[3]]?`w:${i}:${+m[3]}`:null};
-function readShared(){try{const h=decodeURIComponent(location.hash||'');const m=h.match(/^#c=(.+)$/);if(!m)return null;const ks=m[1].split(',').map(fromShare).filter(Boolean);return ks.length?[...new Set(ks)]:null}catch(e){return null}}
-function updCollTools(){const list=shared||coll,ja=lang==='ja';$('saveImg').hidden=$('shareColl').hidden=!list.length;$('adopt').hidden=!shared;
+const b64e=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d=t=>JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/')))));
+function readShared(){try{const hb=(location.hash||'').match(/^#b=(.+)$/);if(hb){const o=b64d(hb[1]);Object.entries(o.q||{}).forEach(([id,q])=>{if(!QUOTES[id])QUOTES[id]=q});
+      sharedBoard={pos:o.p||{},objs:o.o||[]};const ks=(o.c||[]).map(x=>x.startsWith('q:')?(QUOTES[x.slice(2)]?x:null):fromShare(x)).filter(Boolean);return ks.length||sharedBoard.objs.length?[...new Set(ks)]:null}
+    const h=decodeURIComponent(location.hash||'');const m=h.match(/^#c=(.+)$/);if(!m)return null;const ks=m[1].split(',').map(fromShare).filter(Boolean);return ks.length?[...new Set(ks)]:null}catch(e){return null}}
+function updCollTools(){const list=shared||coll,ja=lang==='ja';$('addTools').hidden=!!shared;const B=shared?sharedBoard:board;$('saveImg').hidden=$('shareColl').hidden=!(list.length||(B&&B.objs&&B.objs.length));$('adopt').hidden=!shared;
   const sn=$('sharedNote');sn.hidden=!shared;sn.textContent=ja?`共有されたコレクション(${list.length})`:`A shared collection (${list.length})`;
   $('adopt').textContent=ja?'自分のコレクションに加える':'add to my collection';$('saveImg').textContent=ja?'画像で保存':'save image';$('shareColl').textContent=ja?'リンクで共有':'share link'}
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
-function shareLink(){const list=shared||coll;return location.href.split('#')[0]+'#c='+list.map(toShare).filter(Boolean).join(',')}
+function shareLink(){const list=shared||coll,B=shared?sharedBoard||{pos:{},objs:[]}:board,base=location.href.split('#')[0];
+  const q={};list.filter(k=>k.startsWith('q:')).forEach(k=>{const v=QUOTES[k.slice(2)];if(v)q[k.slice(2)]={t:v.t,title:v.title,n:v.n,l:v.l}});
+  return base+'#b='+b64e({c:list.map(k=>k.startsWith('q:')?k:toShare(k)).filter(Boolean),q,p:B.pos,o:B.objs})}
 $('shareColl').addEventListener('click',async()=>{const url=shareLink(),ja=lang==='ja';
   if(navigator.share&&matchMedia('(hover:none)').matches){try{await navigator.share({title:D.site.name+' — collection',url});return}catch(e){if(e&&e.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(url);toast(ja?'リンクをコピーしました':'Link copied');return}catch(e){}
   showOut(null,url)});
-$('adopt').addEventListener('click',()=>{shared.forEach(k=>{if(!coll.includes(k))coll.push(k)});saveColl();updCount();try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}showCollect();toast(lang==='ja'?'自分のコレクションに加えました':'Added to your collection')});
+$('adopt').addEventListener('click',()=>{shared.forEach(k=>{if(!coll.includes(k))coll.push(k)});saveColl();saveQuotes();if(sharedBoard){board={pos:Object.assign({},board.pos,sharedBoard.pos),objs:board.objs.concat(sharedBoard.objs.map(o=>Object.assign({},o,{id:o.id+'s'})))};try{localStorage.setItem('desk-board',JSON.stringify(board))}catch(e){}}updCount();try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}showCollect();toast(lang==='ja'?'自分のコレクションに加えました':'Added to your collection')});
 function showOut(src,link){const o=$('imgout'),ja=lang==='ja',row=$('imgoutRow'),im=$('imgoutImg');im.hidden=!src;if(src)im.src=src;
   row.innerHTML=(src?`<a href="${src}" download="${D.site.name.replace(/\s+/g,'-').toLowerCase()}-collection.png">${ja?'ダウンロード':'download'}</a>`:`<span class="linkbox">${link}</span>`)+`<button type="button">${ja?'閉じる':'close'}</button>`;
   $('imgoutHint').textContent=src?(ja?'うまく保存できないときは、画像を長押し(右クリック)して保存してください':'If the download does not start, press and hold (or right-click) the image to save it'):(ja?'このリンクをコピーして送ってください':'Copy this link and send it');
   row.querySelector('button').addEventListener('click',()=>o.hidden=true);o.hidden=false}
 $('imgout').addEventListener('click',e=>{if(e.target.id==='imgout')e.currentTarget.hidden=true});
 /* draw the table as it lies now into one picture */
+const isWordy=t=>!/[\u3000-\u9fff\uff00-\uffef]/.test(t);
 function wrapLines(ctx,text,maxW,words){const out=[];let line='';const parts=words?text.split(/(\s+)/):[...text];for(const p of parts){const t=line+p;if(ctx.measureText(t).width>maxW&&line.trim()){out.push(line.trimEnd());line=words?p.trimStart():p}else line=t}if(line.trim())out.push(line);return out}
-async function collImage(){const els=[...canvas.querySelectorAll('.sheet')];if(!els.length)return null;
+async function collImage(){const els=[...canvas.querySelectorAll('.sheet')];if(!els.length)return null;document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
   await Promise.all(els.map(el=>el._im).filter(Boolean).map(im=>{im.loading='eager';return im.decode().catch(()=>{})}));
   let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;els.forEach(el=>{const l=el.offsetLeft,t=el.offsetTop;x0=Math.min(x0,l);y0=Math.min(y0,t);x1=Math.max(x1,l+el.offsetWidth);y1=Math.max(y1,t+el.offsetHeight)});
   const pad=56,foot=40,W0=x1-x0+pad*2,H0=y1-y0+pad*2+foot,sc=Math.min(2,4000/W0,8000/H0);
@@ -1182,8 +1378,16 @@ async function collImage(){const els=[...canvas.querySelectorAll('.sheet')];if(!
   c.fillStyle=bg;c.fillRect(0,0,W0,H0);
   els.sort((a,b)=>(+a.style.zIndex||0)-(+b.style.zIndex||0));
   for(const el of els){const ox=el.offsetLeft-x0+pad,oy=el.offsetTop-y0+pad,w=el.offsetWidth;
+    if(el._obj){const o=el._obj,h=el.offsetHeight,col=PAL[o.c||0];c.strokeStyle=col;c.fillStyle=col;c.lineWidth=1.5;
+      const fillA=()=>{c.globalAlpha=.22;c.fill();c.globalAlpha=1};
+      if(o.t==='rect'){c.beginPath();c.rect(ox+.75,oy+.75,w-1.5,h-1.5);if(o.f)fillA();c.stroke()}else if(o.t==='oval'){c.beginPath();c.ellipse(ox+w/2,oy+h/2,w/2-.75,h/2-.75,0,0,Math.PI*2);if(o.f)fillA();c.stroke()}
+      else if(o.t==='line'){const L=el.offsetLeft,T=el.offsetTop,ax=ox+o.x1-L,ay=oy+o.y1-T,bx=ox+o.x2-L,by=oy+o.y2-T;c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.stroke();
+        const head=(px,py,qx,qy)=>{const an=Math.atan2(qy-py,qx-px),s=10;c.beginPath();c.moveTo(qx,qy);c.lineTo(qx-s*Math.cos(an-.42),qy-s*Math.sin(an-.42));c.lineTo(qx-s*Math.cos(an+.42),qy-s*Math.sin(an+.42));c.closePath();c.fill()};
+        if((o.a||0)>=1)head(ax,ay,bx,by);if((o.a||0)>=2)head(bx,by,ax,ay)}
+      else{const nb=el.querySelector('.nbody'),st=getComputedStyle(nb),lh=parseFloat(st.lineHeight)||20,fs=parseFloat(st.fontSize);c.fillStyle=col;c.font=`${st.fontWeight} ${st.fontSize} ${font}`;c.textBaseline='top';let y=oy+parseFloat(st.paddingTop);
+        nb.innerText.split('\n').forEach(line=>{(line?wrapLines(c,line,nb.clientWidth-parseFloat(st.paddingLeft)*2,isWordy(line)):['']).forEach(l=>{c.fillText(l,ox+parseFloat(st.paddingLeft),y+(lh-fs)/2);y+=lh})})}continue}
     if(el._text){c.fillStyle=fg;el.querySelectorAll('.tsheet h3,.tsheet p').forEach(n=>{const st=getComputedStyle(n),lh=parseFloat(st.lineHeight)||parseFloat(st.fontSize)*1.6;c.font=`${st.fontWeight} ${st.fontSize} ${font}`;c.textBaseline='top';
-      let y=oy+n.offsetTop;wrapLines(c,n.textContent,n.clientWidth,lang==='en').forEach(l=>{if(y+lh<=oy+el.offsetHeight+2)c.fillText(l,ox+n.offsetLeft,y+(lh-parseFloat(st.fontSize))/2);y+=lh})});continue}
+      let y=oy+n.offsetTop;wrapLines(c,n.textContent,n.clientWidth,isWordy(n.textContent)).forEach(l=>{if(y+lh<=oy+el.offsetHeight+2)c.fillText(l,ox+n.offsetLeft,y+(lh-parseFloat(st.fontSize))/2);y+=lh})});continue}
     const im=el.querySelector('img');if(im&&im.complete&&im.naturalWidth){try{c.drawImage(im,ox,oy,w,im.offsetHeight)}catch(e){}}
     c.strokeStyle='rgba(0,0,0,.12)';c.lineWidth=1;c.strokeRect(ox+.5,oy+.5,w-1,el.offsetHeight-1);
     const cap=el.querySelector('.sheet-cap');if(cap){const cy=oy+cap.offsetTop;c.fillStyle=fg;c.fillRect(ox,cy,w,cap.offsetHeight);c.fillStyle=bg;c.font=`400 10px ${font}`;c.textBaseline='middle';c.fillText(wrapLines(c,cap.textContent.trim(),w-16,true)[0]||'',ox+8,cy+cap.offsetHeight/2)}}
@@ -1203,7 +1407,30 @@ function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.to
   moveDuck(x,y,spot)}
 addEventListener('resize',()=>requestAnimationFrame(placeDuck));
 const POSE={works:'stand',refs:'sleep',text:'read',collect:'carry',about:'wave'};
-function setPose(m){const d=$('duck');if(d.dataset.pose===POSE[m])return;const p=POSE[m];d.dataset.pose=p;d.innerHTML=`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`}
+function setPose(m){const d=$('duck');if(!d.querySelector('svg.fd'))d.insertAdjacentHTML('afterbegin',FDUCK.svg);d.dataset.pose=POSE[m];syncPen()}
+/* on the text pages the duck reads with a pencil in its beak; tap it to borrow the pencil, tap again to give it back */
+let penOut=false;const PENSVG='<svg viewBox="0 0 40 8" aria-hidden="true"><path d="M2 4 L8 1.2 H36 a2 2 0 0 1 2 2 v1.6 a2 2 0 0 1 -2 2 H8 Z" fill="#e8c46a" stroke="#141414" stroke-width=".8"/><path d="M2 4 L8 1.2 V6.8 Z" fill="#f2e3c4" stroke="#141414" stroke-width=".8"/><path d="M2 4 L4.2 3 V5 Z" fill="#141414"/><rect x="33" y="1.2" width="3" height="5.6" fill="#ff9fcb"/></svg>';
+function syncPen(){const d=$('duck');if(!d)return;const want=mode==='text'&&!penOut;let pe=d.querySelector('.dpen');if(want&&!pe){pe=document.createElement('span');pe.className='dpen';pe.innerHTML=PENSVG;d.appendChild(pe)}else if(!want&&pe)pe.remove();
+  d.dataset.tip=mode==='text'?(penOut?(lang==='ja'?'鉛筆を返す':'give the pencil back'):(lang==='ja'?'鉛筆を借りる':'borrow the pencil')):'';document.documentElement.classList.toggle('pencil',penOut&&mode==='text');
+  document.querySelectorAll('.reading').forEach(r=>r.classList.toggle('pen',penOut))}
+/* the duck flies to the passage, picks the line up in its beak, and flies it to "collection"; the line left behind fades to a trace */
+/* the duck fetches things for your collection: it flies to them, takes them in its beak, and flies them to "collection" */
+function canCarry(){const box=$('s-rail-top'),tab=$('tab-collect');return !reduce&&!switching&&variant==='a'&&!!box.offsetParent&&!!tab.offsetParent}
+function carryWith(at,payload,done,picked){const d=$('duck'),box=$('s-rail-top'),tab=$('tab-collect');
+  switching=true;const bx=box.getBoundingClientRect(),w=d.offsetWidth,h=d.offsetHeight;
+  moveDuck(at.x-bx.left-w*.35,at.y-bx.top-h+4,'passage',()=>{
+    picked&&picked();document.body.appendChild(payload);d.animate([{transform:'none'},{transform:'translateY(5px) rotate(8deg)'},{transform:'none'}],{duration:320});
+    let run=true;const follow=()=>{if(!run)return;const r=d.getBoundingClientRect();const fl=d.classList.contains('flying'),lf=d.classList.contains('left');payload.style.left=r.left+r.width*(fl?(lf?.06:.94):(lf?.14:.86))+'px';payload.style.top=r.top+r.height*(fl?.32:.17)+'px';requestAnimationFrame(follow)};
+    setTimeout(()=>{payload.classList.add('held');requestAnimationFrame(follow);
+      let tw=tab.offsetWidth;const t0=tab.firstChild;if(t0&&t0.nodeType===3){const r=document.createRange();r.selectNodeContents(t0);tw=r.getBoundingClientRect().width}
+      moveDuck(tab.offsetLeft+tw/2-w/2,tab.offsetTop-h-1,'collect',()=>{run=false;payload.classList.add('drop');setTimeout(()=>payload.remove(),260);done();
+        setTimeout(()=>{switching=false;placeDuck()},420)},true)},330)},true)}
+function carry(id,rects,done,picked){if(!rects.length||!canCarry()){picked&&picked();done();return}
+  const last=rects[rects.length-1],line=document.createElement('div');line.className='qcarry';const lw=Math.min(180,rects.reduce((s,r)=>s+r.width,0));
+  Object.assign(line.style,{left:last.right-lw+'px',top:last.bottom-3+'px',width:lw+'px'});carryWith({x:last.right,y:last.bottom},line,done,picked)}
+function setPen(on){penOut=on;syncPen();const d=$('duck');if(!reduce){d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop')}}
+$('duck').addEventListener('click',()=>{if(mode==='text')setPen(!penOut)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&penOut)setPen(false)});
 let navT=0;
 function go(m,fn){if(reduce){setPose(m);fn();return}clearTimeout(navT);const d=$('duck');setPose(m);d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop');
   desk.classList.add('loading');navT=setTimeout(()=>{fn();requestAnimationFrame(()=>desk.classList.remove('loading'))},460)}
@@ -1262,6 +1489,7 @@ function renderTray(){const box=$('drawer-items');box.innerHTML='';$('drawer-n')
   coll.forEach(k=>{const [t,a1,a2]=k.split(':'),i=+a1;let img=null,label='',go=null;
     if(t==='w'&&P[i]&&P[i].sheets[+a2]){img=P[i].sheets[+a2].img;label=P[i].title;go=()=>openWork(i)}
     else if(t==='t'&&P[i]){label=L(P[i].text).title;go=()=>openWork(i)}
+    else if(t==='q'&&QUOTES[a1]){label=QUOTES[a1].t.slice(0,40);go=()=>showCollect()}
     else if(t==='r'&&R[i]){img=R[i].img;label=R[i].title;go=()=>R[i].rel.length?openWork(R[i].rel[0],{refs:true,focus:i}):showGrid()}else return;
     const d=document.createElement('div');d.className='titem2';
     d.innerHTML=`<button type="button" class="tthumb">${img?`<img alt="" src="${src(img,'s')}">`:`<span class="ttext">${label}</span>`}</button><span class="tl">${label}</span><button type="button" class="trm">Remove</button>`;
