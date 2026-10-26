@@ -765,7 +765,7 @@ span.mini{box-sizing:border-box;border:1px solid var(--fg);outline:0}
 #rel[aria-pressed="true"] .lamp .bulb{fill:var(--muted);stroke:var(--muted)}
 .lampg{transform-box:view-box;transform-origin:26px 0}
 /* the dark spreads from the lamp with a soft, wide edge */
-html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr));mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - 280px)),transparent var(--vr))}
+html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - var(--vt-edge,280px))),transparent var(--vr));mask-image:radial-gradient(circle at var(--vx) var(--vy),#000 max(0px,calc(var(--vr) - var(--vt-edge,280px))),transparent var(--vr))}
 .duck.walk{animation:duckwalk .24s ease-in-out infinite alternate}
 @keyframes duckwalk{from{transform:translateY(0)}to{transform:translateY(-1.5px)}}
 @keyframes duckflip{0%{transform:none}40%{transform:translateY(-6px) scale(1.04,.96)}100%{transform:none}}
@@ -831,6 +831,38 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 .app.reading{max-width:none;padding-top:16px;padding-bottom:16px;gap:0 28px}
 .app.v-a.reading{padding-bottom:0;column-gap:22px}
 .app.v-m.reading{padding-block:0}
+/* the entrance is a dark room; entering opens it like the "behind" light, a soft-edged circle from where you clicked */
+.gate{background:#0b0b0b;color:#f1f0ec;transition:none}
+.gate.leave{opacity:1}
+.gtitle,.gcap{color:#f1f0ec}
+.gfilm{background:#161616}
+.glang{color:#5d5c58}
+.gopt{color:#f1f0ec}
+.gopt:hover{border-bottom-color:#f1f0ec}
+.gopt::before{color:#5d5c58}
+.gopt[aria-pressed="true"]::before{color:#f1f0ec}
+.gopt:not([aria-pressed="true"]){color:#86857f}
+.gopt:focus-visible{outline-color:#f1f0ec}
+.genter{color:#6d6c67}
+/* the blue duck again: drawn by hand, posterized blue by day, a pink negative once the lights are off */
+.duck svg.fd{display:none!important}
+.duck .pp{display:none;position:absolute;inset:0;transform-origin:50% 100%}
+.duck[data-pose="stand"] .p-stand,.duck[data-pose="read"] .p-read,.duck[data-pose="wave"] .p-wave,.duck[data-pose="sleep"] .p-sleep,.duck[data-pose="carry"] .p-carry{display:block}
+.duck.walk .pp,.duck.flying .pp,.duck.pull .pp{display:none!important}
+.duck.walk:not([data-pose="carry"]) .p-stand,.duck.walk[data-pose="carry"] .p-carry{display:block!important}
+.duck.flying:is([data-ff="0"],[data-ff="2"]) .p-wave,.duck.flying:is([data-ff="1"],[data-ff="3"]) .p-stand{display:block!important}
+.duck.pull:not(.tug) .p-stand,.duck.pull.tug .p-read{display:block!important}
+.duck.left .pp{transform:scaleX(-1)}
+.duck .p-sleep img{transform-origin:50% 100%;animation:breathe 3.8s ease-in-out infinite}
+.duck.walk{animation:duckwobble .26s ease-in-out infinite alternate}
+@keyframes duckwobble{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-3px) rotate(4deg)}}
+.v-a #s-rail-top .duck{width:26px;height:34px}
+.v-a .top .duck{width:24px;height:32px}
+.v-m .duck{width:30px;height:40px}
+.duck .dpen{left:52%;top:30%;width:70%}
+@media (prefers-reduced-motion:reduce){.duck .p-sleep img,.duck.walk{animation:none}}
+/* the pointer: a vivid pink */
+.cursor{--pointer:#ff2f92}
 </style>
 </head>
 <body>
@@ -886,7 +918,7 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 <script>
 /* Content comes from data/site.json, which the build makes from the Google Drive folder. */
 fetch('data/site.json',{cache:'no-cache'}).then(r=>r.json()).then(D=>{
-const IMG=D.images,P=D.works,R=D.refs;
+const IMG=D.images,DUCKIMG=D.duck,P=D.works,R=D.refs;
 /* each image comes in three sizes: s (480px) for thumbnails, m (1200px), and the full one; older builds have only the full one */
 const SZ=D.sizes||[];const src=(k,z)=>z&&SZ.includes(z)?IMG[k].replace(/^img\//,'img/'+z+'/'):IMG[k];
 const srcset=k=>SZ.length?`${src(k,'s')} 480w, ${src(k,'m')} 1200w, ${IMG[k]} 1800w`:'';
@@ -933,7 +965,7 @@ const FDUCK=(function(){
   const icon=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 4 108 96">${duck()}</svg>`.replace(/class="[^"]*"/g,'').replace(/<path  d="([^"]+)" fill="none"\/>/g,'<path d="$1" fill="none" stroke="rgba(20,20,20,.35)" stroke-width="1.2"/>');
   return{svg,icon};
 })();
-{const ic=document.querySelector('link[rel=icon]');if(ic)ic.href='data:image/svg+xml,'+encodeURIComponent(FDUCK.icon)}
+
 (function(){
 const rng=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
 const $=id=>document.getElementById(id);
@@ -1067,10 +1099,10 @@ let VR_OK=false;try{CSS.registerProperty({name:'--vr',syntax:'<length>',inherits
 function invert(on,origin,update){const run=()=>{document.body.classList.toggle('inv',on);update&&update()};
   if(document.body.classList.contains('inv')===on||reduce||!document.startViewTransition){run();return}
   const vt=document.startViewTransition(run);
-  vt.ready.then(()=>{if(origin&&VR_OK){const de=document.documentElement,r=Math.hypot(Math.max(origin.x,innerWidth-origin.x),Math.max(origin.y,innerHeight-origin.y))+280;
+  vt.ready.then(()=>{const cs=getComputedStyle(document.documentElement),EDGE=parseFloat(cs.getPropertyValue('--vt-edge'))||(cs.getPropertyValue('--vt-edge').trim()?0:280),DUR=parseFloat(cs.getPropertyValue('--vt-dur'))||1150;if(origin&&VR_OK){const de=document.documentElement,r=Math.hypot(Math.max(origin.x,innerWidth-origin.x),Math.max(origin.y,innerHeight-origin.y))+EDGE;
       de.style.setProperty('--vx',origin.x+'px');de.style.setProperty('--vy',origin.y+'px');de.classList.add('vt-radial');
-      de.animate({'--vr':['0px',r+'px']},{duration:1150,easing:'cubic-bezier(.4,0,.25,1)',fill:'both',pseudoElement:'::view-transition-new(root)'});
-      de.animate({opacity:[1,1]},{duration:1150,fill:'both',pseudoElement:'::view-transition-old(root)'});vt.finished.finally(()=>de.classList.remove('vt-radial'));return}
+      de.animate({'--vr':['0px',r+'px']},{duration:DUR,easing:EDGE<100?'cubic-bezier(.7,0,.2,1)':'cubic-bezier(.4,0,.25,1)',fill:'both',pseudoElement:'::view-transition-new(root)'});
+      de.animate({opacity:[1,1]},{duration:DUR,fill:'both',pseudoElement:'::view-transition-old(root)'});vt.finished.finally(()=>de.classList.remove('vt-radial'));return}
     if(origin){const r=Math.hypot(Math.max(origin.x,innerWidth-origin.x),Math.max(origin.y,innerHeight-origin.y));
       document.documentElement.animate({clipPath:[`circle(0px at ${origin.x}px ${origin.y}px)`,`circle(${r}px at ${origin.x}px ${origin.y}px)`]},{duration:900,easing:'cubic-bezier(.45,0,.2,1)',fill:'both',pseudoElement:'::view-transition-new(root)'});
       document.documentElement.animate({opacity:[1,1]},{duration:900,fill:'both',pseudoElement:'::view-transition-old(root)'});return}
@@ -1105,7 +1137,7 @@ function moveDuck(x,y,spot,done,force){const d=$('duck');x=Math.max(0,x);const x
     d.animate([{transform:'none'},{transform:`translateY(${-Math.min(64,26+dist*.1)}px) rotate(${x>x0?-9:9}deg)`,offset:.45},{transform:'none'}],{duration:t,easing:'ease-in-out'});
     d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(()=>{end();setPose(mode)},t)}
   else{const t=Math.round(Math.max(260,Math.min(900,dist*2.2)));d.style.transitionDuration=t+'ms';d.style.transitionTimingFunction='linear';let k=0;d.dataset.wf=0;d._step=setInterval(()=>d.dataset.wf=(++k)%2,140);d.classList.add('walk');d.style.left=x+'px';d.style.top=y+'px';d._mt=setTimeout(end,t)}}
-function lampSpot(){const d=$('duck'),box=$('s-rail-top').getBoundingClientRect(),b=relBtn.querySelector('.bead').getBoundingClientRect();return{x:b.left+b.width/2-box.left-d.offsetWidth*.84,y:b.top+b.height/2-box.top-d.offsetHeight*.16}}
+function lampSpot(){const d=$('duck'),box=$('s-rail-top').getBoundingClientRect(),b=relBtn.querySelector('.bead').getBoundingClientRect();return{x:b.left+b.width/2-box.left-d.offsetWidth*.74,y:b.bottom-box.top-4}}
 function pullCord(atBottom){const d=$('duck'),pg=relBtn.querySelector('.pullg'),lg=relBtn.querySelector('.lampg');
   /* only the neck snaps down: feet and body stay put */
   d.classList.add('pull');setTimeout(()=>d.classList.add('tug'),170);setTimeout(()=>d.classList.remove('tug'),470);
@@ -1407,7 +1439,8 @@ function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.to
   moveDuck(x,y,spot)}
 addEventListener('resize',()=>requestAnimationFrame(placeDuck));
 const POSE={works:'stand',refs:'sleep',text:'read',collect:'carry',about:'wave'};
-function setPose(m){const d=$('duck');if(!d.querySelector('svg.fd'))d.insertAdjacentHTML('afterbegin',FDUCK.svg);d.dataset.pose=POSE[m];syncPen()}
+const dimgs=p=>`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`;
+function setPose(m){const d=$('duck');if(!d.querySelector('.pp'))d.insertAdjacentHTML('afterbegin',['stand','read','wave','sleep','carry'].map(p=>`<span class="pp p-${p}">${dimgs(p)}</span>`).join(''));d.dataset.pose=POSE[m];syncPen()}
 /* on the text pages the duck reads with a pencil in its beak; tap it to borrow the pencil, tap again to give it back */
 let penOut=false;const PENSVG='<svg viewBox="0 0 40 8" aria-hidden="true"><path d="M2 4 L8 1.2 H36 a2 2 0 0 1 2 2 v1.6 a2 2 0 0 1 -2 2 H8 Z" fill="#e8c46a" stroke="#141414" stroke-width=".8"/><path d="M2 4 L8 1.2 V6.8 Z" fill="#f2e3c4" stroke="#141414" stroke-width=".8"/><path d="M2 4 L4.2 3 V5 Z" fill="#141414"/><rect x="33" y="1.2" width="3" height="5.6" fill="#ff9fcb"/></svg>';
 function syncPen(){const d=$('duck');if(!d)return;const want=mode==='text'&&!penOut;let pe=d.querySelector('.dpen');if(want&&!pe){pe=document.createElement('span');pe.className='dpen';pe.innerHTML=PENSVG;d.appendChild(pe)}else if(!want&&pe)pe.remove();
@@ -1532,8 +1565,13 @@ renderList();updCount();setVariant(MQ.matches?'m':'a',false);MQ.addEventListener
   /* the language is only chosen here (Japanese unless changed); a click anywhere else enters */
   const mark=()=>{g.querySelectorAll('.gopt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));$('genter').textContent=lang==='ja'?'クリックして入る':'Click anywhere to enter'};mark();
   g.querySelectorAll('.gopt').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setLang(b.dataset.l);mark()}));
-  const enter=()=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works'){if(cur<0)showWorksHome();else openWork(cur)}
-    if(reduce){g.hidden=true;return}g.classList.add('leave');g.addEventListener('transitionend',()=>{g.hidden=true},{once:true})};
+  const enter=e=>{if(gone)return;gone=true;removeEventListener('keydown',key);if(mode==='works'){if(cur<0)showWorksHome();else openWork(cur)}
+    if(reduce){g.hidden=true;return}g.classList.add('leave');g.style.pointerEvents='none';
+    const x=e&&e.clientX?e.clientX:innerWidth/2,y=e&&e.clientY?e.clientY:innerHeight/2,cs=getComputedStyle(document.documentElement),EDGE=parseFloat(cs.getPropertyValue('--vt-edge'))||(cs.getPropertyValue('--vt-edge').trim()?0:280),R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y))+EDGE+1,DUR=parseFloat(cs.getPropertyValue('--vt-dur'))||1150,t0=performance.now();
+    const ease=EDGE<100?(p=>p<.5?8*p*p*p*p:1-Math.pow(-2*p+2,4)/2):(p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2);
+    const step=t=>{const p=Math.min(1,(t-t0)/DUR),r=R*ease(p),m=`radial-gradient(circle at ${x}px ${y}px,transparent ${Math.max(0,r-EDGE)}px,#000 ${r}px)`;
+      g.style.webkitMaskImage=m;g.style.maskImage=m;if(p<1)requestAnimationFrame(step);else g.hidden=true};
+    requestAnimationFrame(step)};
   const key=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.gopt')){e.preventDefault();enter()}};
   g.addEventListener('click',enter);addEventListener('keydown',key);
 })();document.documentElement.lang=lang;document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));{const sh=readShared();if(sh)showCollect(sh);else showWorksHome()}
