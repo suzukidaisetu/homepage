@@ -124,6 +124,7 @@ function kv(block) {
   }
   return o;
 }
+const AUTO_TR = /^自動翻訳\s*[:：]/;
 function section(block, withRows = false) {
   const lines = block.split('\n');
   const meta = {}, rows = [];
@@ -132,6 +133,7 @@ function section(block, withRows = false) {
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) { flush(); continue; }
+    if (AUTO_TR.test(line)) continue;   // the mark left by the automatic translation
     if (line.startsWith('# ') && !title) { flush(); title = line.slice(2).trim(); continue; }
     const m = line.match(/^([^:：]{1,24})\s*[:：]\s*(.*)$/);
     if (m && /^(kind|role)$/i.test(m[1].trim())) { meta[m[1].trim().toLowerCase()] = m[2].trim(); continue; }
@@ -179,6 +181,7 @@ function parseBlocks(blocks) {
     const t = blockText(b).trim();
     const hasImg = b.segs.some(s => s.img);
     if (!t && !hasImg) continue;
+    if (AUTO_TR.test(t)) continue;
     const mk = t.match(/^(?:-{2,}\s*)?(ja|en|日本語|english|英語)$/i);
     if (mk && (t.startsWith('-') || !/^(ja|en)$/i.test(t))) { cur = sec(/^(ja|日本語)$/i.test(mk[1]) ? 'ja' : 'en'); continue; }
     const s = cur || sec('ja');
