@@ -863,6 +863,10 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 @media (prefers-reduced-motion:reduce){.duck .p-sleep img,.duck.walk{animation:none}}
 /* the pointer: a vivid pink */
 .cursor{--pointer:#ff2f92}
+/* touching an image no longer darkens its edge (keyboard focus still shows) */
+.sheet:not(.obj):hover,.sheet:not(.obj).dragging{outline-color:var(--line)}
+.sheet.text:hover,.sheet.text.dragging{outline-color:transparent}
+.tile .frame:hover{outline-color:var(--line)}
 </style>
 </head>
 <body>
