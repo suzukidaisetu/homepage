@@ -12,7 +12,9 @@ This repo is Aga Shunsei's archive site. Content lives in a Google Drive folder;
 2. Edit `site/index.html`.
 3. `node scripts/make-preview.mjs` — writes `preview/` (current page + real content).
 4. Publish `preview/index.html` with the files under `preview/` as an Artifact for the owner to review.
-   The preview artifact is https://claude.ai/artifact/HjioDupJi4uTvMNWc4ftgu (private; update it by url).
+   The preview artifact is https://claude.ai/artifact/UWpgeBL84rpr6wo1TA23bm (private; update it by url). If a session cannot
+   update it (network off), publish a new one and record its url here and in the project's 運用メモ.
+   Earlier: HjioDupJi4uTvMNWc4ftgu.
    The older one (Xoi3x9U1fajzoEkksaQwxG) is public and can't be republished from a session.
    The snapshot may predate the small image sizes: if data/site.json has no "sizes", make img/s (480px) and img/m (1200px)
    copies locally and add "sizes": ["s","m"] so the preview matches the live site.
@@ -22,5 +24,5 @@ This repo is Aga Shunsei's archive site. Content lives in a Google Drive folder;
 The owner writes in Japanese and prefers to see changes quickly in the preview before they go live.
 Content format is described in `content/README.txt` (same structure as the Drive folder).
 References are a spreadsheet (Google Sheets, read as .xlsx; old references.txt still works) and texts are Google Docs (read as .docx;
-old .txt still works). `scripts/office.mjs` reads both without dependencies. `scripts/make-templates.py <site.json> <dir>` turns a built
+old .txt still works). research/ holds one folder per research (a Google Doc "ノート" + material images); format in content/README.txt. `scripts/office.mjs` reads both without dependencies. `scripts/make-templates.py <site.json> <dir>` turns a built
 site.json into the sheet + docs (used for the move to this format). The sheet's Apps Script menu is `drive/リファレンス表のスクリプト.gs`.
