@@ -90,6 +90,7 @@ export function readDocx(buf) {
     const sid = (inner.match(/<w:pStyle w:val="([^"]*)"/) || [])[1] || '';
     const sname = styles[sid] || sid.toLowerCase();
     const style = /^title$/.test(sname) ? 'title' : /^(heading|見出し)\s*\d|^subtitle$/.test(sname.replace(/(\D)(\d)/, '$1 $2')) ? 'heading' : 'p';
+    const lvl = style === 'heading' ? +((sname.match(/(\d)/) || [])[1] || 1) : 0;
     const segs = [];
     const hrefStack = [];
     let fld = null; // complex field being read: { instr, href }
@@ -129,7 +130,7 @@ export function readDocx(buf) {
         }
       }
     }
-    blocks.push({ style, segs: mergeSegs(segs) });
+    blocks.push({ style, lvl, segs: mergeSegs(segs) });
   }
   return blocks;
 }

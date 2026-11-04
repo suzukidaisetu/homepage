@@ -171,8 +171,9 @@ function refNote(lines) {
 
 // A .docx / Google Doc text: "key: value" lines at the top (日付 / date, 種類 / kind, 作品 / works, リファレンス / refs, 下書き / draft),
 // the first heading (or Title) is the title, "English" / "日本語" (or "--- en" / "--- ja") on a line of its own starts the other language.
-const HEAD_KEYS = { date: 'date', 日付: 'date', works: 'works', 作品: 'works', refs: 'refs', リファレンス: 'refs', draft: 'draft', 下書き: 'draft' };
-const SEC_KEYS = { kind: 'kind', 種類: 'kind', title: 'title', 題名: 'title' };
+const HEAD_KEYS = { date: 'date', 日付: 'date', works: 'works', 作品: 'works', refs: 'refs', リファレンス: 'refs', draft: 'draft', 下書き: 'draft',
+  status: 'status', 状態: 'status', started: 'started', 始めた日: 'started', 始めた: 'started', public: 'public', 公開: 'public' };
+const SEC_KEYS = { kind: 'kind', 種類: 'kind', title: 'title', 題名: 'title', question: 'question', 問い: 'question' };
 function parseBlocks(blocks) {
   const head = {}, lang = {};
   let cur = null;
@@ -182,6 +183,7 @@ function parseBlocks(blocks) {
     const hasImg = b.segs.some(s => s.img);
     if (!t && !hasImg) continue;
     if (AUTO_TR.test(t)) continue;
+    if (/^\/\//.test(t)) continue;   // "// ..." is a note to oneself: never published
     const mk = t.match(/^(?:-{2,}\s*)?(ja|en|日本語|english|英語)$/i);
     if (mk && (t.startsWith('-') || !/^(ja|en)$/i.test(t))) { cur = sec(/^(ja|日本語)$/i.test(mk[1]) ? 'ja' : 'en'); continue; }
     const s = cur || sec('ja');
@@ -193,7 +195,14 @@ function parseBlocks(blocks) {
     }
     const isHead = b.style !== 'p' || /^#\s/.test(t);
     if (isHead && !hasImg && !s.title && !s.body.length) { s.title = t.replace(/^#\s*/, ''); continue; }
-    if (isHead && !hasImg) { s.body.push([{ text: t.replace(/^#+\s*/, ''), b: true }]); continue; }
+    if (isHead && !hasImg) { s.body.push(Object.assign([{ text: t.replace(/^#+\s*/, ''), b: true }], { h: b.lvl || 1 })); continue; }
+    // "> ..." is a quotation
+    const qm = !hasImg && t.match(/^[>＞]\s*/);
+    if (qm) {
+      let cut = qm[0].length;
+      const segs = b.segs.map(sg => { if (!cut || sg.img) return sg; const n = Math.min(cut, sg.text.length); cut -= n; return { ...sg, text: sg.text.slice(n) }; }).filter(sg => sg.img || sg.text);
+      s.body.push(Object.assign(segs, { q: 1 })); continue;
+    }
     s.body.push(b.segs);
   }
   return { head, lang };
@@ -338,7 +347,7 @@ async function main() {
   const isSheet = e => e.kind === 'file' && /\.xlsx$/i.test(e.name) && !e.name.startsWith('~$');
   const sheetFiles = [...tree.filter(isSheet), ...(refDir ? refDir.children.filter(isSheet) : [])];
   const sheetFile = sheetFiles.find(e => /リファレンス|reference/i.test(e.name)) || sheetFiles[0];
-  const seen = new Set(['works', 'references', 'texts', 'about.txt', 'about.docx', 'readme.txt', 'readme.docx']);
+  const seen = new Set(['works', 'references', 'texts', 'research', 'about.txt', 'about.docx', 'readme.txt', 'readme.docx']);
   if (sheetFile) seen.add(sheetFile.name.toLowerCase());
   tree.filter(e => !seen.has(e.name.toLowerCase())).forEach(e => warn.push(`${e.name}: outside works/references/texts, ignored`));
   if (worksDir) worksDir.children.filter(e => e.kind === 'file' && !SKIP_EXT.test(e.name)).forEach(e => warn.push(`works/${e.name}: put files inside a project folder`));
@@ -469,12 +478,17 @@ async function main() {
     if (twin) warn.push(`texts/${f.name}: ignored, "${twin.name.replace(/\.docx$/, '')}" (document) is used instead`);
     return !twin;
   });
-  for (const tf of tfiles) {
+  // a text or a research note, read from a .docx / Google Doc (or an old .txt)
+  const readDoc = async (tf, o) => {
     const doc = /\.docx$/i.test(tf.name) ? parseBlocks(readDocx(await tf.read())) : parseDoc(await text(tf));
     if (!doc.lang.ja && !doc.lang.en) { const s = section(await text(tf)); doc.lang.ja = { ...s, body: s.body.map(b => [{ text: b }]) }; }
     for (const s of Object.values(doc.lang)) s.body = s.body.map(b => typeof b === 'string' ? [{ text: b }] : b);
-    const entry = { no: 'T-' + (leadNo(tf.name) || String(texts.length + 1).padStart(2, '0')), date: esc(doc.head.date || ''), draft: /^(yes|true|1)$/i.test(doc.head.draft || ''),
-      works: workList(doc.head.works).map(workIndex).filter(i => i >= 0), refs: [] };
+    if (o.research) {
+      if (/^(no|false|0|いいえ|非公開|しない)$/i.test(doc.head.public || '') && !process.env.SHOW_PRIVATE) return null;
+    }
+    const entry = { no: o.no, date: esc(doc.head.date || ''), draft: /^(yes|true|1)$/i.test(doc.head.draft || ''),
+      works: workList(doc.head.works).map(workIndex).filter(i => i >= 0), refs: [],
+      ...(o.research ? { status: esc(doc.head.status || ''), started: esc(doc.head.started || ''), hidden: /^(no|false|0|いいえ|非公開|しない)$/i.test(doc.head.public || '') } : {}) };
     const order = [];   // references in the order they appear in the text
     const use = j => { if (!order.includes(j)) order.push(j); return j; };
     const tname = (doc.lang.ja?.title || doc.lang.en?.title || stripNo(tf.name));
@@ -491,7 +505,7 @@ async function main() {
             if (j < 0) for (const [k, r] of refs.entries()) if (!refMeta[k].text && near(fp, await fingerprint(r.img))) { j = k; break; }
             if (j < 0) { pushRef(key, { title: s.img.alt || `${tname} — ${++figNo}`, kind: 'FIGURE', tags: 'Text', works: doc.head.works, fromText: true }); j = refs.length - 1; }
             html += `<span class="rlink rpin" data-r="${use(j)}"></span>`;
-          } catch (e) { warn.push(`texts/${tf.name}: a pasted picture could not be read (${e.message})`); }
+          } catch (e) { warn.push(`${o.where}/${tf.name}: a pasted picture could not be read (${e.message})`); }
           continue;
         }
         let t = esc(s.text).replace(/\n/g, '<br>');
@@ -502,7 +516,7 @@ async function main() {
         if (j >= 0) html += `<span class="rlink" data-r="${use(j)}">${t}</span>`;
         else if (s.href && /^https?:\/\//.test(s.href) && !driveId(s.href)) html += `<a href="${esc(s.href)}" target="_blank" rel="noopener">${t}</a>`;
         else {
-          if (s.href) warn.push(`texts/${tf.name}: the link on "${s.text.trim()}" does not point to a reference`);
+          if (s.href) warn.push(`${o.where}/${tf.name}: the link on "${s.text.trim()}" does not point to a reference`);
           // old style: [後景](04) or ［後景］（04）
           html += t.replace(/[\[［]([^\]］\n]+)[\]］][(（]\s*([^)）\n]{1,60})\s*[)）]/gi, (m, w, n) => {
             const k = findRef(unesc(n));
@@ -516,8 +530,10 @@ async function main() {
       const s = doc.lang[l];
       if (!s) continue;
       const body = [];
-      for (const b of s.body) { const h = await renderPara(b); if (h.trim()) body.push(h); }
-      entry[l] = { kind: esc(s.meta.kind || ''), title: esc(s.title || stripNo(tf.name)), body };
+      const marks = (o.marks ??= {})[l] = [];
+      for (const b of s.body) { const h = await renderPara(b); if (h.trim()) { if (b.h || b.q) marks.push([body.length, b.h || 0, b.q ? 1 : 0]); body.push(h); } }
+      entry[l] = { kind: esc(s.meta.kind || ''), title: esc(s.title || o.title || stripNo(tf.name)), body };
+      if (s.meta.question) entry[l].question = esc(s.meta.question);
     }
     // words listed for a reference in the sheet ("言葉") link themselves: the first place each one appears, in each language
     const linkWord = (l, k, w) => {
@@ -543,12 +559,53 @@ async function main() {
         for (const w of m.words) if (linkWord(l, k, w)) break;
       }
     }
-    for (const n of list(doc.head.refs)) { const j = findRef(n); if (j >= 0) use(j); else warn.push(`texts/${tf.name}: reference "${n}" not found`); }
+    for (const pf of o.extra || []) {
+      try {
+        const key = await addImage(pf);
+        let j = refs.findIndex(r => r.img === key);
+        if (j < 0) { pushRef(key, { title: stripNo(pf.name), kind: 'MATERIAL', tags: 'Research', works: doc.head.works, fromText: true, id: pf.id, file: pf.name }); j = refs.length - 1; }
+        use(j);
+      } catch (e) { warn.push(`${o.where}/${pf.name}: could not read (${e.message})`); }
+    }
+    for (const n of list(doc.head.refs)) { const j = findRef(n); if (j >= 0) use(j); else warn.push(`${o.where}/${tf.name}: reference "${n}" not found`); }
     // margin pictures follow the order the references appear in the text; ones only named in "refs:" come last
     const seenOrder = [];
     for (const l of ['ja', 'en']) for (const b of entry[l]?.body || []) for (const m of b.matchAll(/data-r="(\d+)"/g)) if (!seenOrder.includes(+m[1])) seenOrder.push(+m[1]);
     entry.refs = [...seenOrder, ...order.filter(j => !seenOrder.includes(j))];
-    texts.push(entry);
+    if (o.research) {
+      // the "entries" of a research: each top-level heading, "2026.11.04 title" -> date + title
+      for (const l of ['ja', 'en']) {
+        if (!entry[l]) continue;
+        entry[l].marks = o.marks[l] || [];
+        entry[l].entries = (o.marks[l] || []).filter(m => m[1] === 1).map(([p]) => {
+          const plain = unesc(entry[l].body[p].replace(/<[^>]+>/g, '')).trim();
+          const m = plain.match(/^(\d{4})[.\/\-年](\d{1,2})(?:[.\/\-月](\d{1,2})日?)?\s*[—–\-:：|｜]?\s*/);
+          return { p, date: m ? [m[1], m[2].padStart(2, '0'), m[3] && m[3].padStart(2, '0')].filter(Boolean).join('.') : '', title: esc(m ? plain.slice(m[0].length) : plain) };
+        });
+      }
+    }
+    return entry;
+  };
+  for (const tf of tfiles) texts.push(await readDoc(tf, { where: 'texts', no: 'T-' + (leadNo(tf.name) || String(texts.length + 1).padStart(2, '0')) }));
+
+  // research: research/ holds a Google Doc per research, or a folder per research ("01_SF research") with its note (a Google Doc)
+  // and any material pictures. Newest number first. "公開: いいえ" keeps one off the site.
+  const resDir = dir(tree, 'research');
+  const research = [];
+  const resItems = (resDir ? resDir.children.filter(e => e.kind === 'dir' || /\.(docx|txt|md)$/i.test(e.name)) : []).sort(byName).reverse();
+  for (const it of resItems) {
+    let tf = it, extra = [], title = '';
+    if (it.kind === 'dir') {
+      const docs = it.children.filter(e => e.kind === 'file' && /\.(docx|txt|md)$/i.test(e.name)).sort(byName);
+      tf = docs.find(e => /^(ノート|note|notes|メモ)\./i.test(e.name)) || docs[0];
+      if (!tf) { warn.push(`research/${it.name}: no Google Doc inside, skipped`); continue; }
+      const before = skipped.length;
+      extra = imagesIn(it.children);
+      skipped.splice(before).forEach(n => warn.push(`research/${it.name}/${n}: not a supported image`));
+      title = stripNo(it.name + '.x');
+    }
+    const e = await readDoc(tf, { where: 'research' + (it.kind === 'dir' ? '/' + it.name : ''), no: 'RS-' + (leadNo(it.name) || String(research.length + 1).padStart(2, '0')), research: true, extra, title });
+    if (e) research.push(e);
   }
 
   // about
@@ -572,10 +629,10 @@ async function main() {
     if (fromDrive) throw new Error('No works found in the Drive folder (is works/ there, and is the folder shared as "anyone with the link"?). The site was not changed.');
     warn.push('no works found: add folders to works/');
   }
-  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, sizes: Object.keys(SIZES), duck, works: works.map(({ _folder, _id, _title, ...w }) => w), refs, texts, about };
+  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, sizes: Object.keys(SIZES), duck, works: works.map(({ _folder, _id, _title, ...w }) => w), refs, texts, research, about };
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
-  console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images.`);
+  console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${research.length} research, ${Object.keys(images).length} images.`);
   if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Build::${fromDrive ? 'Google Drive' : 'content/ (Drive not connected)'}: ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images${warn.length ? ' | ' + warn.slice(0, 40).join(' / ') : ''}`);
   if (process.env.GITHUB_ACTIONS) console.log(`::notice title=Works found::${works.map(w => w.no + ' ' + w.title + ' (' + w.sheets.length + ')').join(' / ')}`);
   if (warn.length) console.log('Notes:\n  ' + warn.join('\n  '));

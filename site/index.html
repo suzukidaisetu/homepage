@@ -599,6 +599,29 @@ body.inv .duck .dnight{opacity:1}
 .app[data-mode="text"] .refpanel{border-left:0}
 .app[data-mode="text"] .rp-sec{border-top:0;padding-top:4px}
 .app[data-mode="text"] .rp-texts button{border-bottom:0;padding:6px 0}
+/* ---- research: a long text that grows by dated entries, with a desk of what it gathered ---- */
+.rmeta .rq{margin-top:10px;max-width:46ch;font:400 15px/1.55 var(--f-body);color:var(--fg)}
+.rview{display:flex;gap:2px;margin-top:14px}
+.rview button{font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:4px 10px 4px 0;cursor:pointer;text-transform:lowercase}
+.rview button[aria-pressed="true"]{color:var(--fg);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.rtl{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:1px}
+.rtl button{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;width:100%;text-align:left;background:none;border:0;padding:2px 0;color:var(--muted);font:400 12px/1.5 var(--f-body);cursor:pointer}
+.rtl button span:first-child{font-variant-numeric:tabular-nums}
+.rtl button:hover{color:var(--fg)}
+.readwrap .reading p.eh{font-weight:600!important;margin:2.4em 0 .7em}
+.readwrap .reading p.eh1{font-size:19px!important;line-height:1.4!important;letter-spacing:-.005em;padding-top:1.1em;border-top:1px solid var(--line)}
+.readwrap .reading p.eh1:first-child{margin-top:0}
+.readwrap .reading p.eh2{font-size:15px!important;margin-top:1.8em}
+.readwrap .reading p.eh b{font-weight:inherit}
+.readwrap .reading p.eq{margin-left:1.6em!important;padding-left:1em;border-left:1px solid var(--line-hi);color:var(--muted)}
+.rdesk{margin:0 0 18px;position:relative;z-index:2}
+.rlist .titem .tex{grid-row:2}
+.rlist .titem .tkind{grid-column:3;grid-row:3;font-family:var(--f-body)}
+.rlist .titem{align-items:start}
+.rlist .titem .tthumbs{grid-row:1/4}
+.rlist .titem .tdate{grid-row:1/4;padding-top:4px}
+.v-m .rlist .titem .tex,.v-m .rlist .titem .tkind{grid-column:2}
+.v-m .rlist .titem .tex{grid-row:3}.v-m .rlist .titem .tkind{grid-row:4}.v-m .rlist .titem .tthumbs{grid-row:1/5}.v-m .rlist .titem .tdate{grid-row:1;padding-top:0}
 /* the name one step lighter */
 .brand,.v-a #s-rail-top .brand,.gtitle{font-family:var(--f-name)!important;font-weight:600!important;letter-spacing:-.025em!important}
 /* Japanese held a little tighter: proportional kana, a hair of tracking kept */
@@ -895,7 +918,7 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
   <span class="crumb" id="crumb"></span>
   <div class="duck" id="duck" data-pose=""></div>
   <span class="colo" id="colo">works, references, texts<br>drawings and renders since 2023<br>an archive kept as a table</span>
-  <nav class="nav" id="nav" role="tablist" aria-label="Sections"><button class="tab" role="tab" id="tab-works" type="button" aria-selected="true">Works</button><button class="tab" role="tab" id="tab-refs" type="button" aria-selected="false">References</button><button class="tab" role="tab" id="tab-text" type="button" aria-selected="false">Text</button><button class="tab" role="tab" id="tab-collect" type="button" aria-selected="false">Collection</button><button class="tab" role="tab" id="tab-about" type="button" aria-selected="false">About</button></nav>
+  <nav class="nav" id="nav" role="tablist" aria-label="Sections"><button class="tab" role="tab" id="tab-works" type="button" aria-selected="true">Works</button><button class="tab" role="tab" id="tab-refs" type="button" aria-selected="false">References</button><button class="tab" role="tab" id="tab-text" type="button" aria-selected="false">Text</button><button class="tab" role="tab" id="tab-research" type="button" aria-selected="false">Research</button><button class="tab" role="tab" id="tab-collect" type="button" aria-selected="false">Collection</button><button class="tab" role="tab" id="tab-about" type="button" aria-selected="false">About</button></nav>
   <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" data-l="ja" aria-pressed="true">JA</button><button type="button" data-l="en" aria-pressed="false">EN</button></div>
   <ul class="list" id="list"></ul>
   <div class="label" id="label"><span class="pno" id="pno"></span><h1 id="ptitle"></h1><div class="pmeta" id="pmeta"></div></div>
@@ -981,7 +1004,7 @@ const LAYER=1e6;const zbase=el=>el._obj?3*LAYER:(el._ref!=null?LAYER:0);const ra
 const relOf=i=>R.map((r,j)=>j).filter(j=>R[j].rel.includes(i));
 const pad=n=>String(n).padStart(2,'0');
 const W=()=>canvas.clientWidth, VH=()=>scroller.clientHeight;
-const T=D.texts;
+const T=D.texts;const RS=(D.research||[]).filter(x=>!x.hidden||/[?&]private\b/.test(location.search)||D.site.preview);let TK='text';
 let lang='ja';try{lang=localStorage.getItem('desk-lang')||'ja'}catch(e){}
 const L=o=>o[lang]||o.ja||o.en;
 /* Collection lives in this viewer's browser only. */
@@ -1015,8 +1038,8 @@ function renderList(){list.innerHTML='';
     bt.setAttribute('aria-label',it.no+' '+it.title);bt.addEventListener('mouseenter',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=`<span class="cno">${it.no}</span><span class="ct">${it.title}</span>${it.period?`<span class="cm">${it.period}</span>`:''}`;cr.classList.toggle('peek',!(mode==='works'&&cur===i))});
     bt.addEventListener('mouseleave',()=>{if(variant!=='a')return;const cr=$('crumb');cr.innerHTML=cr._html||'';cr.classList.remove('peek')});list.appendChild(li)})}
 function mark(){list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',mode==='works'&&j===cur?'true':'false'))}
-function updProj(){const b=$('projBtn');if(!b)return;const names={works:'Works',refs:'References',text:'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
-function setMode(m){app.classList.remove('home');if(m!=='text'&&penOut){penOut=false;setTimeout(syncPen)}if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');['works','refs','text','collect','about'].forEach(k=>$('tab-'+k).setAttribute('aria-selected',m===k));
+function updProj(){const b=$('projBtn');if(!b)return;const names={works:'Works',refs:'References',text:TK==='research'?'Research':'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
+function setMode(m){app.classList.remove('home');if(m!=='text'&&penOut){penOut=false;setTimeout(syncPen)}if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');const sel=m==='text'?TK:m;['works','refs','text','research','collect','about'].forEach(k=>{const t=$('tab-'+k);if(t)t.setAttribute('aria-selected',sel===k)});
   relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=m!=='works';app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
 
 /* ---- table surface ---- */
@@ -1128,7 +1151,7 @@ function relLabel(){const n=cur>=0?relOf(cur).length:0;relBtn.title=lang==='ja'?
 let switching=false;
 function lampSVG(){return `<svg class="lamp" viewBox="0 0 64 104" width="64" height="104" aria-hidden="true"><g class="lampg"><line class="cord" x1="26" y1="0" x2="26" y2="27"/><rect class="sock" x="22.5" y="27" width="7" height="7" rx="1"/><path class="shade" d="M7 51 C9 40 15 34.5 26 34.5 C37 34.5 43 40 45 51 Z"/><line class="rim" x1="7" y1="51" x2="45" y2="51"/><g class="rays"><line x1="26" y1="62" x2="26" y2="68"/><line x1="18.5" y1="59.5" x2="15" y2="64"/><line x1="33.5" y1="59.5" x2="37" y2="64"/><line x1="14" y1="54.5" x2="9.5" y2="56.5"/><line x1="38" y1="54.5" x2="42.5" y2="56.5"/></g><circle class="bulb" cx="26" cy="54.5" r="4.6"/><g class="pullg"><line class="pull" x1="40" y1="48" x2="40" y2="84"/><circle class="bead" cx="40" cy="86.5" r="2.7"/></g></g></svg>`}
 /* the duck walks to a neighbour one or two places away; three or more away, it flaps its wings and flies */
-const DSP=['brand','works','refs','text','collect','lamp'];
+const DSP=['brand','works','refs','text','research','collect','lamp'];
 function moveDuck(x,y,spot,done,force){const d=$('duck');x=Math.max(0,x);const x0=parseFloat(d.style.left),y0=parseFloat(d.style.top);
   clearTimeout(d._mt);clearInterval(d._flap);clearInterval(d._step);d.classList.remove('walk','flying','pull','tug','left');
   if(isNaN(x0)||reduce||d._spot==null){d.style.transitionDuration='0ms';d.style.left=x+'px';d.style.top=y+'px';d._spot=spot;requestAnimationFrame(()=>requestAnimationFrame(()=>d.style.transitionDuration=''));done&&done();return}
@@ -1191,11 +1214,11 @@ function showGrid(origin){
 
 /* ---- one reference opened beside the grid ---- */
 const noteOf=r=>{const n=r.note;if(!n)return[];return(n[lang]&&n[lang].length?n[lang]:n.ja&&n.ja.length?n.ja:n.en)||[]};
-const textsOf=j=>T.map((x,k)=>x.refs.includes(j)?k:-1).filter(k=>k>=0);
+const textsOf=j=>T.map((x,k)=>x.refs.includes(j)?k:-1).filter(k=>k>=0);const resOf=j=>RS.map((x,k)=>x.refs.includes(j)?k:-1).filter(k=>k>=0);
 let panelJ=null;
 function openRefPanel(j,o={}){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=noteOf(r),tx=textsOf(j);panelJ=j;const behind=!!o.behind;pn.classList.remove('left');desk.classList.remove('panel-left');
   const works=r.rel.map(i=>`<button type="button" data-p="${i}"><img alt="" src="${src(P[i].sheets[P[i].cover].img,'s')}"><span>${P[i].no} ${P[i].title}</span></button>`).join('');
-  const texts=tx.map(k=>`<button type="button" data-t="${k}"><span>${T[k].date}</span><span>${L(T[k]).title}</span></button>`).join('');
+  const texts=tx.map(k=>`<button type="button" data-t="${k}"><span>${T[k].date}</span><span>${L(T[k]).title}</span></button>`).join('')+resOf(j).map(k=>`<button type="button" data-rs="${k}"><span>${ja?'リサーチ':'research'}</span><span>${L(RS[k]).title}</span></button>`).join('');
   pn.innerHTML=`<div class="rp-top"><span>${r.no} · ${r.kind}</span><span class="rp-nav"><button type="button" data-step="-1" aria-label="Previous">←</button><button type="button" data-step="1" aria-label="Next">→</button><button type="button" data-close>${ja?'閉じる':'close'}</button></span></div>
     <h2>${r.title}</h2><div class="rp-img"><img alt="${r.title}" src="${src(r.img,'m')}"></div>
     ${nt.length?`<div class="rp-note">${nt.map(p=>`<p>${p}</p>`).join('')}</div>`:''}
@@ -1210,7 +1233,8 @@ function openRefPanel(j,o={}){const r=R[j],pn=$('refpanel'),ja=lang==='ja',nt=no
   if(behind){canvas&&canvas.querySelectorAll('.sheet.ref').forEach(el=>el.classList.toggle('center',el._ref===j));const el=canvas&&[...canvas.querySelectorAll('.sheet.ref')].find(e=>e._ref===j);if(el)raise(el)}
   pn.querySelector('.rp-collect').addEventListener('click',()=>toggleColl('r:'+j,null,pn.querySelector('.rp-img img')));
   pn.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',e=>{closeRefPanel();openWork(+b.dataset.p,{refs:true,focus:j,origin:originOf(e.currentTarget)})}));
-  pn.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('text',()=>showText(+b.dataset.t))}));
+  pn.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('text',()=>showText(+b.dataset.t,'text'))}));
+  pn.querySelectorAll('[data-rs]').forEach(b=>b.addEventListener('click',()=>{closeRefPanel();go('research',()=>{TK='research';showText(+b.dataset.rs)})}));
   scroller.querySelectorAll('.tile').forEach(t=>{const on=+t.dataset.j===j;t.classList.toggle('sel',on);t.querySelector('.frame').setAttribute('aria-expanded',on)});
   const tile=scroller.querySelector(`.tile[data-j="${j}"]`);if(tile)tile.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});syncButtons()}
 function closeRefPanel(){panelJ=null;scroller.querySelectorAll('.mfig.sel').forEach(f=>f.classList.remove('sel'));$('refpanel').hidden=true;desk.classList.remove('panel-open','panel-left');canvas&&canvas.querySelectorAll('.sheet.ref.center').forEach(el=>el.classList.remove('center'));scroller.querySelectorAll('.tile.sel').forEach(t=>{t.classList.remove('sel');t.querySelector('.frame').setAttribute('aria-expanded','false')})}
@@ -1230,22 +1254,40 @@ let curText=null;
 function leave(){}
 /* a text's thumbnail: its first reference, or else the first work it belongs to */
 const textThumb=x=>x.refs.length&&R[x.refs[0]]?R[x.refs[0]].img:x.works.length&&P[x.works[0]]?P[x.works[0]].sheets[P[x.works[0]].cover].img:null;
-function showText(n){leave();setMode('text');curText=n;app.classList.toggle('reading',n!=null);mark();scroller.innerHTML='';canvas=null;
-  if(n==null){head('Index','Text',[T.length+' pieces','Essays, notes and project statements']);
-    const l=document.createElement('ol');l.className='texts';
-    T.forEach((x,k)=>{const li=document.createElement('li');
-      const y=L(x),im=textThumb(x);li.innerHTML=`<button type="button" class="titem"><span class="tthumbs">${im?`<img alt="" src="${src(im,'s')}" loading="lazy">`:''}</span><span class="tdate">${x.date}</span><span class="tt">${y.title}</span></button>`;
+/* a research laid out as a desk: every material and reference it gathered, in the order they came in */
+function resDesk(n){const x=RS[n],y=L(x),ja=lang==='ja';head(x.no+' · '+(x.status||''),y.title,[ja?'机':'Desk',x.refs.length+(ja?' 点':' sheets')]);
+  const bar=document.createElement('div');bar.className='rmeta rdesk';
+  bar.innerHTML=`<button type="button" class="rback">← ${ja?'リサーチ一覧':'all research'}</button><span class="rt">${y.title}</span>${y.question?`<span class="rq">${y.question}</span>`:''}<span class="rview" role="group"><button type="button" data-read aria-pressed="false">${ja?'読む':'read'}</button><button type="button" aria-pressed="true">${ja?'机':'desk'}</button></span>${x.refs.length?'':`<span class="rk">${ja?'まだ資料がありません。ノートに画像を貼るか、フォルダに入れると、ここに並びます。':'Nothing on the desk yet.'}</span>`}`;
+  bar.querySelector('.rback').addEventListener('click',()=>showText());bar.querySelector('[data-read]').addEventListener('click',()=>showText(n));
+  newCanvas();scroller.insertBefore(bar,canvas);
+  const els=x.refs.filter(j=>R[j]).map(refSheet);els.forEach(el=>canvas.appendChild(el));layBtn.hidden=!els.length;
+  if(els.length)requestAnimationFrame(()=>applyLayout(layoutMode==='free'?'free':layoutMode))}
+function showText(n,k,o={}){if(k&&k!==TK){TK=k;n=null}leave();setMode('text');curText=n;const RES=TK==='research',A=RES?RS:T;if(n!=null&&!A[n])n=curText=null;app.classList.toggle('reading',n!=null&&!o.desk);mark();scroller.innerHTML='';canvas=null;
+  if(n==null){const ja=lang==='ja';if(RES)head('Index','Research',[A.length+(A.length===1?' study':' studies'),ja?'進行中のリサーチ':'Research in progress']);else head('Index','Text',[T.length+' pieces','Essays, notes and project statements']);
+    const l=document.createElement('ol');l.className='texts'+(RES?' rlist':'');
+    A.forEach((x,k)=>{const li=document.createElement('li');
+      const y=L(x),im=textThumb(x);
+      if(RES){const es=y.entries||[],last=es.length?es[es.length-1].date:'',span=[x.started,last&&last!==x.started?last:''].filter(Boolean).join(' – ');
+        li.innerHTML=`<button type="button" class="titem"><span class="tthumbs">${im?`<img alt="" src="${src(im,'s')}" loading="lazy">`:''}</span><span class="tdate">${span}</span><span class="tt">${y.title}</span>${y.question?`<span class="tex">${y.question}</span>`:''}<span class="tkind">${[x.status,es.length?es.length+(ja?' 回の記録':es.length===1?' entry':' entries'):'',x.refs.length?x.refs.length+(ja?' 点の資料':' materials'):''].filter(Boolean).join(' · ')}</span></button>`}
+      else li.innerHTML=`<button type="button" class="titem"><span class="tthumbs">${im?`<img alt="" src="${src(im,'s')}" loading="lazy">`:''}</span><span class="tdate">${x.date}</span><span class="tt">${y.title}</span></button>`;
       li.querySelector('button').addEventListener('click',()=>showText(k));l.appendChild(li)});
     scroller.appendChild(l)}
-  else{const x=T[n],y=L(x);head(x.no+' · '+x.date,y.title,[y.kind,x.draft?(lang==='ja'?'仮の文章':'Draft'):'']);
+  else if(o.desk)resDesk(n);
+  else{const x=A[n],y=L(x);head(x.no+' · '+(RES?(x.status||''):x.date),y.title,[y.kind,x.draft?(lang==='ja'?'仮の文章':'Draft'):'']);
     const wrap=document.createElement('div');wrap.className='readwrap';
     const d=document.createElement('article');d.className='reading';
     const rel=x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`).join('');
     const ja=lang==='ja';
     /* title above the text */
     const meta=document.createElement('div');meta.className='rmeta';
-    meta.innerHTML=`<button type="button" class="rback">← ${ja?'テキスト一覧':'all texts'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
-    d.innerHTML=`${y.body.map((p,k)=>`<p data-p="${k}"${/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p)?' class="pin"':''}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
+    const mk={};(y.marks||[]).forEach(([p,h,q])=>mk[p]={h,q});const ent={};(y.entries||[]).forEach((e,k)=>ent[e.p]=k);
+    if(RES){const es=y.entries||[];
+      meta.innerHTML=`<button type="button" class="rback">← ${ja?'リサーチ一覧':'all research'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.status,x.started&&(ja?x.started+' から':'since '+x.started)].filter(Boolean).join(', ')}</span>${y.question?`<span class="rq">${y.question}</span>`:''}<span class="rview" role="group"><button type="button" aria-pressed="true">${ja?'読む':'read'}</button><button type="button" data-desk aria-pressed="false">${ja?'机':'desk'}</button></span>${es.length?`<ol class="rtl" aria-label="${ja?'記録':'Entries'}">${es.map((e,k)=>`<li><button type="button" data-e="${k}"><span>${e.date}</span><span>${e.title}</span></button></li>`).join('')}</ol>`:''}`;
+      meta.querySelector('[data-desk]').addEventListener('click',()=>showText(n,null,{desk:true}));
+      meta.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{const t=d.querySelector(`p[data-e="${b.dataset.e}"]`);if(t)scroller.scrollTo({top:scroller.scrollTop+t.getBoundingClientRect().top-scroller.getBoundingClientRect().top-24,behavior:reduce?'auto':'smooth'})}))}
+    else meta.innerHTML=`<button type="button" class="rback">← ${ja?'テキスト一覧':'all texts'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
+    const pcls=(p,k)=>{const c=[];if(/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p))c.push('pin');if(mk[k]&&mk[k].h)c.push('eh','eh'+mk[k].h);if(mk[k]&&mk[k].q)c.push('eq');return (c.length?` class="${c.join(' ')}"`:'')+(ent[k]!=null?` data-e="${ent[k]}"`:'')};
+    d.innerHTML=`${y.body.map((p,k)=>`<p data-p="${k}"${pcls(p,k)}>${p}</p>`).join('')}${rel?`<div class="trel"><span>Related</span>${rel}</div>`:''}`;
     meta.querySelector('.rback').addEventListener('click',()=>showText());
     d.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
     /* the references sit small in the margin beside the text; a word tied to one makes it grow */
@@ -1442,7 +1484,7 @@ function placeDuck(){const d=$('duck');if(variant!=='a'){d.style.left=d.style.to
   else{x=br.offsetLeft+br.offsetWidth+8;y=br.offsetTop+br.offsetHeight-h+2;spot='brand'}
   moveDuck(x,y,spot)}
 addEventListener('resize',()=>requestAnimationFrame(placeDuck));
-const POSE={works:'stand',refs:'sleep',text:'read',collect:'carry',about:'wave'};
+const POSE={works:'stand',refs:'sleep',text:'read',research:'read',collect:'carry',about:'wave'};
 const dimgs=p=>`<img class="dday" alt="" src="${DUCKIMG[p+'_day']}"><img class="dnight" alt="" src="${DUCKIMG[p+'_night']}">`;
 function setPose(m){const d=$('duck');if(!d.querySelector('.pp'))d.insertAdjacentHTML('afterbegin',['stand','read','wave','sleep','carry'].map(p=>`<span class="pp p-${p}">${dimgs(p)}</span>`).join(''));d.dataset.pose=POSE[m];syncPen()}
 /* on the text pages the duck reads with a pencil in its beak; tap it to borrow the pencil, tap again to give it back */
@@ -1471,7 +1513,9 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&penOut)setPen(false)});
 let navT=0;
 function go(m,fn){if(reduce){setPose(m);fn();return}clearTimeout(navT);const d=$('duck');setPose(m);d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop');
   desk.classList.add('loading');navT=setTimeout(()=>{fn();requestAnimationFrame(()=>desk.classList.remove('loading'))},460)}
-$('tab-text').addEventListener('click',()=>go('text',()=>showText()));
+$('tab-text').addEventListener('click',()=>go('text',()=>showText(null,'text')));
+if(!RS.length)$('tab-research').hidden=true;
+$('tab-research').addEventListener('click',()=>go('research',()=>showText(null,'research')));
 $('tab-collect').addEventListener('click',()=>go('collect',()=>showCollect()));
 $('tab-about').addEventListener('click',()=>{if(mode!=='about')go('about',()=>showAbout())});
 relBtn.addEventListener('click',e=>setRefs(!refsOn,originOf(e.currentTarget)));
