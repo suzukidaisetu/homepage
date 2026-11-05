@@ -644,6 +644,13 @@ body.inv .duck .dnight{opacity:1}
 .rthumbs img{width:100%;height:100%;object-fit:cover;display:block}
 .rgo{font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
 .rgo:hover{color:var(--fg)}
+.rvbar{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5600000;display:flex;align-items:center;gap:4px;padding:6px 6px 6px 16px;background:#fff;color:#141414;border-radius:999px;box-shadow:0 10px 30px -12px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.08);font:400 12.5px/1 var(--f-body);white-space:nowrap}
+.rvbar[hidden]{display:none}
+.rvbar>span{margin-right:8px;color:#8b8a85}
+.rvbar button{font:inherit;color:#141414;background:none;border:0;border-radius:999px;padding:9px 13px;cursor:pointer}
+.rvbar button b{font-weight:600}
+.rvbar button[aria-pressed="true"]{background:#ff2f92;color:#fff}
+@media (max-width:720px){.rvbar>span{display:none}.rvbar{padding-left:6px}.rvbar button{padding:9px 11px}}
 .rhint{display:block;margin-top:6px;font:400 11px/1 var(--f-body);color:var(--muted)}
 .v-m .rcol{width:74vw}
 /* C: photo essay */
@@ -1086,7 +1093,7 @@ function renderList(){list.innerHTML='';
 function mark(){list.querySelectorAll('.entry').forEach((b,j)=>b.setAttribute('aria-pressed',mode==='works'&&j===cur?'true':'false'))}
 function updProj(){const b=$('projBtn');if(!b)return;const names={works:'Works',refs:'References',text:TK==='research'?'Research':'Text',collect:'Collection',about:'About'};b.innerHTML=mode==='works'&&cur>=0?`<span class="pn">${P[cur].no}</span><span class="pt">${P[cur].title}</span><span class="pc">▾</span>`:`<span class="pt">${names[mode]||''}</span><span class="pc">▾</span>`}
 function setMode(m){app.classList.remove('home');if(m!=='text'&&penOut){penOut=false;setTimeout(syncPen)}if(m!=='refs'&&typeof closeRefPanel==='function'&&panelJ!=null)closeRefPanel();if(m!=='collect'){shared=null}$('collTools').hidden=m!=='collect';mode=m;setTimeout(updProj);try{setPose(m)}catch(e){}app.classList.remove('reading');app.classList.toggle('refs-mode',m!=='works');const sel=m==='text'?TK:m;['works','refs','text','research','collect','about'].forEach(k=>{const t=$('tab-'+k);if(t)t.setAttribute('aria-selected',sel===k)});
-  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=m!=='works';app.dataset.mode=m;document.documentElement.dataset.mode=m;mark()}
+  relBtn.hidden=m!=='works';requestAnimationFrame(()=>{try{syncNight();placeDuck()}catch(e){}});layBtn.hidden=m!=='works';app.dataset.mode=m;document.documentElement.dataset.mode=m;mark();if(typeof syncRvBar==='function')setTimeout(syncRvBar)}
 
 /* ---- table surface ---- */
 function newCanvas(){scroller.innerHTML='';canvas=document.createElement('div');canvas.className='canvas';scroller.appendChild(canvas);scroller.scrollTop=0;return canvas}
@@ -1303,7 +1310,13 @@ const textThumb=x=>x.refs.length&&R[x.refs[0]]?R[x.refs[0]].img:x.works.length&&
 /* ---- three ways to lay out one research, to compare: A a notebook to read, B a route along time, C a photo essay ---- */
 let RV='a';try{RV=localStorage.getItem('desk-rv')||'a'}catch(e){}
 const RVN={a:['ノート','notebook'],b:['航路','route'],c:['写真エッセイ','photo essay']};
-const rvarHTML=()=>`<span class="rvar" role="group"><span>${lang==='ja'?'構成':'layout'}</span>${['a','b','c'].map(v=>`<button type="button" data-rv="${v}" aria-pressed="${RV===v}">${v.toUpperCase()} ${RVN[v][lang==='ja'?0:1]}</button>`).join('')}</span>`;
+const rvarHTML=()=>'';const rvarOld=()=>`<span class="rvar" role="group"><span>${lang==='ja'?'構成':'layout'}</span>${['a','b','c'].map(v=>`<button type="button" data-rv="${v}" aria-pressed="${RV===v}">${v.toUpperCase()} ${RVN[v][lang==='ja'?0:1]}</button>`).join('')}</span>`;
+/* a bar at the bottom of the screen while in research: the three layouts side by side, always in reach */
+function syncRvBar(){let b=document.getElementById('rvbar');if(!b){b=document.createElement('div');b.id='rvbar';b.className='rvbar';document.body.appendChild(b)}
+  const on=mode==='text'&&TK==='research'&&RS.length;b.hidden=!on;if(!on)return;const ja=lang==='ja';
+  b.innerHTML=`<span>${ja?'構成を比べる':'compare layouts'}</span>${['a','b','c'].map(v=>`<button type="button" data-rv="${v}" aria-pressed="${RV===v}"><b>${v.toUpperCase()}</b> ${RVN[v][ja?0:1]}</button>`).join('')}`;
+  b.querySelectorAll('[data-rv]').forEach(x=>x.addEventListener('click',()=>{RV=x.dataset.rv;try{localStorage.setItem('desk-rv',RV)}catch(e){}
+    let k=curText;if(k==null){k=0;RS.forEach((r,i)=>{if((L(r).entries||[]).length>(L(RS[k]).entries||[]).length)k=i})}showText(k)}))}
 function bindRvar(el,n){el.querySelectorAll('[data-rv]').forEach(b=>b.addEventListener('click',()=>{RV=b.dataset.rv;try{localStorage.setItem('desk-rv',RV)}catch(e){}showText(n)}))}
 /* a research split into its entries: the paragraphs and the references of each dated record */
 function resGroups(x,y){const es=y.entries||[],mk={};(y.marks||[]).forEach(([p,h,q])=>mk[p]={h,q});
@@ -1338,7 +1351,7 @@ function resAlt(n){const x=RS[n],y=L(x),ja=lang==='ja',{intro,groups,mk}=resGrou
   wrap.querySelectorAll('[data-j]').forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.j;if(panelJ===j)closeRefPanel();else openRefPanel(j,{list:x.refs})}));
   wrap.querySelectorAll('.rlink').forEach(w=>{w.tabIndex=0;w.addEventListener('click',()=>openRefPanel(+w.dataset.r,{list:x.refs}))});
   wrap.querySelectorAll('.rgo').forEach(b=>b.addEventListener('click',()=>{RV='a';try{localStorage.setItem('desk-rv','a')}catch(e){}showText(n);requestAnimationFrame(()=>{const t=scroller.querySelector(`p[data-e="${b.dataset.e}"]`);if(t)scroller.scrollTo({top:scroller.scrollTop+t.getBoundingClientRect().top-scroller.getBoundingClientRect().top-24})})}));
-  scroller.scrollTop=0}
+  scroller.scrollTop=0;syncRvBar()}
 /* a research laid out as a desk: every material and reference it gathered, in the order they came in */
 function resDesk(n){const x=RS[n],y=L(x),ja=lang==='ja';head(x.no+' · '+(x.status||''),y.title,[ja?'机':'Desk',x.refs.length+(ja?' 点':' sheets')]);
   const bar=document.createElement('div');bar.className='rmeta rdesk';
@@ -1419,7 +1432,7 @@ function showText(n,k,o={}){if(k&&k!==TK){TK=k;n=null}leave();setMode('text');cu
     document.addEventListener('selectionchange',()=>{const sel=getSelection();if(!sel||sel.isCollapsed)qb.hidden=true});
     scroller.addEventListener('scroll',()=>qb.hidden=true,{passive:true});
     requestAnimationFrame(()=>placeMargin(d,mg))}
-  scroller.scrollTop=0}
+  scroller.scrollTop=0;syncRvBar()}
 /* ---- marker helpers: a paragraph's marks are [start,end,colour] ranges over its plain text ---- */
 function addMark(list,a,b,c){const out=[];list.forEach(([s,e,k])=>{if(e<=a||s>=b){out.push([s,e,k]);return}if(s<a)out.push([s,a,k]);if(e>b)out.push([b,e,k])});if(c!=null)out.push([a,b,c]);
   out.sort((p,q)=>p[0]-q[0]);const m=[];out.forEach(r=>{const l=m[m.length-1];if(l&&l[2]===r[2]&&l[1]>=r[0])l[1]=Math.max(l[1],r[1]);else m.push(r.slice())});return m}
