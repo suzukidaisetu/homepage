@@ -615,6 +615,52 @@ body.inv .duck .dnight{opacity:1}
 .readwrap .reading p.eh b{font-weight:inherit}
 .readwrap .reading p.eq{margin-left:1.6em!important;padding-left:1em;border-left:1px solid var(--line-hi);color:var(--muted)}
 .rdesk{margin:0 0 18px;position:relative;z-index:2}
+.rvar{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin-top:12px;font:400 11.5px/1.4 var(--f-body);color:var(--muted)}
+.rvar button{font:inherit;color:var(--muted);background:none;border:0;padding:2px 0;cursor:pointer}
+.rvar button[aria-pressed="true"]{color:#ff2f92}
+.ralt{padding:0 0 120px}
+.ralt .rmeta{margin-bottom:28px}
+.ralt p{margin:0 0 1em;font:400 15px/1.85 var(--f-body)}
+.ralt p.sub{font-weight:600;margin-top:1.4em}
+.ralt p.eq{padding-left:1em;border-left:1px solid var(--line-hi);color:var(--muted)}
+.ralt .rq{font:500 20px/1.5 var(--f-body);max-width:28em;margin:0 0 14px}
+.rborn{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:40px;font:400 12px/1.4 var(--f-body);color:var(--muted)}
+.rborn .plink{font:500 13px/1.3 var(--f-body);border:0;text-decoration:underline;text-underline-offset:3px}
+/* B: route */
+.rbhead{max-width:640px}
+.rtrackwrap{overflow-x:auto;margin:26px 0 0;padding:0 0 18px;scrollbar-width:thin}
+.rtrack{list-style:none;margin:0;padding:30px 40px 0 0;display:flex;gap:34px;position:relative;width:max-content}
+.rtrack::before{content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--fg)}
+.rcol{width:250px;flex:none;position:relative}
+.rcol .rdot{position:absolute;left:0;top:-26px;width:9px;height:9px;border-radius:50%;background:var(--fg)}
+.rcol.rnow .rdot{background:var(--bg);border:1px solid var(--fg);box-sizing:border-box}
+.rtrack:has(.rnow)::after{content:"";position:absolute;right:0;top:9px;width:120px;height:1px;background:repeating-linear-gradient(90deg,var(--bg) 0 4px,transparent 4px 8px)}
+.rcol .rd{display:block;font:600 21px/1 var(--f-body);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.rcol h4{margin:8px 0 12px;font:500 14px/1.4 var(--f-body)}
+.rcol p{font-size:13px!important;line-height:1.75!important;display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden;color:var(--fg)}
+.rcol.rstart p,.rcol.rnow p{color:var(--muted)}
+.rthumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 0 12px}
+.rthumbs button{padding:0;border:0;background:none;cursor:pointer;aspect-ratio:1}
+.rthumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.rgo{font:400 12px/1 var(--f-body);color:var(--muted);background:none;border:0;padding:0;cursor:pointer}
+.rgo:hover{color:var(--fg)}
+.rhint{display:block;margin-top:6px;font:400 11px/1 var(--f-body);color:var(--muted)}
+.v-m .rcol{width:74vw}
+/* C: photo essay */
+.ralt-c .rqbig{font:500 30px/1.45 var(--f-body);letter-spacing:-.01em;max-width:20em;margin:18px 0 26px}
+.ralt-c .rintro{max-width:36em;margin-bottom:70px}
+.rsec{display:grid;grid-template-columns:140px minmax(0,1fr);gap:28px;margin:0 0 96px}
+.rsd{position:sticky;top:12px;align-self:start;display:grid;gap:6px;font:400 12px/1.4 var(--f-body);color:var(--muted)}
+.rsd span{font:600 15px/1 var(--f-body);color:var(--fg);font-variant-numeric:tabular-nums}
+.rsd b{font-weight:500;color:var(--fg)}
+.rimgs{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;margin-bottom:22px}
+.rimgs figure{margin:0;cursor:pointer;height:240px}
+.rimgs figure.big{height:380px}
+.rimgs img{height:calc(100% - 22px);width:auto;display:block}
+.rimgs figcaption{font:400 11px/1 var(--f-body);color:var(--muted);margin-top:8px;white-space:nowrap}
+.rsb .rtext{max-width:34em}
+.v-m .rsec{grid-template-columns:1fr;gap:12px}.v-m .rsd{position:static}.v-m .rimgs figure,.v-m .rimgs figure.big{height:auto;width:100%}.v-m .rimgs img{width:100%;height:auto}
+.v-m .ralt-c .rqbig{font-size:22px}
 .rlist .titem .tex{grid-row:2}
 .rlist .titem .tkind{grid-column:3;grid-row:3;font-family:var(--f-body)}
 .rlist .titem{align-items:start}
@@ -1254,6 +1300,45 @@ let curText=null;
 function leave(){}
 /* a text's thumbnail: its first reference, or else the first work it belongs to */
 const textThumb=x=>x.refs.length&&R[x.refs[0]]?R[x.refs[0]].img:x.works.length&&P[x.works[0]]?P[x.works[0]].sheets[P[x.works[0]].cover].img:null;
+/* ---- three ways to lay out one research, to compare: A a notebook to read, B a route along time, C a photo essay ---- */
+let RV='a';try{RV=localStorage.getItem('desk-rv')||'a'}catch(e){}
+const RVN={a:['ノート','notebook'],b:['航路','route'],c:['写真エッセイ','photo essay']};
+const rvarHTML=()=>`<span class="rvar" role="group"><span>${lang==='ja'?'構成':'layout'}</span>${['a','b','c'].map(v=>`<button type="button" data-rv="${v}" aria-pressed="${RV===v}">${v.toUpperCase()} ${RVN[v][lang==='ja'?0:1]}</button>`).join('')}</span>`;
+function bindRvar(el,n){el.querySelectorAll('[data-rv]').forEach(b=>b.addEventListener('click',()=>{RV=b.dataset.rv;try{localStorage.setItem('desk-rv',RV)}catch(e){}showText(n)}))}
+/* a research split into its entries: the paragraphs and the references of each dated record */
+function resGroups(x,y){const es=y.entries||[],mk={};(y.marks||[]).forEach(([p,h,q])=>mk[p]={h,q});
+  const refsIn=ps=>{const o=[];ps.forEach(k=>{for(const m of y.body[k].matchAll(/data-r="(\d+)"/g))if(!o.includes(+m[1])&&R[+m[1]])o.push(+m[1])});return o};
+  const range=(a,b)=>{const o=[];for(let k=a;k<b;k++)o.push(k);return o};
+  const intro=range(0,es.length?es[0].p:y.body.length);
+  const groups=es.map((e,i)=>{const ps=range(e.p+1,i+1<es.length?es[i+1].p:y.body.length);return{e,ps,refs:refsIn([e.p,...ps])}});
+  return{intro,groups,mk}}
+const plainP=(y,k)=>y.body[k].replace(/<span class="rlink rpin"[^>]*><\/span>/g,'').trim();
+function resAlt(n){const x=RS[n],y=L(x),ja=lang==='ja',{intro,groups,mk}=resGroups(x,y);
+  head(x.no+' · '+(x.status||''),y.title,[y.kind]);app.classList.add('reading');
+  const wrap=document.createElement('div');wrap.className='ralt ralt-'+RV;
+  const born=x.works.map(i=>`<button type="button" class="plink" data-w="${i}">${P[i].title}</button>`).join('');
+  const top=`<div class="rmeta"><button type="button" class="rback">← ${ja?'リサーチ一覧':'all research'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.status,x.started&&(ja?x.started+' から':'since '+x.started)].filter(Boolean).join(', ')}</span>${rvarHTML()}</div>`;
+  const para=k=>{const h=plainP(y,k);if(!h)return'';const m=mk[k]||{};return m.h?`<p class="sub">${h}</p>`:`<p${m.q?' class="eq"':''}>${h}</p>`};
+  const lastDate=groups.length?groups[groups.length-1].e.date:'';
+  if(RV==='b'){
+    /* B: a route along time. The question at the start, one column per dated entry, and an open end while it is ongoing */
+    const cols=groups.map((g,i)=>{const txt=g.ps.map(k=>mk[k]&&mk[k].h?'':plainP(y,k)).filter(Boolean);
+      return `<li class="rcol"><span class="rdot"></span><span class="rd">${g.e.date}</span><h4>${g.e.title}</h4>${g.refs.length?`<div class="rthumbs">${g.refs.map(j=>`<button type="button" data-j="${j}" aria-label="${R[j].title}"><img alt="" src="${src(R[j].img,'s')}"></button>`).join('')}</div>`:''}<p>${txt.join(' ')}</p><button type="button" class="rgo" data-e="${i}">${ja?'この記録を読む →':'read this entry →'}</button></li>`}).join('');
+    wrap.innerHTML=`${top}<div class="rbhead">${y.question?`<p class="rq">${y.question}</p>`:''}${intro.map(para).join('')}</div>
+      <div class="rtrackwrap"><ol class="rtrack"><li class="rcol rstart"><span class="rdot"></span><span class="rd">${x.started||''}</span><h4>${ja?'問いを立てる':'the question'}</h4><p>${y.question||''}</p></li>${cols}${/進行|ongoing/i.test(x.status||'')?`<li class="rcol rnow"><span class="rdot"></span><span class="rd">${ja?'いま':'now'}</span><h4>${ja?'進行中':'ongoing'}</h4><p>${ja?'この先の記録はまだない。':'The next entry is not written yet.'}</p></li>`:''}</ol></div><span class="rhint">${ja?'← 横にたどる →':'← scroll along →'}</span>
+      ${born?`<div class="rborn"><span>${ja?'このリサーチから生まれたもの':'What came out of it'}</span>${born}</div>`:''}`}
+  else{
+    /* C: a photo essay. The materials lead, large; each entry's words sit under them as a short caption-like text */
+    const secs=groups.map(g=>{const imgs=g.refs.map((j,k)=>`<figure data-j="${j}" class="${k%3===0?'big':''}"><img alt="" src="${src(R[j].img,'m')}" style="aspect-ratio:${R[j].ar}"><figcaption>${R[j].title}</figcaption></figure>`).join('');
+      return `<section class="rsec"><div class="rsd"><span>${g.e.date}</span><b>${g.e.title}</b></div><div class="rsb">${imgs?`<div class="rimgs">${imgs}</div>`:''}<div class="rtext">${g.ps.map(para).join('')}</div></div></section>`}).join('');
+    wrap.innerHTML=`${top}${y.question?`<p class="rqbig">${y.question}</p>`:''}<div class="rtext rintro">${intro.map(para).join('')}</div>${secs}${born?`<div class="rborn"><span>${ja?'このリサーチから生まれたもの':'What came out of it'}</span>${born}</div>`:''}`}
+  scroller.appendChild(wrap);
+  wrap.querySelector('.rback').addEventListener('click',()=>showText());bindRvar(wrap,n);
+  wrap.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>openWork(+b.dataset.w)));
+  wrap.querySelectorAll('[data-j]').forEach(b=>b.addEventListener('click',()=>{const j=+b.dataset.j;if(panelJ===j)closeRefPanel();else openRefPanel(j,{list:x.refs})}));
+  wrap.querySelectorAll('.rlink').forEach(w=>{w.tabIndex=0;w.addEventListener('click',()=>openRefPanel(+w.dataset.r,{list:x.refs}))});
+  wrap.querySelectorAll('.rgo').forEach(b=>b.addEventListener('click',()=>{RV='a';try{localStorage.setItem('desk-rv','a')}catch(e){}showText(n);requestAnimationFrame(()=>{const t=scroller.querySelector(`p[data-e="${b.dataset.e}"]`);if(t)scroller.scrollTo({top:scroller.scrollTop+t.getBoundingClientRect().top-scroller.getBoundingClientRect().top-24})})}));
+  scroller.scrollTop=0}
 /* a research laid out as a desk: every material and reference it gathered, in the order they came in */
 function resDesk(n){const x=RS[n],y=L(x),ja=lang==='ja';head(x.no+' · '+(x.status||''),y.title,[ja?'机':'Desk',x.refs.length+(ja?' 点':' sheets')]);
   const bar=document.createElement('div');bar.className='rmeta rdesk';
@@ -1273,6 +1358,7 @@ function showText(n,k,o={}){if(k&&k!==TK){TK=k;n=null}leave();setMode('text');cu
       li.querySelector('button').addEventListener('click',()=>showText(k));l.appendChild(li)});
     scroller.appendChild(l)}
   else if(o.desk)resDesk(n);
+  else if(RES&&RV!=='a')resAlt(n);
   else{const x=A[n],y=L(x);head(x.no+' · '+(RES?(x.status||''):x.date),y.title,[y.kind,x.draft?(lang==='ja'?'仮の文章':'Draft'):'']);
     const wrap=document.createElement('div');wrap.className='readwrap';
     const d=document.createElement('article');d.className='reading';
@@ -1282,8 +1368,8 @@ function showText(n,k,o={}){if(k&&k!==TK){TK=k;n=null}leave();setMode('text');cu
     const meta=document.createElement('div');meta.className='rmeta';
     const mk={};(y.marks||[]).forEach(([p,h,q])=>mk[p]={h,q});const ent={};(y.entries||[]).forEach((e,k)=>ent[e.p]=k);
     if(RES){const es=y.entries||[];
-      meta.innerHTML=`<button type="button" class="rback">← ${ja?'リサーチ一覧':'all research'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.status,x.started&&(ja?x.started+' から':'since '+x.started)].filter(Boolean).join(', ')}</span>${y.question?`<span class="rq">${y.question}</span>`:''}<span class="rview" role="group"><button type="button" aria-pressed="true">${ja?'読む':'read'}</button><button type="button" data-desk aria-pressed="false">${ja?'机':'desk'}</button></span>${es.length?`<ol class="rtl" aria-label="${ja?'記録':'Entries'}">${es.map((e,k)=>`<li><button type="button" data-e="${k}"><span>${e.date}</span><span>${e.title}</span></button></li>`).join('')}</ol>`:''}`;
-      meta.querySelector('[data-desk]').addEventListener('click',()=>showText(n,null,{desk:true}));
+      meta.innerHTML=`<button type="button" class="rback">← ${ja?'リサーチ一覧':'all research'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.status,x.started&&(ja?x.started+' から':'since '+x.started)].filter(Boolean).join(', ')}</span>${y.question?`<span class="rq">${y.question}</span>`:''}<span class="rview" role="group"><button type="button" aria-pressed="true">${ja?'読む':'read'}</button><button type="button" data-desk aria-pressed="false">${ja?'机':'desk'}</button></span>${rvarHTML()}${es.length?`<ol class="rtl" aria-label="${ja?'記録':'Entries'}">${es.map((e,k)=>`<li><button type="button" data-e="${k}"><span>${e.date}</span><span>${e.title}</span></button></li>`).join('')}</ol>`:''}`;
+      meta.querySelector('[data-desk]').addEventListener('click',()=>showText(n,null,{desk:true}));bindRvar(meta,n);
       meta.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{const t=d.querySelector(`p[data-e="${b.dataset.e}"]`);if(t)scroller.scrollTo({top:scroller.scrollTop+t.getBoundingClientRect().top-scroller.getBoundingClientRect().top-24,behavior:reduce?'auto':'smooth'})}))}
     else meta.innerHTML=`<button type="button" class="rback">← ${ja?'テキスト一覧':'all texts'}</button><span class="rt">${y.title}</span><span class="rk">${[y.kind,x.date].filter(Boolean).join(', ')}</span>`;
     const pcls=(p,k)=>{const c=[];if(/^(<span class="rlink rpin"[^>]*><\/span>)+$/.test(p))c.push('pin');if(mk[k]&&mk[k].h)c.push('eh','eh'+mk[k].h);if(mk[k]&&mk[k].q)c.push('eq');return (c.length?` class="${c.join(' ')}"`:'')+(ent[k]!=null?` data-e="${ent[k]}"`:'')};
