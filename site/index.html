@@ -870,6 +870,132 @@ html.vt-radial::view-transition-new(root){-webkit-mask-image:radial-gradient(cir
 </style>
 </head>
 <body>
+<style id="fx-css">
+/* ===== fragile: glass, tracing paper, focus (no duck) ===== */
+.duck,.gduck{display:none!important}
+
+/* ---- research tab off for now ---- */
+html.fx-base #tab-research{display:none!important}
+
+/* ---- frosted index: the table runs under the left column; only the thumbnails and the words are frosted glass ---- */
+html.fx-base .v-a[data-mode="works"] .desk{grid-column:1/-1;grid-row:1}
+html.fx-base .v-a[data-mode="works"] .rail{z-index:auto!important;background:none}
+html.fx-base .v-a[data-mode="works"] :is(#s-rail-top,#s-rail){position:relative;z-index:3}
+html.fx-base .v-a[data-mode="works"] .rail :is(.entry,.brand,.nav,.list,.tab){pointer-events:auto}
+html.fx-base .v-a[data-mode="works"] .list{background:none}
+html.fx-base .v-a[data-mode="works"] .entry .ethumb{background:color-mix(in srgb,var(--bg) 30%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.05);backdrop-filter:blur(14px) saturate(1.05)}
+/* glass letters: only the shapes of the letters are frosted, the rest stays clear */
+html.fx-base .v-a[data-mode="works"] .fxg{position:relative;color:transparent!important;-webkit-text-fill-color:transparent}
+html.fx-base .v-a[data-mode="works"] .fxg::before{content:"";position:absolute;left:-2px;top:-2px;right:-2px;bottom:-2px;
+  -webkit-backdrop-filter:blur(5px) invert(1) contrast(1.5);backdrop-filter:blur(5px) invert(1) contrast(1.5);
+  -webkit-mask:var(--gm) 0 0/100% 100% no-repeat;mask:var(--gm) 0 0/100% 100% no-repeat;transition:opacity .25s}
+html.fx-base .v-a[data-mode="works"] .nav .tab.fxg:not([aria-selected="true"]):not(:hover)::before{opacity:.5}
+/* the bottom band is gone: the table runs under free / grid / column too */
+html.fx-base .v-a[data-mode="works"] .desk{grid-row:1/-1!important}
+html.fx-base .v-a[data-mode="works"] .top{background:none!important;pointer-events:none;z-index:6}
+html.fx-base .v-a[data-mode="works"] .top :is(button,.seg,.colltools,.addtools){pointer-events:auto}
+html.fx-base .v-a[data-mode="works"] .top .seg button.fxg:not([aria-pressed="true"]):not(:hover)::before{opacity:.5}
+/* slightly heavier words */
+html.fx-base :is(.nav .tab,.v-a .seg button,.btn,.tcollect,.rp-collect,.sheet .tools button,.chip,.links a,#rel .swl){font-weight:600!important}
+/* grid and column start to the right of the index */
+html.fx-base .v-a[data-mode="works"]:is([data-layout="grid"],[data-layout="column"]) .scroller{padding-left:252px;box-sizing:border-box}
+/* reading an explanation (references, works behind, text): only while the cursor rests on it, everything else falls out of focus */
+html.fx-base .app :is(.scroller,.rail,.top,#s-tl,.tagbar,.dhead){transition:filter .45s ease,opacity .45s ease}
+html.fx-base .app:has(.refpanel:not([hidden]):hover) :is(.scroller,.rail,.top,#s-tl,.tagbar,.dhead){filter:blur(6px) saturate(.7);opacity:.4}
+/* related works / texts fold away until opened */
+html.fx-base .rp-sec.fxc>.rp-h{cursor:pointer;display:flex;align-items:baseline;gap:8px;user-select:none;font-weight:600;color:var(--fg)}
+html.fx-base .rp-sec.fxc>.rp-h .fxn{color:var(--muted);font-weight:500}
+html.fx-base .rp-sec.fxc>.rp-h::after{content:"+";margin-left:auto;color:var(--muted);font-weight:300;font-size:16px;line-height:1;transition:transform .25s}
+html.fx-base .rp-sec.fxc.open>.rp-h::after{transform:rotate(45deg)}
+html.fx-base .rp-sec.fxc:not(.open)>:not(.rp-h){display:none!important}
+html.fx-base .rp-sec.fxc.open>:not(.rp-h){animation:fxIn .5s cubic-bezier(.2,.6,.2,1) both}
+html.fx-base .rp-sec.fxc.none{display:none}
+/* collect is the one word in pink */
+html.fx-base :is(.tcollect,.rp-collect,.sheet .tools button[data-a="collect"],.tile .tcollect){color:#ff2f92!important;mix-blend-mode:normal!important}
+html.fx-base :is(.tcollect,.rp-collect,.sheet .tools button[data-a="collect"])[aria-pressed="true"]{color:#ff2f92!important;font-weight:700}
+html.fx-base .v-a #s-tl{left:252px;top:0}
+
+/* ---- tracing paper: drawings show through each other; the one you touch comes forward ---- */
+html.fx-base body:not(.inv) .app[data-mode="works"] .sheet:not(.text):not(.ref):not(.big){mix-blend-mode:multiply;opacity:.86;transition:opacity .35s}
+html.fx-base.fx-darkbg body:not(.inv) .app[data-mode="works"] .sheet:not(.text):not(.ref):not(.big){mix-blend-mode:normal;opacity:.8}
+html.fx-base body:not(.inv) .app[data-mode="works"] .sheet:not(.text):not(.ref):not(.big):hover,
+html.fx-base body:not(.inv) .app[data-mode="works"] .sheet.dragging{mix-blend-mode:normal;opacity:1}
+
+/* ---- coming into focus ---- */
+@keyframes fxIn{0%{filter:blur(16px);opacity:0}55%{opacity:1}100%{filter:blur(0);opacity:1}}
+html.fx-base .sheet.fxin{animation:fxIn .95s cubic-bezier(.2,.6,.2,1) both!important;animation-delay:var(--fxd,0s)!important}
+
+/* ---- no boxes: every control is just a word ---- */
+html.fx-base :is(.btn,.tcollect,.rp-collect,.sheet .tools button,.links a,.chip,.mnote,.seg,.seg button,.lang,.lang button,.kind,.trm,.qbtn,.imgout a,.imgout button,.rvbar button,.tab .cc){border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;border-radius:0!important}
+html.fx-base :is(.btn,.tcollect,.rp-collect,.sheet .tools button,.links a,.chip,.mnote,.seg button,.lang button){padding:4px 0!important;color:var(--muted)!important;text-decoration:none!important;transition:color .2s}
+html.fx-base :is(.btn,.tcollect,.rp-collect,.sheet .tools button,.links a,.chip,.mnote,.seg button,.lang button):hover,
+html.fx-base :is(.btn,.tcollect,.rp-collect,.sheet .tools button,.chip,.seg button,.lang button)[aria-pressed="true"]{color:var(--fg)!important}
+html.fx-base .chip span{color:var(--muted)!important}
+html.fx-base .tagbar,html.fx-base .links{gap:4px 14px}
+/* words sitting on a picture: white, inverted against what lies below */
+html.fx-base :is(.sheet .tools button,.tile .tcollect,.mnote){color:#fff!important;mix-blend-mode:difference}
+html.fx-base .sheet .tools{gap:10px}
+html.fx-base .tile .tcap .links a{color:#fff!important}
+html.fx-base .sheet-links{background:transparent!important}
+html.fx-base .sheet.ref .sheet-cap{background:transparent!important;color:var(--fg)!important}
+html.fx-base .sheet.ref .sheet-cap span:last-child{color:var(--muted)!important}
+html.fx-base .sheet.ref{outline:0!important}
+html.fx-base .sheet,html.fx-base .sheet:hover{outline:0!important}
+
+/* ---- as few horizontal lines as possible ---- */
+html.fx-base :is(.top,.v-a .top,.entry,.texts,.titem,.trel,.rp-sec,.drawer,.about dl,.about dt,.about dd,.sheet-cap,.dhead,.rtrack,.readwrap .reading p.eh1,.projbtn,.overlay .entry,.backlink,.rp-texts button,.plink,.tab){border-top-color:transparent!important;border-bottom-color:transparent!important}
+html.fx-base .rtrack::before{display:none}
+html.fx-base :is(.tab,.seg button,.v-a .seg button,.rview button,.titem:hover .tt,.rp-works button:hover span,.rp-texts button:hover span:last-child,.rp-nav button:hover,.trm){text-decoration:none!important}
+
+/* ---- behind as a word ---- */
+html.fx-base .v-a #rel{width:auto!important;height:auto!important;padding:4px 0!important;display:block}
+html.fx-base .v-a #rel svg{display:none}
+html.fx-base .v-a #rel .swl{position:static!important;font:500 13px/1 var(--f-body)!important;letter-spacing:-.005em;color:var(--fg)!important;opacity:.55;transition:opacity .25s}
+html.fx-base .v-a #rel:hover .swl,html.fx-base .v-a #rel[aria-pressed="true"] .swl{opacity:1}
+html.fx-base .v-a #rel .swl::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;box-shadow:inset 0 0 0 1px currentColor;vertical-align:1px;transition:box-shadow .25s}
+html.fx-base .v-a #rel[aria-pressed="true"] .swl::before{box-shadow:inset 0 0 0 4px currentColor}
+html.fx-base .v-a #rel .swl b{font-weight:500;font-size:9px;vertical-align:5px;margin-left:2px;opacity:.7}
+
+/* ===== optional ideas ===== */
+/* lighter words */
+html.fx-light .brand,html.fx-light .gtitle{font-weight:300!important;letter-spacing:-.01em!important}
+html.fx-light .nav .tab,html.fx-light .v-a .btn,html.fx-light .v-a .seg button{font-weight:400!important}
+html.fx-light .nav .tab{opacity:.5;transition:opacity .35s}
+html.fx-light .nav .tab:hover,html.fx-light .nav .tab[aria-selected="true"],html.fx-light .nav .tab.lit{opacity:1}
+html.fx-light .entry .eno,html.fx-light .label h1{font-weight:400!important}
+
+/* breathing */
+@keyframes fxDrift{0%{translate:0 0}100%{translate:var(--fx,2px) var(--fy,-2px)}}
+html.fx-breathe .app[data-mode="works"] .sheet:not(.dragging):not(.big){animation:fxDrift var(--fdur,8s) ease-in-out infinite alternate}
+html.fx-breathe.fx-base .app[data-mode="works"] .sheet.fxin:not(.dragging):not(.big){animation:fxIn .95s cubic-bezier(.2,.6,.2,1) both,fxDrift var(--fdur,8s) ease-in-out infinite alternate!important}
+
+/* glass lens */
+html.fx-lens .cursor::before,html.fx-lens .cursor.sheet::before,html.fx-lens .cursor.xray::before{width:7px;height:7px;margin:-3.5px 0 0 -3.5px;background:var(--fg)}
+html.fx-lens .cursor.act::before{width:5px;height:5px;margin:-2.5px 0 0 -2.5px}
+html.fx-lens .cursor span{display:none}
+html.fx-lens .cursor.xray::before{opacity:.55;z-index:2}
+html.fx-lens .cursor .lens{left:-80px;top:-80px;width:160px;height:160px;box-shadow:0 0 0 1px color-mix(in srgb,var(--fg) 20%,transparent),0 14px 34px -12px rgba(0,0,0,.3)}
+html.fx-lens .cursor .lens::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,0) 64%,rgba(255,255,255,.22) 88%,rgba(255,255,255,.45) 100%)}
+
+/* behind as fog */
+html.fx-fog body.inv .app[data-mode="works"] .sheet:not(.ref){filter:blur(7px) saturate(.6)!important;opacity:.32!important}
+html.fx-fog body.inv .app[data-mode="works"] .sheet:not(.ref):hover{opacity:.5!important}
+html.fx-fog body.inv .app[data-mode="works"] .sheet.ref.fxin{animation:fxIn 1.1s cubic-bezier(.2,.6,.2,1) both!important;animation-delay:var(--fxd,0s)!important}
+
+/* misted entrance */
+html.fx-mist .gate{background:transparent!important}
+html.fx-mist .gate canvas.mist{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+html.fx-mist .gate .gfilm,html.fx-mist .gate .gcap{visibility:hidden}
+html.fx-mist .gate .gcenter,html.fx-mist .gate .gtitle,html.fx-mist .gate .genter{z-index:1}
+html.fx-mist .gate .gtitle{color:#2a2d31!important}
+html.fx-mist .gate .glang,html.fx-mist .gate .gopt,html.fx-mist .gate .genter{color:#5c6167!important}
+html.fx-mist .gate .gopt[aria-pressed="true"]{color:#2a2d31!important}
+
+
+/* colours: plain white table, black words */
+html.fx-base body:not(.inv){--bg:#ffffff;--fg:#000000;--muted:color-mix(in srgb,#000 52%,#fff);--line:rgba(0,0,0,.12);--line-hi:rgba(0,0,0,.55);--sheet:#ffffff;--chip:#000;--chip-fg:#fff;color-scheme:light}
+
+</style>
 <div class="app v-b" id="app">
   <header class="top"><div class="slot" id="s-top-l"></div><div class="slot" id="s-top-c"></div><div class="slot" id="s-top-r"></div></header>
   <aside class="rail"><div class="slot" id="s-rail-top"></div><div class="slot grow" id="s-rail"></div><div class="slot" id="s-rail-foot"></div></aside>
@@ -1066,9 +1192,9 @@ function zoom(el){const big=!el.classList.contains('big');el._resetZ&&el._resetZ
 
 /* Sizes with a clear hierarchy: one lead image, then a random mix of large, medium and small. */
 function sizeAll(els,r,lead=true){const w=W(),narrow=w<620;
-  const opts=narrow?[.92,.8,.7]:[.34,.3,.27,.24],wts=narrow?[2,3,3]:[2,3,3,2];
+  const opts=narrow?[.92,.8,.7]:[.5,.44,.39,.34],wts=narrow?[2,3,3]:[2,3,3,2];
   const pick=()=>{let s=wts.reduce((a,b)=>a+b),x=r()*s;for(let k=0;k<opts.length;k++){x-=wts[k];if(x<=0)return opts[k]}return opts[opts.length-1]};
-  els.forEach((el,k)=>{let f=lead&&k===0?(narrow?1:.42):pick();if(el._ar<1)f*=Math.sqrt(el._ar)*1.1;
+  els.forEach((el,k)=>{let f=lead&&k===0?(narrow?1:.58):pick();if(el._ar<1)f*=Math.sqrt(el._ar)*1.1;
     let ww=f*w*(.92+r()*.16);ww=Math.min(ww,(VH()*.88-el._cap)*el._ar,w);if(el._text)ww=Math.min(w,Math.max(narrow?w*.8:260,Math.min(ww,380)));setW(el,ww)})}
 /* Random collage: each sheet drops to the highest free spot at a random x, so the table grows downward with irregular gaps. */
 function collage(els,r){const W0=W(),w=W0<620?W0:W0*.78,placed=[];
@@ -1149,10 +1275,11 @@ function pullCord(atBottom){const d=$('duck'),pg=relBtn.querySelector('.pullg'),
   setTimeout(()=>{atBottom&&atBottom();lg.animate([{transform:'rotate(0deg)'},{transform:'rotate(6deg)'},{transform:'rotate(-4deg)'},{transform:'rotate(2.2deg)'},{transform:'rotate(-1deg)'},{transform:'rotate(0deg)'}],{duration:1500,easing:'ease-out'})},320)}
 function setRefs(on,origin,focus){if(switching)return;
   const go2=()=>{refsOn=on;relBtn.setAttribute('aria-pressed',on);flipDark(on,focus)};
-  if(variant==='a'&&!reduce&&relBtn.offsetParent&&relBtn.querySelector('.bead')){switching=true;const sp=lampSpot();
+  if(window.NODUCK&&document.documentElement.classList.contains('fx-base')){go2()}
+  else if(variant==='a'&&!reduce&&relBtn.offsetParent&&relBtn.querySelector('.bead')){switching=true;const sp=lampSpot();
     moveDuck(sp.x,sp.y,'lamp',()=>{pullCord(go2);setTimeout(()=>{switching=false;if(!on)placeDuck()},on?1500:1150)})}
   else go2()}
-function flipDark(on,focus){const origin=relBtn.offsetParent?originOf(relBtn.querySelector('.bulb')||relBtn):null;
+function flipDark(on,focus){const origin=relBtn.offsetParent?originOf(document.documentElement.classList.contains('fx-base')?(relBtn.querySelector('.swl')||relBtn):(relBtn.querySelector('.bulb')||relBtn)):null;
   invert(on,origin,()=>{if(!canvas||mode!=='works'||cur<0)return;if(on)addRefs(focus);else{canvas.querySelectorAll('.sheet.ref').forEach(el=>el.remove());if(panelJ!=null&&mode==='works')closeRefPanel()}if(layoutMode!=='free')applyLayout(layoutMode);syncButtons()})}
 
 /* ---- views ---- */
@@ -1551,8 +1678,8 @@ document.querySelectorAll('.pattern button[data-v]').forEach(b=>b.addEventListen
     const lens=c.querySelector('.lens'),li=lens.querySelector('img');let lastSrc='',running=false,still=0;
   function loop(){x+=(tx-x)*(reduce?1:.28);y+=(ty-y)*(reduce?1:.28);c.style.transform=`translate(${x}px,${y}px)`;
     if(lensSheet&&lensSheet.isConnected){const im=lensSheet._im||lensSheet.querySelector('img'),r=im.getBoundingClientRect(),want=lensSheet._img?src(lensSheet._img,'m'):im.currentSrc||im.src;if(want!==lastSrc){li.src=want;lastSrc=want}
-      const night=document.body.classList.contains('inv')&&lensSheet._ref==null&&mode==='works';li.style.filter=night?'none':'invert(1)';
-      li.style.width=r.width+'px';li.style.height=r.height+'px';li.style.transform=`translate(${r.left-x+32}px,${r.top-y+32}px)`}
+      const night=document.body.classList.contains('inv')&&lensSheet._ref==null&&mode==='works';const FG=document.documentElement.classList.contains('fx-lens'),S=FG?1.7:1,HH=FG?80:32;li.style.filter=FG?'none':(night?'none':'invert(1)');
+      li.style.width=r.width*S+'px';li.style.height=r.height*S+'px';li.style.transform=`translate(${(r.left-x)*S+HH}px,${(r.top-y)*S+HH}px)`}
     /* stop once the pointer has caught up and nothing under it is moving */
     if(Math.abs(tx-x)<.3&&Math.abs(ty-y)<.3&&!document.querySelector('.sheet.dragging,.sheet.move')){if(++still>20){running=false;return}}else still=0;
     requestAnimationFrame(loop)}
@@ -1585,4 +1712,48 @@ renderList();updCount();setVariant(MQ.matches?'m':'a',false);MQ.addEventListener
 </script>
 
 </body>
+<script id="fx-js">
+/* ===== fragile: glass, tracing paper, focus (no duck) ===== */
+window.NODUCK=true;
+(function(){
+const H=document.documentElement;H.classList.add('fx-base');
+/* sheets: stagger the focus-in, give each its own drift */
+let batch=0,bt=null;
+function tag(el){if(!el.classList||!el.classList.contains('sheet'))return;
+  el.style.setProperty('--fx',((Math.random()-.5)*6).toFixed(1)+'px');el.style.setProperty('--fy',((Math.random()-.5)*6).toFixed(1)+'px');el.style.setProperty('--fdur',(5+Math.random()*6).toFixed(1)+'s');
+  el.style.setProperty('--fxd',(batch++*0.07).toFixed(2)+'s');el.classList.add('fxin');clearTimeout(bt);bt=setTimeout(()=>batch=0,120);
+  setTimeout(()=>el.classList.remove('fxin'),2600)}
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType!==1)return;tag(n);n.querySelectorAll&&n.querySelectorAll('.sheet').forEach(tag)}))).observe(document.getElementById('scroller'),{childList:true,subtree:true});
+
+/* research is off for now: if it was the open tab, fall back to works */
+(function chk(n){const t=document.getElementById('tab-research');if(t&&t.getAttribute('aria-selected')==='true'){document.getElementById('tab-works').click()}else if(n<30)setTimeout(()=>chk(n+1),200)})(0);
+
+/* hide research items wherever texts are listed */
+const hideR=()=>document.querySelectorAll('.rp-texts button,.trel button,.texts .titem').forEach(b=>{const t=(b.textContent||'');if(/^\s*(リサーチ|Research)/.test(b.querySelector('span')?.textContent||'')||b.dataset.kind==='research')b.style.display='none'});
+new MutationObserver(hideR).observe(document.body,{childList:true,subtree:true});
+/* glass letters: draw each word's letter shapes into a mask, so the blur sits only inside the letters */
+function glyphMask(el){const tn=[...el.childNodes].filter(n=>n.nodeType===3&&n.textContent.trim());const tt=s=>{const t=getComputedStyle(el).textTransform;return t==='lowercase'?s.toLowerCase():t==='uppercase'?s.toUpperCase():s};if(!tn.length)return;
+  const r=el.getBoundingClientRect();if(!r.width)return;const cs=getComputedStyle(el),dpr=Math.min(2,devicePixelRatio||1),P=2;
+  const cv=document.createElement('canvas');cv.width=Math.ceil((r.width+P*2)*dpr);cv.height=Math.ceil((r.height+P*2)*dpr);const c=cv.getContext('2d');c.scale(dpr,dpr);
+  c.font=`${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;try{c.letterSpacing=cs.letterSpacing}catch(e){}c.fillStyle='#000';c.strokeStyle='#000';c.lineWidth=.35;c.textBaseline='alphabetic';
+  tn.forEach(n=>{const rg=document.createRange();rg.selectNodeContents(n);const rr=rg.getClientRects()[0];if(!rr)return;const m=c.measureText(n.textContent);
+    const x=rr.left-r.left+P,y=rr.top-r.top+P+(rr.height-(m.fontBoundingBoxAscent+m.fontBoundingBoxDescent))/2+m.fontBoundingBoxAscent;
+    c.fillText(tt(n.textContent.trim()),x+(n.textContent.length-n.textContent.trimStart().length?c.measureText(' ').width:0),y);c.strokeText(tt(n.textContent.trim()),x,y)});
+  el.style.setProperty('--gm',`url(${cv.toDataURL()})`);el.classList.add('fxg')}
+const glyphAll=()=>document.querySelectorAll('#brand,.nav .tab,.top .seg button,.top .btn:not([hidden])').forEach(glyphMask);
+let gt=null;const glyphSoon=()=>{clearTimeout(gt);gt=setTimeout(glyphAll,120)};
+(document.fonts&&document.fonts.ready||Promise.resolve()).then(glyphSoon);addEventListener('resize',glyphSoon);
+new MutationObserver(glyphSoon).observe(document.getElementById('app'),{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-pressed','aria-selected','hidden','data-mode','data-layout']});
+/* fold the related sections of the reference panel */
+function fold(){document.querySelectorAll('.rp-sec:not(.fxc)').forEach(s=>{const h=s.querySelector('.rp-h');if(!h)return;s.classList.add('fxc');
+  const items=[...s.querySelectorAll('button,a')].filter(b=>b.style.display!=='none');
+  if(!items.length){s.classList.add('none');return}
+  const n=document.createElement('span');n.className='fxn';n.textContent=items.length;h.appendChild(n);
+  h.setAttribute('role','button');h.tabIndex=0;h.setAttribute('aria-expanded','false');
+  const tg=e=>{e.preventDefault();e.stopPropagation();const o=s.classList.toggle('open');h.setAttribute('aria-expanded',o)};
+  h.addEventListener('click',tg);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')tg(e)})})}
+new MutationObserver(()=>{hideR();fold()}).observe(document.body,{childList:true,subtree:true});
+})();
+
+</script>
 </html>
