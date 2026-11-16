@@ -15,7 +15,10 @@ const MAX = 1800;            // longest side of published images, px
 const QUALITY = 82;
 // smaller copies for thumbnails and mid-size sheets: img/s/<key>.jpg and img/m/<key>.jpg
 const SIZES = { s: 480, m: 1200 };
-const IMAGE_EXT = /\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf)$/i;
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf|mp4|mov|m4v|webm)$/i;
+// short videos sit on the table like images: they play muted on a loop (needs ffmpeg on the runner)
+const VIDEO_EXT = /\.(mp4|mov|m4v|webm)$/i;
+const VIDEO_MAX = 1280;       // longest side of published videos, px
 const SKIP_EXT = /\.(txt|md|docx|xlsx|ds_store|ini|db)$/i;
 
 const { DRIVE_FOLDER_ID, GOOGLE_API_KEY } = process.env;
@@ -95,7 +98,7 @@ const dir = (tree, name) => tree.find(e => e.kind === 'dir' && e.name.toLowerCas
 const file = (tree, name) => tree.find(e => e.kind === 'file' && e.name.toLowerCase() === name);
 // "info" / "about" may be a .txt, a .docx or a Google Doc
 const textFile = (tree, base) => file(tree, base + '.docx') || file(tree, base + '.txt');
-const norm = s => String(s ?? '').normalize('NFKC').toLowerCase().replace(/\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf|txt|docx|xlsx)$/i, '').replace(/[\s_\-—–・.,]+/g, ' ').trim();
+const norm = s => String(s ?? '').normalize('NFKC').toLowerCase().replace(/\.(jpe?g|png|webp|gif|tiff?|avif|heic|heif|pdf|mp4|mov|m4v|webm|txt|docx|xlsx)$/i, '').replace(/[\s_\-—–・.,]+/g, ' ').trim();
 const unesc = s => String(s ?? '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
 // links in a Google Doc export may come wrapped as https://www.google.com/url?q=<link>
 const unwrap = u => { const m = String(u || '').match(/^https?:\/\/(?:www\.)?google\.[a-z.]+\/url\?(?:.*&)?q=([^&]+)/); return m ? decodeURIComponent(m[1]) : u; };
@@ -225,7 +228,36 @@ function imagesIn(children, prefix = '') {
   return out;
 }
 const skipped = [];
+const videos = {}, videoNotes = [];
+// a video becomes: vid/<key>.mp4 (H.264, no sound, at most VIDEO_MAX px) + a still from its first moments that stands in as the image
+async function addVideo(f) {
+  const buf = f.md5 ? null : await f.read();
+  const key = f.md5 || crypto.createHash('md5').update(buf).digest('hex');
+  if (images[key]) return key;
+  const mp4 = path.join(CACHE, key + '.mp4'), still = path.join(CACHE, key + '.still.jpg');
+  try { await fs.access(mp4); await fs.access(still); }
+  catch {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'video-'));
+    const ext = (f.name.match(/\.([^.]+)$/) || [])[1]?.toLowerCase() || 'mp4';
+    const inp = path.join(dir, 'in.' + ext);
+    try {
+      await fs.writeFile(inp, buf || await f.read());
+      execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', inp, '-an', '-vf', `scale='if(gt(iw,ih),min(${VIDEO_MAX},iw),-2)':'if(gt(iw,ih),-2,min(${VIDEO_MAX},ih))'`,
+        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+      try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-ss', '0.3', '-i', mp4, '-frames:v', '1', '-q:v', '3', still]); await fs.access(still); }
+      catch { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', mp4, '-frames:v', '1', '-q:v', '3', still]); }
+    } finally { await fs.rm(dir, { recursive: true, force: true }); }
+  }
+  await addImage({ name: key + '.jpg', md5: key, read: () => fs.readFile(still) });
+  await fs.mkdir(path.join(DIST, 'vid'), { recursive: true });
+  await fs.copyFile(mp4, path.join(DIST, 'vid', key + '.mp4'));
+  const mb = (await fs.stat(mp4)).size / 1e6;
+  if (mb > 40) videoNotes.push(`${f.name}: the video is ${mb.toFixed(0)} MB after compression; shorter clips load faster`);
+  videos[key] = `vid/${key}.mp4`;
+  return key;
+}
 async function addImage(f) {
+  if (VIDEO_EXT.test(f.name)) return addVideo(f);
   const buf = f.md5 ? null : await f.read();
   const key = f.md5 || crypto.createHash('md5').update(buf).digest('hex');
   if (images[key]) return key;
@@ -572,7 +604,8 @@ async function main() {
     if (fromDrive) throw new Error('No works found in the Drive folder (is works/ there, and is the folder shared as "anyone with the link"?). The site was not changed.');
     warn.push('no works found: add folders to works/');
   }
-  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, sizes: Object.keys(SIZES), duck, works: works.map(({ _folder, _id, _title, ...w }) => w), refs, texts, about };
+  warn.push(...videoNotes);
+  const site = { site: { name: esc(name), built: new Date().toISOString() }, images: imageUrls, videos, sizes: Object.keys(SIZES), duck, works: works.map(({ _folder, _id, _title, ...w }) => w), refs, texts, about };
   await fs.writeFile(path.join(DIST, 'data', 'site.json'), JSON.stringify(site));
   await fs.writeFile(path.join(DIST, '.nojekyll'), '');
   console.log(`Built ${works.length} works, ${refs.length} references, ${texts.length} texts, ${Object.keys(images).length} images.`);

@@ -898,7 +898,7 @@ html.fx-base .v-a[data-mode="works"] .top .seg button.fxg:not([aria-pressed="tru
 /* slightly heavier words */
 html.fx-base :is(.nav .tab,.v-a .seg button,.btn,.tcollect,.rp-collect,.sheet .tools button,.chip,.links a,#rel .swl){font-weight:600!important}
 /* grid and column start to the right of the index */
-html.fx-base .v-a[data-mode="works"]:is([data-layout="grid"],[data-layout="column"]) .scroller{padding-left:252px;box-sizing:border-box}
+html.fx-base .v-a[data-mode="works"] .scroller{padding-left:252px;box-sizing:border-box}
 /* reading an explanation (references, works behind, text): only while the cursor rests on it, everything else falls out of focus */
 html.fx-base .app :is(.scroller,.rail,.top,#s-tl,.tagbar,.dhead){transition:filter .45s ease,opacity .45s ease}
 html.fx-base .app:has(.refpanel:not([hidden]):hover) :is(.scroller,.rail,.top,#s-tl,.tagbar,.dhead){filter:blur(6px) saturate(.7);opacity:.4}
@@ -1754,6 +1754,21 @@ function fold(){document.querySelectorAll('.rp-sec:not(.fxc)').forEach(s=>{const
   h.addEventListener('click',tg);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')tg(e)})})}
 new MutationObserver(()=>{hideR();fold()}).observe(document.body,{childList:true,subtree:true});
 })();
+
+/* short videos: they lie on the table like images and play muted on a loop over their still */
+fetch('data/site.json',{cache:'force-cache'}).then(r=>r.json()).then(D=>{const V=D.videos||{};if(!Object.keys(V).length)return;
+  const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{rootMargin:'200px'}):null;
+  const keyOf=im=>im.dataset.k||((im.getAttribute('src')||'').match(/([0-9a-f]{32})\.jpg/)||[])[1];
+  const put=im=>{if(im._vid||im.closest('.entry,.cursor,.lens'))return;const k=keyOf(im);if(!k||!V[k])return;
+    const v=document.createElement('video');v.className='fxvid';v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+    ['muted','playsinline','loop','autoplay','disablepictureinpicture'].forEach(a=>v.setAttribute(a,''));v.preload='metadata';v.poster=im.currentSrc||im.src;v.src=V[k];
+    const tile=im.closest('.frame');
+    v.style.cssText=tile?'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none':`position:absolute;left:${im.offsetLeft}px;top:${im.offsetTop}px;width:${im.offsetWidth||'100%'}px;height:auto;pointer-events:none;display:block`;
+    if(!tile){v.style.width='100%';v.style.left='0'}
+    im.after(v);im._vid=v;io?io.observe(v):v.play().catch(()=>{})};
+  const scan=()=>document.querySelectorAll('.sheet img,.tile .frame img,.rp-img img,.refpanel img').forEach(put);
+  scan();new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+}).catch(()=>{});
 
 </script>
 </html>
