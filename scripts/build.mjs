@@ -346,7 +346,9 @@ async function main() {
     const all = works.map((w, k) => k);
     const cands = n ? all.filter(k => +works[k].no === +n) : all;
     if (rest) {
-      const t = cands.find(k => norm(works[k]._title) === rest || norm(stripNo(works[k]._folder)) === rest);
+      // the name wins over the number, so renumbering the work folders does not silently move references to another work
+      const byName = k => norm(stripNo(works[k]._folder)) === rest || norm(works[k]._title) === rest;
+      const t = cands.find(byName) ?? all.find(k => norm(stripNo(works[k]._folder)) === rest) ?? all.find(byName);
       if (t != null) return t;
       if (!n) return -1;
     }
